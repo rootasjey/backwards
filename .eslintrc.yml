@@ -1,0 +1,31 @@
+env:
+  browser: yes
+  commonjs: yes
+  es6: yes
+extends: 'eslint:recommended'
+globals:
+  Phaser: no
+parserOptions:
+  sourceType: module
+rules:
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  no-console:
+    - warn
+    - allow:
+      - debug
+      - error
+      - info
+      - log
+      - time
+      - timeEnd
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
