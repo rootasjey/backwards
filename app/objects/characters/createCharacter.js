@@ -1,3 +1,7 @@
+// ~~~~~~~~
+// FACTORY
+// ~~~~~~~~
+
 import { newbie } from './classes';
 
 /**
