@@ -152,7 +152,7 @@ export const baseCharacter = (state = {}) => {
       return {
         atk         : this.getAtk(opponent),
         criticalHit : this.getCriticalHit(),
-        dodge       : this.getDodge(),
+        evade       : this.getEvade(),
         hit         : this.getHitRate(opponent)
       };
     },
@@ -279,12 +279,19 @@ export const baseCharacter = (state = {}) => {
     /**
      * Return the probability to do a critical hit for one attack.
      * @returns {Number} Critical hit value.
+     * TOTO: Add support bonus, class critical bonus
+     * http://fireemblem.wikia.com/wiki/Critical_hit
      */
-    getCriticalHit() {
-      const weaponCriticalHit = mergedState.weapon.criticalHit;
-      const playerCriticalHit = mergedState.luck * (weaponCriticalHit / 100);
+    getCriticalHit(opponent = {}) {
+      const skill = this.getPropertyValue('skill');
+      const { criticalRate, rank } = this.getPropertyValue('weapon');
+      const ennemyLuck = opponent.getPropertyValue('luck');
 
-      return weaponCriticalHit + playerCriticalHit;
+      let sRankBonus = 0;
+
+      if (rank === WEAPON_RANK.S) sRankBonus = 5;
+
+      return ((skill / 2) + sRankBonus + criticalRate) - ennemyLuck;
     },
 
     /**
