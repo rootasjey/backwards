@@ -49,11 +49,6 @@ export const baseWeapon = (state = {}) => {
     ownerId: 0,
 
     /**
-     * If false, the weapons cast magic.
-     */
-    physical: true,
-
-    /**
      * Range to hit opponents (in tile measurement).
      */
     range: 1,
@@ -66,6 +61,13 @@ export const baseWeapon = (state = {}) => {
     rank: '',
 
     /**
+     * Second weapon's type,
+     * e.g.: iron sword, steel sword, dark magic.
+     * The value correspond to only the specified part e.g.: 'iron', 'steel', 'dark'.
+     */
+    secondType: '',
+
+    /**
      * Type (axe, sword, bow, ...).
      */
     type: '',
@@ -74,7 +76,7 @@ export const baseWeapon = (state = {}) => {
      * Weapon durability.
      * Represent the amount of time a weapon can be used before it breaks.
      */
-    usage: 45,
+    usage: 1,
 
 
     /**

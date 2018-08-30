@@ -1,5 +1,5 @@
-import { newbie } from './newbie';
+import { trainee } from './trainee';
 
 export {
-  newbie
+  trainee
 };

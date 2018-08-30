@@ -90,7 +90,7 @@ export default class Game extends Phaser.Scene {
     // this.marker.strokeRect(0, 0, this.map.tileWidth * this.scaleFactor, this.map.tileHeight * this.scaleFactor);
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
 
-    const char = createCharacter({class: 'newbie'});
+    const char = createCharacter({class: 'trainee'});
   }
 
   /**

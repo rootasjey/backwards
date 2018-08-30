@@ -3,6 +3,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~
 
 import {
+  damageTypes as WEAPON_DAMAGE_TYPES,
   rank as WEAPON_RANK,
   types as WEAPON_TYPES
 
@@ -164,18 +165,20 @@ export const baseCharacter = (state = {}) => {
      * @returns {Number} Damages value.
      */
     getAtk(opponent = {}) {
-      if (!mergedState.weapon.atk) return 0; // No weapon wield
+      const weapon = this.getPropertyValue('weapon');
+      const { magic, strength } = this.getFightingStats();
+      if (weapon.atk < 1) return 0; // no weapon wield
 
       let opponentDamageReduction = 0;
       let totalAtk = 0;
-      let weaponAtk = mergedState.weapon.atk;
+      let weaponAtk = weapon.atk;
 
-      if (mergedState.weapon.physical) {
-        totalAtk = weaponAtk + mergedState.strength;
+      if (weapon.damageType === WEAPON_DAMAGE_TYPES.physical) {
+        totalAtk = weaponAtk + strength;
         opponentDamageReduction = opponent.getPropertyValue('defense');
 
       } else {
-        totalAtk = weaponAtk + mergedState.magic;
+        totalAtk = weaponAtk + magic;
         opponentDamageReduction = opponent.getPropertyValue('resistance');
       }
 
@@ -194,7 +197,7 @@ export const baseCharacter = (state = {}) => {
      * @param {Object} opponent Character get value against.
      * @returns {Number} Hit probability.
      */
-    getHitRate(opponent = {}) {
+    getHitRate() {
       if (!mergedState.weapon.accuracy) return 0;
 
       const { luck, magic, skill } = this.getFightingStats();
@@ -272,8 +275,9 @@ export const baseCharacter = (state = {}) => {
      * @returns {Number} Range value.
      */
     getRange() {
-      if (!mergedState.weapon.range) return 0;
-      return mergedState.weapon.range;
+      const { range } = this.getPropertyValue('weapon');
+
+      return Number.isInteger(range) ? range : 0;
     },
 
     /**

@@ -3,14 +3,14 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~
 
 import { baseWeapon } from '../base';
-import { types } from '../const';
+import { damageTypes, types } from '../const';
 
 export const baseSword = (stats = {}) => {
   const initialStats = {
-    atk       : 2,
-    physical  : true,
-    type      : types.sword,
-    range     : 1
+    physical    : true,
+    damageType  : damageTypes.physical,
+    type        : types.sword,
+    range       : 1
   };
 
   return baseWeapon(initialStats, ...stats);

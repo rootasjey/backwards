@@ -1,6 +1,6 @@
-// ~~~~~~~~~~~~~~~~~
-// WEAPONS CONSTANTS
-// ~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~
+// CONSTANTS: WEAPONS
+// ~~~~~~~~~~~~~~~~~~
 
 /**
  * Weapons and magic types.
@@ -12,6 +12,11 @@ export const types = {
   tome        : 'tome',
   staff       : 'staff',
   sword       : 'sword',
+};
+
+export const physicalSecondTypes = {
+  iron  : 'iron',
+  steel : 'steel'
 };
 
 export const magicTypes = {

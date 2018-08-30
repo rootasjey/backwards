@@ -1,8 +1,9 @@
-// ~~~~~~~~
-// FACTORY
-// ~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~
+// FACTORY: CREATE WEAPON
+// ~~~~~~~~~~~~~~~~~~~~~~
 
-import { newbie } from './classes';
+import { types } from './const';
+import { trainee } from './classes';
 
 /**
  * Create a new character according to an initial stats.
@@ -11,8 +12,8 @@ import { newbie } from './classes';
  */
 export const createCharacter = (stats) => {
   switch (stats.class) {
-  case 'newbie':
-    return newbie(stats);
+  case types.trainee:
+    return trainee(stats);
 
   default:
     return {};

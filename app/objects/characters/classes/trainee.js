@@ -1,10 +1,10 @@
 import { baseCharacter } from '../base';
 
 /**
- * Create a new Newbie character.
+ * Create a new Trainee character.
  * @param {Object} stats Initial character's stats.
  */
-export const newbie = (stats = {}) => {
+export const trainee = (stats = {}) => {
   const initialStats = {
     constitution  : 0,
     defense       : 1,
