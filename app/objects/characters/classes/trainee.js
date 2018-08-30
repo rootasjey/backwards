@@ -15,5 +15,5 @@ export const trainee = (stats = {}) => {
     strength      : 1
   };
 
-  return baseCharacter(initialStats, ...stats);
+  return baseCharacter(Object.assign({}, initialStats, stats));
 };

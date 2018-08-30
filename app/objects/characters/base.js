@@ -134,7 +134,7 @@ export const baseCharacter = (state = {}) => {
     weaponsAllowed: {},
   };
 
-  const mergedState = Object.assign(initialState, state);
+  const mergedState = Object.assign({}, initialState, state);
 
   // ~~~~~~~~~~~~~~~
   // Exposed object

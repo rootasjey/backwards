@@ -13,5 +13,5 @@ export const baseSword = (stats = {}) => {
     range       : 1
   };
 
-  return baseWeapon(initialStats, ...stats);
+  return baseWeapon(Object.assign({}, initialStats, stats));
 };

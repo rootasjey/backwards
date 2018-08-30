@@ -34,7 +34,7 @@ export const baseWeapon = (state = {}) => {
     criticalRate: 0,
 
     /**
-     * Weapon's damage type (physical, magic, staff).
+     * Weapon's damage type (physical, magic).
      */
     damageType: '',
 

@@ -3,19 +3,39 @@
   "description": "A turn based game system built on phaser.io",
   "private": true,
   "author": "Jeremie CORPINOT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "",
   "scripts": {
     "start": "brunch watch --server",
-    "build": "brunch build --production"
+    "build": "brunch build --production",
+    "test": "ava"
   },
   "dependencies": {
-    "phaser": "^3.11.0"
+    "phaser": "3.11.0"
   },
   "devDependencies": {
-    "auto-reload-brunch": "^2.7.1",
+    "auto-reload-brunch": "2.7.1",
+    "ava": "1.0.0-beta.8",
     "babel-brunch": "github:babel/babel-brunch",
-    "brunch": "^2.10.16",
-    "eslint": "^5.4.0"
+    "brunch": "2.10.16",
+    "eslint": "5.4.0",
+    "esm": "^3.0.81"
+  },
+  "ava": {
+    "babel": {
+      "testOptions": {
+        "presets": [
+          [
+            "module:ava/stage-4",
+            {
+              "modules": false
+            }
+          ]
+        ]
+      }
+    },
+    "require": [
+      "esm"
+    ]
   }
 }

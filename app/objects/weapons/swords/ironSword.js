@@ -13,5 +13,5 @@ export const ironSword = (stats = {}) => {
     weight        : 5 // TODO: check
   };
 
-  return baseSword(initialStats, ...stats);
+  return baseSword(Object.assign({}, initialStats, stats));
 };
