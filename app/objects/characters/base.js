@@ -1,3 +1,13 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~
+// CHARACTER BASE STRUCTURE
+// ~~~~~~~~~~~~~~~~~~~~~~~~
+
+import {
+  rank as WEAPON_RANK,
+  types as WEAPON_TYPES
+
+} from '../weapons/const';
+
 /**
  * Character base structure.
  * @param {Object} state Character statistics.
@@ -26,15 +36,14 @@ export const baseCharacter = (state = {}) => {
     defense: 0,
 
     /**
-     * Affects how many time an unit can attack,
-     * accuracy and evading opponent's attack
+     * Health Points.
      */
-    dexterity: 0,
+    hp: 10,
 
     /**
      * Magical damage.
      */
-    intelligence: 0,
+    magic: 0,
 
     /**
      * Affects critical hit.
@@ -47,9 +56,26 @@ export const baseCharacter = (state = {}) => {
     resistance: 0,
 
     /**
+     * Affects unit's rate and critical hit rate.
+     */
+    skill: 0,
+
+    /**
+     * Affects the number of strikes the character can make,
+     * alongside her/his hability to evade a foe attack.
+     */
+    speed: 1,
+
+    /**
      * Physical damage.
      */
     strength: 0,
+
+    /**
+     * The character must have a rank at or higher than
+     * a weapon rank to us it in battle.
+     */
+    weaponRank: {},
 
     // ~~~~~~~~~~~~
     // Properties
@@ -64,11 +90,6 @@ export const baseCharacter = (state = {}) => {
      * Level up when it reaches 100.
      */
     experience: 0,
-
-    /**
-     * Health Points.
-     */
-    hp: 10,
 
     /**
      * Uniq identifier.
@@ -132,7 +153,7 @@ export const baseCharacter = (state = {}) => {
         atk         : this.getAtk(opponent),
         criticalHit : this.getCriticalHit(),
         dodge       : this.getDodge(),
-        hit         : this.getHit(opponent)
+        hit         : this.getHitRate(opponent)
       };
     },
 
@@ -154,7 +175,7 @@ export const baseCharacter = (state = {}) => {
         opponentDamageReduction = opponent.getPropertyValue('defense');
 
       } else {
-        totalAtk = weaponAtk + mergedState.intelligence;
+        totalAtk = weaponAtk + mergedState.magic;
         opponentDamageReduction = opponent.getPropertyValue('resistance');
       }
 
@@ -173,25 +194,77 @@ export const baseCharacter = (state = {}) => {
      * @param {Object} opponent Character get value against.
      * @returns {Number} Hit probability.
      */
-    getHit(opponent = {}) {
+    getHitRate(opponent = {}) {
       if (!mergedState.weapon.accuracy) return 0;
 
-      const { accuracy } = mergedState.weapon;
-      const dexBonus = mergedState.dexterity * (accuracy / 100);
+      const { luck, magic, skill } = this.getFightingStats();
+      const { accuracy, type } = this.getPropertyValue('weapon');
 
-      let hitValue = accuracy + dexBonus;
-
-      // No opponent => pure Hit
-      if (!opponent.getPropertyValue) {
-        return Math.min(hitValue, 100);
+      if (type === WEAPON_TYPES.staff) {
+        return (magic * 5) + skill + 30;
       }
 
-      // Opponent => hit reduction
-      const opponentDodge = opponent.getDodge();
+      const weaponRankBonus = this.getWeaponRankBonus()['accuracy'];
 
-      hitValue = Math.max(hitValue - opponentDodge, 0);
+      return (skill * 2) + (luck * 0.5) + weaponRankBonus + accuracy;
+    },
 
-      return Math.min(hitValue, 100);
+    getWeaponRankBonus() {
+      const { rank, type } = this.getPropertyValue('weapon');
+
+      let bonus = {
+        accuracy  : 0,
+        atk       : 0,
+        recovery  : 0
+      };
+
+      switch (type) {
+      case WEAPON_TYPES.axe:
+        if (WEAPON_RANK.C === rank) bonus.accuracy = 5;
+        if (WEAPON_RANK.B === rank) bonus.accuracy = 10;
+        if (WEAPON_RANK.A === rank) bonus.accuracy = 15;
+
+        break;
+
+      case WEAPON_TYPES.bow:
+        if (WEAPON_RANK.C === rank) bonus.atk = 1;
+        if (WEAPON_RANK.B === rank) bonus = Object.assign({}, { atk: 1, accuracy: 5});
+        if (WEAPON_RANK.A === rank) bonus = Object.assign({}, { atk: 2, accuracy: 5 });
+
+        break;
+
+      case WEAPON_TYPES.lance:
+        if (WEAPON_RANK.C === rank) bonus.atk = 1;
+        if (WEAPON_RANK.B === rank) bonus = Object.assign({}, { atk: 1, accuracy: 5 });
+        if (WEAPON_RANK.A === rank) bonus = Object.assign({}, { atk: 2, accuracy: 5 });
+
+        break;
+
+      case WEAPON_TYPES.staff:
+        if (WEAPON_RANK.C === rank) bonus.recovery = 1;
+        if (WEAPON_RANK.B === rank) bonus.recovery = 2;
+        if (WEAPON_RANK.A === rank) bonus.recovery = 3;
+
+        break;
+
+      case WEAPON_TYPES.sword:
+        if (WEAPON_RANK.C === rank) bonus.atk = 1;
+        if (WEAPON_RANK.B === rank) bonus.atk = 2;
+        if (WEAPON_RANK.A === rank) bonus.atk = 3;
+        break;
+
+      case WEAPON_TYPES.tome:
+        if (WEAPON_RANK.C === rank) bonus.atk = 1;
+        if (WEAPON_RANK.B === rank) bonus = Object.assign({}, { atk: 1, accuracy: 5 });
+        if (WEAPON_RANK.A === rank) bonus = Object.assign({}, { atk: 2, accuracy: 5 });
+
+        break;
+
+      default:
+        break;
+      }
+
+      return bonus;
     },
 
     /**
@@ -215,12 +288,30 @@ export const baseCharacter = (state = {}) => {
     },
 
     /**
-     * Return the probability to dodge the enemy attack.
-     * @returns {Number} Dodge value.
+     * Probability of successfully avoiding a weapon/magic.
+     * @returns {Number} avoid probability.
+     * TODO: add terrain modifier
      */
-    getDodge() {
-      const weaponSpeed = mergedState.weapon.speed;
-      return mergedState.dexterity + weaponSpeed;
+    getEvade() {
+      const atkSpeed = this.getAtkSpeed() * 2;
+      const luck = this.getPropertyValue('luck');
+
+      return atkSpeed + luck;
+    },
+
+    /**
+     * Perform a double attack against the enemy
+     * if the unit's value is >= 4 points than the enemy.
+     */
+    getAtkSpeed() {
+      const { constitution, speed } = this;
+      const { weight } = this.getPropertyValue('weapon');
+
+      if (typeof weight === 'undefined') return 0;
+
+      const burden = Math.max((weight - constitution), 0);
+
+      return speed - burden;
     },
 
     // ~~~~~~~~~~~~~~
@@ -280,20 +371,24 @@ export const baseCharacter = (state = {}) => {
       const {
         constitution,
         defense,
-        dexterity,
-        intelligence,
+        hp,
+        magic,
         luck,
         resistance,
+        skill,
+        speed,
         strength
       } = mergedState;
 
       return {
         constitution,
         defense,
-        dexterity,
-        intelligence,
+        hp,
+        magic,
         luck,
         resistance,
+        skill,
+        speed,
         strength
       };
     },

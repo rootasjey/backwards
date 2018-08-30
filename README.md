@@ -1,4 +1,4 @@
-cycles-system
+Cycles System
 =============
 
 [WIP] A turn-based game system built with [Phaser 3](http://phaser.io).
@@ -7,12 +7,7 @@ cycles-system
 
 ## Roadmap
 
-* Show tile information
-* Add weapons
-* Add consumables
-* Add character's move animation
-* Integrate a pathfinder
-* Add character actions
+[See the projects section](https://github.com/rootasjey/cycles-system/projects)
 
 ## Development
 

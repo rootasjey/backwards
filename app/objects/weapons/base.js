@@ -1,3 +1,7 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~
+// WEAPON BASE STRUCTURE
+// ~~~~~~~~~~~~~~~~~~~~~~~~
+
 /**
  * Weapon base structure.
  * @param {Object} state Initial weapon's state.
@@ -11,18 +15,28 @@ export const baseWeapon = (state = {}) => {
     /**
      * Accuracy (in %).
      */
-    accuracy: 70,
+    accuracy: 0,
 
     /**
      * Damage per hit.
      */
-    atk: 1,
+    atk: 0,
 
     /**
-     * Critical hit (in %).
-     * Critical hit does x2 damage.
+     * How expensive the weapon is.
      */
-    criticalHit: 5,
+    cost: 0,
+
+    /**
+     * Critical rate (in %).
+     * Critical rate does x3 damage.
+     */
+    criticalRate: 0,
+
+    /**
+     * Weapon's damage type (physical, magic, staff).
+     */
+    damageType: '',
 
     /**
      * Illustration.
@@ -45,15 +59,29 @@ export const baseWeapon = (state = {}) => {
     range: 1,
 
     /**
-     * Affects how many time the weapon can hit an opponent in a fight,
-     * and the weilder's dodge probability.
+     * Weapon's rank from E, D, C, B, A, S.
+     * The character must have a weapon rank at or higher
+     * than the weapon to use it in battle.
      */
-    speed: 10,
+    rank: '',
 
     /**
-     * Type, e.g.: sword, axe, spear, magic
+     * Type (axe, sword, bow, ...).
      */
-    type: ''
+    type: '',
+
+    /**
+     * Weapon durability.
+     * Represent the amount of time a weapon can be used before it breaks.
+     */
+    usage: 45,
+
+
+    /**
+     * Affects how easy it is to use.
+     * Impact character's speed, dodge.
+     */
+    weight: 1
   };
 
   const mergedState = Object.assign(initialState, state);
