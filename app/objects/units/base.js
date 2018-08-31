@@ -1,5 +1,5 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~
-// CHARACTER BASE STRUCTURE
+// UNIT BASE STRUCTURE
 // ~~~~~~~~~~~~~~~~~~~~~~~~
 
 import {
@@ -10,10 +10,10 @@ import {
 } from '../weapons/const';
 
 /**
- * Character base structure.
- * @param {Object} state Character statistics.
+ * Unit base structure.
+ * @param {Object} state Unit statistics.
  */
-export const baseCharacter = (state = {}) => {
+export const baseUnit = (state = {}) => {
   // ~~~~~~~~~~~~~~~~~~~
   // Internal Properties
   // ~~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,7 @@ export const baseCharacter = (state = {}) => {
     // ~~~~~~~~~~~~~~~
 
     /**
-     * How sturdly this character is.
+     * How sturdly this unit is.
      * Affects resistance for special types of damage (poisons, illness).
      * Used to determine if this unit can save another.
      */
@@ -62,7 +62,7 @@ export const baseCharacter = (state = {}) => {
     skill: 0,
 
     /**
-     * Affects the number of strikes the character can make,
+     * Affects the number of strikes the unit can make,
      * alongside her/his hability to evade a foe attack.
      */
     speed: 1,
@@ -73,7 +73,7 @@ export const baseCharacter = (state = {}) => {
     strength: 0,
 
     /**
-     * The character must have a rank at or higher than
+     * The unit must have a rank at or higher than
      * a weapon rank to us it in battle.
      */
     weaponRank: {},
@@ -83,7 +83,7 @@ export const baseCharacter = (state = {}) => {
     // ~~~~~~~~~~~~
 
     /**
-     * Character's class.
+     * Unit's class.
      */
     class: '',
 
@@ -95,10 +95,10 @@ export const baseCharacter = (state = {}) => {
     /**
      * Uniq identifier.
      */
-    id: 0,
+    id: -1,
 
     /**
-     * Items warried by this character.
+     * Items warried by this unit.
      */
     items: [],
 
@@ -108,28 +108,28 @@ export const baseCharacter = (state = {}) => {
     level: 1,
 
     /**
-     * Max items this character can carry.
+     * Max items this unit can carry.
      */
     maxItems: 5,
 
     /**
-     * Amount of cells the character can move to.
+     * Amount of cells the unit can move to.
      */
     move: 4,
 
     /**
-     * Character's name.
+     * Unit's name.
      */
     name: 'none',
 
     /**
      * Current weapon wield.
-     * This weapon will be used if the character attacks.
+     * This weapon will be used if the unit attacks.
      */
     weapon: {},
 
     /**
-     * Weapons' types the character can only uses.
+     * Weapons' types the unit can only uses.
      */
     weaponsAllowed: {},
   };
@@ -159,19 +159,23 @@ export const baseCharacter = (state = {}) => {
     },
 
     /**
-     * Returns the character's attack value.
+     * Returns the unit's attack value.
      * If an opponent is provided, it'll return the value against this opponent.
-     * @param {Object} opponent Character to get the value against.
+     * @param {Object} opponent unit to get the value against.
      * @returns {Number} Damages value.
      */
     getAtk(opponent = {}) {
       const weapon = this.getPropertyValue('weapon');
       const { magic, strength } = this.getFightingStats();
-      if (weapon.atk < 1) return 0; // no weapon wield
+
+      if (!weapon.atk) return 0; // no weapon wield
 
       let opponentDamageReduction = 0;
       let totalAtk = 0;
       let weaponAtk = weapon.atk;
+
+      // No opponent => pure damage
+      if (!opponent.getPropertyValue) return totalAtk;
 
       if (weapon.damageType === WEAPON_DAMAGE_TYPES.physical) {
         totalAtk = weaponAtk + strength;
@@ -182,9 +186,6 @@ export const baseCharacter = (state = {}) => {
         opponentDamageReduction = opponent.getPropertyValue('resistance');
       }
 
-      // No opponent => pure damage
-      if (!opponent.getPropertyValue) return totalAtk;
-
       // Opponent => damage reduction
       totalAtk = totalAtk - opponentDamageReduction;
 
@@ -194,7 +195,7 @@ export const baseCharacter = (state = {}) => {
     /**
      * Return hit value.
      * If an opponent is provided, it'll return the value against this opponent.
-     * @param {Object} opponent Character get value against.
+     * @param {Object} opponent unit get value against.
      * @returns {Number} Hit probability.
      */
     getHitRate() {
@@ -271,7 +272,7 @@ export const baseCharacter = (state = {}) => {
     },
 
     /**
-     * Return character's attack range.
+     * Return unit's attack range.
      * @returns {Number} Range value.
      */
     getRange() {
@@ -333,13 +334,13 @@ export const baseCharacter = (state = {}) => {
      * Return true if the weapon can be equipped. False otherwise.
      * @param {Object} weapon The weapon to equip.
      */
-    canBeEquipped (weapon = {}) {
-      // 1. Check if the character is the current owner.
+    canEquip (weapon = {}) {
+      // 1. Check if the weapon belongs to the unit.
       if (weapon.getPropertyValue('ownerId') !== this.getPropertyValue('id')) {
         return false;
       }
 
-      // 2. Check if the character can wield it.
+      // 2. Check if the unit can wield it.
       if (mergedState.weaponsAllowed.indexOf(weapon.type) === -1) {
         return false;
       }
@@ -348,11 +349,11 @@ export const baseCharacter = (state = {}) => {
     },
 
     /**
-     * Equip a weapon available in the character's items.
-     * @param {Object} weapon Weapon to equip the character with.
+     * Equip a weapon available in the unit's items.
+     * @param {Object} weapon Weapon to equip the unit with.
      */
     equip (weapon = {}) {
-      if (this.canBeEquipped(weapon)) {
+      if (this.canEquip(weapon)) {
         mergedState.weapon = weapon;
       }
 
@@ -409,13 +410,13 @@ export const baseCharacter = (state = {}) => {
     // ~~~~~~~~
 
     /**
-     * Increment a character's statistic with the passed value.
+     * Increment a unit's statistic with the passed value.
      * @param {Object} stats Contains statistic name and value to add.
      */
     incrementStats(stats) {
       const { name, value } = stats;
 
-      if (!name || !value) return;
+      if (!name || !value) return this;
 
       if (mergedState.hasOwnProperty(name)) {
         mergedState[name] += value;

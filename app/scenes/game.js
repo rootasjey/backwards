@@ -1,8 +1,6 @@
 import CONST from 'data/const';
 const Rectangle = Phaser.Geom.Rectangle;
 
-import { createCharacter } from '../objects/characters/createCharacter';
-
 export default class Game extends Phaser.Scene {
   /**
    *  Game scene containing the main game logic
@@ -89,8 +87,6 @@ export default class Game extends Phaser.Scene {
     // this.marker.lineStyle(1, 0xffffff, 1);
     // this.marker.strokeRect(0, 0, this.map.tileWidth * this.scaleFactor, this.map.tileHeight * this.scaleFactor);
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
-
-    const char = createCharacter({class: 'trainee'});
   }
 
   /**

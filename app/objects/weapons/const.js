@@ -14,11 +14,17 @@ export const types = {
   sword       : 'sword',
 };
 
-export const physicalSecondTypes = {
+/**
+ * Physical weapon types
+ */
+export const physicalTypes = {
   iron  : 'iron',
   steel : 'steel'
 };
 
+/**
+ * Magic weapon types
+ */
 export const magicTypes = {
   anima : 'anima',
   dark  : 'dark',

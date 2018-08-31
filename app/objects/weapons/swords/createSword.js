@@ -1,9 +1,9 @@
-import { physicalSecondTypes } from '../const';
+import { physicalTypes } from '../const';
 import { ironSword } from './ironSword';
 
 export const createSword = (stats = {}) => {
   switch (stats.secondType) {
-  case physicalSecondTypes.iron:
+  case physicalTypes.iron:
     return ironSword(stats);
 
   default:

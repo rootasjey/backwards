@@ -46,7 +46,7 @@ export const baseWeapon = (state = {}) => {
     /**
      * Character's id to which this weapon belongs to.
      */
-    ownerId: 0,
+    ownerId: -1,
 
     /**
      * Range to hit opponents (in tile measurement).

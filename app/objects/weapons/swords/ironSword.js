@@ -1,5 +1,5 @@
 import { baseSword } from './base';
-import { physicalSecondTypes, rank } from '../const';
+import { physicalTypes, rank } from '../const';
 
 export const ironSword = (stats = {}) => {
   const initialStats = {
@@ -8,7 +8,7 @@ export const ironSword = (stats = {}) => {
     cost          : 1000,
     criticalRate  : 5,
     rank          : rank.E,
-    secondType    : physicalSecondTypes.iron,
+    secondType    : physicalTypes.iron,
     usage         : 45,
     weight        : 5 // TODO: check
   };
