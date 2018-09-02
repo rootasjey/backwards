@@ -1,0 +1,57 @@
+{
+  "Ophie": {
+    "class": "Myrmidon",
+    "desc": "A strong-hearted renegade who often acts before he thinks.",
+    "gender": "2",
+    "inventory":
+    [
+      {
+        "name": "Iron Sword",
+        "usage": 45
+      }
+    ],
+    "level": 1,
+    "name": "Ophie",
+    "skills": {},
+    "stats": {
+      "base": {
+        "hp": 12,
+        "str": 3,
+        "mag": 1,
+        "skl": 5,
+        "spd": 7,
+        "lck": 2,
+        "def": 1,
+        "res": 1
+      },
+      "growth": {
+        "hp": 105,
+        "str": 55,
+        "mag": 1,
+        "skl": 5,
+        "spd": 7,
+        "lck": 2,
+        "def": 1,
+        "res": 1
+      }
+    },
+    "wexp": {
+      "anima": 0,
+      "axe": 0,
+      "bows": 0,
+      "dark": 0,
+      "lance": 0,
+      "light": 0,
+      "sword": 8
+    },
+    "wrank": {
+      "anima": "",
+      "axe": "",
+      "bows": "",
+      "dark": "",
+      "lance": "",
+      "light": "",
+      "sword": "D"
+    }
+  }
+}

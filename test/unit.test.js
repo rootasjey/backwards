@@ -10,7 +10,7 @@ import { createUnit } from '../app/objects/units/createUnit';
 import { physicalTypes, types as WEAPON_TYPES } from '../app/objects/items/weapons/const';
 import { createWeapon } from '../app/objects/items/weapons/createWeapon';
 
-test('A character should have some default values', (t) => {
+test('An unit should have some default values', (t) => {
   const trainee = createUnit({ class: UNIT_TYPES.trainee, id: 0 });
   const traineeStats = trainee.getFightingStats();
 

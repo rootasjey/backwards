@@ -1,0 +1,55 @@
+{
+  "Myrmidon": {
+    "desc": "Swordfighters with superior speed and skill.",
+    "move": 4,
+    "name": "Myrmidon",
+    "promotion": {
+      "from": "",
+      "to": "Swordmaster"
+    },
+    "shortname": "Myrm.",
+    "skills": {},
+    "stats": {
+      "base": {
+        "hp": 11,
+        "str": 3,
+        "mag": 1,
+        "skl": 5,
+        "spd": 7,
+        "lck": 2,
+        "def": 1,
+        "res": 1
+      },
+      "growth": {
+        "hp": 105,
+        "str": 55,
+        "mag": 1,
+        "skl": 5,
+        "spd": 7,
+        "lck": 2,
+        "def": 1,
+        "res": 1
+      },
+      "max": {
+        "hp": 105,
+        "str": 55,
+        "mag": 1,
+        "skl": 5,
+        "spd": 7,
+        "lck": 2,
+        "def": 1,
+        "res": 1
+      }
+    },
+    "tier": 1,
+    "wexpGain": {
+      "anima": 0,
+      "axe": 0,
+      "bows": 0,
+      "dark": 0,
+      "lance": 0,
+      "light": 0,
+      "sword": 1
+    }
+  }
+}

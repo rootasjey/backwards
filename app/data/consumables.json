@@ -1,0 +1,14 @@
+{
+  "Potion": {
+    "desc": "Restores 20 HP.",
+    "effect": {
+      "target": "heal",
+      "value": 20
+    },
+    "name": "Potion",
+    "range": 0,
+    "type": "consumable",
+    "usage": 3,
+    "value": 100
+  }
+}

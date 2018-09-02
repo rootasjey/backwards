@@ -1,0 +1,15 @@
+{
+  "Iron Sword": {
+    "atk": 3,
+    "damageType": "physical",
+    "desc": "",
+    "hit": 90,
+    "name": "Iron Sword",
+    "range": 1,
+    "rank": "E",
+    "type": "sword",
+    "usage": 45,
+    "value": 10,
+    "weight": 3
+  }
+}
