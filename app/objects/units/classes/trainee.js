@@ -1,5 +1,5 @@
 import { baseUnit } from '../base';
-import { types as WEAPON_TYPES } from '../../weapons/const';
+import { types as WEAPON_TYPES, rank } from '../../items/weapons/const';
 
 /**
  * Create a new Trainee unit.
@@ -14,7 +14,9 @@ export const trainee = (stats = {}) => {
     luck          : 0,
     resistance    : 1,
     strength      : 1,
-    weaponsAllowed: { sword: WEAPON_TYPES.sword }
+    weaponsAllowed: {
+      [WEAPON_TYPES.sword]: {exp: 0, rank: rank.E}
+    }
   };
 
   return baseUnit(Object.assign({}, initialStats, stats));

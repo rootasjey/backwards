@@ -1,11 +1,10 @@
 import { types } from './const';
 import { createSword } from './swords/createSword';
 
-export const createWeapon = (stats = {}) => {
-  switch (stats.type) {
+export const createWeapon = (state = {}) => {
+  switch (state.type) {
   case types.sword:
-    return createSword(stats);
-
+    return createSword(state);
   default:
     break;
   }

@@ -1,7 +1,7 @@
 import { baseSword } from './base';
 import { physicalTypes, rank } from '../const';
 
-export const ironSword = (stats = {}) => {
+export const ironSword = (state = {}) => {
   const initialStats = {
     accuracy      : 70,
     atk           : 5,
@@ -13,5 +13,5 @@ export const ironSword = (stats = {}) => {
     weight        : 5 // TODO: check
   };
 
-  return baseSword(Object.assign({}, initialStats, stats));
+  return baseSword(Object.assign({}, initialStats, state));
 };

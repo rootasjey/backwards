@@ -4,8 +4,8 @@
 
 import test from 'ava';
 
-import { physicalTypes, types } from '../app/objects/weapons/const';
-import { createWeapon } from '../app/objects/weapons/createWeapon';
+import { physicalTypes, types } from '../app/objects/items/weapons/const';
+import { createWeapon } from '../app/objects/items/weapons/createWeapon';
 
 test('A weapon of type sword should have some default values.', (t) => {
   const sword = createWeapon({

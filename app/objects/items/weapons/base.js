@@ -44,6 +44,16 @@ export const baseWeapon = (state = {}) => {
     imagePath: '',
 
     /**
+     * Define which type of object it is.
+     */
+    objectTypeId: -1,
+
+    /**
+     * inventory order in the items list.
+     */
+    order: -1,
+
+    /**
      * Character's id to which this weapon belongs to.
      */
     ownerId: -1,
@@ -86,31 +96,25 @@ export const baseWeapon = (state = {}) => {
     weight: 1
   };
 
-  const mergedState = Object.assign(initialState, state);
+  const internalState = Object.assign(initialState, state);
 
   // ~~~~~~~~~~~~~~~
   // Exposed object
   // ~~~~~~~~~~~~~~~
 
   return {
-    /**
-     * Change to whom belong this weapon.
-     * @param {Object} newOwner New character owner.
-     */
-    changeOwner (newOwner) {
-      this.setPropertyValue('ownerId', newOwner.id);
+    changeOwner(ownerId = -1) {
+      this.setPropertyValue('ownerId', ownerId);
+      return this;
     },
+    // changeOwner: ownerId => internalState.changeOwner(ownerId),
 
     /**
      * Return the property's value.
      * @param {String} prop Property to get value of.
      */
     getPropertyValue(prop = '') {
-      if (mergedState.hasOwnProperty(prop)) {
-        return mergedState[prop];
-      }
-
-      return null;
+      return internalState[prop];
     },
 
     /**
@@ -119,10 +123,7 @@ export const baseWeapon = (state = {}) => {
      * @param {String} value Value to set to the property.
      */
     setPropertyValue(prop = '', value = '') {
-      if (mergedState.hasOwnProperty(prop)) {
-        mergedState[prop] = value;
-      }
-
+      internalState[prop] = value;
       return this;
     }
   };
