@@ -8,24 +8,14 @@ export const createInventory = ({ items = [], unit = {} }) => {
   const internalState = {
     items,
     maxItems: 5,
-    ownerId: unit.getPropertyValue('id')
+    ownerId: unit.get('id')
   };
 
   return {
     add(item = {}) {
-      // item.setPropertyValue('ownerId', 31);
       if (internalState.items.length >= internalState.maxItems) {
         return this;
       }
-
-      if (item.getPropertyValue('ownerId') === internalState.ownerId) {
-        return this;
-      }
-
-      item.changeOwner(internalState.ownerId);
-      // item.ownerId = internalState.ownerId;
-      // item.ownerId = 0;
-      item.setPropertyValue('order', this.getSize());
 
       internalState.items.push(item);
 
@@ -36,7 +26,7 @@ export const createInventory = ({ items = [], unit = {} }) => {
      * Return an array of items.
      * @returns {Array} Array of all items.
      */
-    getAllItems() {
+    getItems() {
       return items;
     },
 
@@ -61,15 +51,10 @@ export const createInventory = ({ items = [], unit = {} }) => {
      * @param {Object} item Item to remove.
      */
     remove(item = {}) {
-      const ownerId = item.getPropertyValue('ownerId');
-      const order = item.getPropertyValue('order');
-
-      if (ownerId !== this.getPropertyValue('ownerId')) return this;
-      if (order === -1) return this;
-
-      this.getAllItems().splice(order, 1);
-
-      item.changeOwner(-1);
+      this.getItems()
+        .some((currItem, index) => {
+          if (currItem === item) this.getItems().splice(index, 1);
+        });
 
       return this;
     }

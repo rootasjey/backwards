@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
- <tileset firstgid="1" name="roguelikeSheet_transparent" tilewidth="16" tileheight="16" spacing="3" margin="1" tilecount="1767" columns="57">
-  <image source="roguelikeSheet_transparent.png" width="1082" height="588"/>
+ <tileset firstgid="1" name="terrain" tilewidth="16" tileheight="16" spacing="3" margin="1" tilecount="1767" columns="57">
+  <image source="terrain.png" width="1082" height="588"/>
   <tile id="1698">
    <properties>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="1768" name="roguelikeChar_transparent" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
-  <image source="roguelikeChar_transparent.png" width="918" height="203"/>
+ <tileset firstgid="1768" name="characters" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
+  <image source="characters.png" width="918" height="203"/>
   <tile id="541">
    <properties>
     <property name="atk" type="int" value="3"/>

@@ -1,19 +1,30 @@
-// ~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT BASE STRUCTURE
-// ~~~~~~~~~~~~~~~~~~~~~~~~
-
 import {
   damageTypes as WEAPON_DAMAGE_TYPES,
   rank as WEAPON_RANK,
   types as WEAPON_TYPES
 
-} from '../items/weapons/const';
+} from './const';
+
+import { createInventory } from './createInventory';
+
+/**
+ * Create a new character according to an initial stats.
+ * The initial stats will help to determine which character class to choose.
+ * @param {Object} stats Initial or previous character's stats.
+ */
+export const createUnit = (stats) => {
+  const unit = baseUnit(stats);
+
+  unit.inventory = createInventory({ items: stats.inventory, unit });
+
+  return unit;
+};
 
 /**
  * Unit base structure.
  * @param {Object} state Unit statistics.
  */
-export const baseUnit = (state = {}) => {
+const baseUnit = (state = {}) => {
   // ~~~~~~~~~~~~~~~~~~~
   // Internal Properties
   // ~~~~~~~~~~~~~~~~~~~
@@ -29,12 +40,12 @@ export const baseUnit = (state = {}) => {
      * Affects resistance for special types of damage (poisons, illness).
      * Used to determine if this unit can save another.
      */
-    constitution: 0,
+    cons: 0,
 
     /**
      * Decrease physical damage taken.
      */
-    defense: 0,
+    def: 0,
 
     /**
      * Health Points.
@@ -44,39 +55,44 @@ export const baseUnit = (state = {}) => {
     /**
      * Magical damage.
      */
-    magic: 0,
+    mag: 0,
 
     /**
      * Affects critical hit.
      */
-    luck: 0,
+    lck: 0,
 
     /**
      * Decrease magical damage taken.
      */
-    resistance: 0,
+    res: 0,
 
     /**
      * Affects unit's rate and critical hit rate.
      */
-    skill: 0,
+    skl: 0,
 
     /**
      * Affects the number of strikes the unit can make,
      * alongside her/his hability to evade a foe attack.
      */
-    speed: 1,
+    spd: 1,
 
     /**
      * Physical damage.
      */
-    strength: 0,
+    str: 0,
+
+    /**
+     * Weapons' exp
+     */
+    wexp: {},
 
     /**
      * The unit must have a rank at or higher than
      * a weapon rank to us it in battle.
      */
-    weaponRank: {},
+    wrank: {},
 
     // ~~~~~~~~~~~~
     // Properties
@@ -95,7 +111,7 @@ export const baseUnit = (state = {}) => {
     /**
      * Uniq identifier.
      */
-    id: -1,
+    id: state.name,
 
     /**
      * Unit's inventory.
@@ -142,12 +158,12 @@ export const baseUnit = (state = {}) => {
      */
     canEquip(weapon = {}) {
       // 1. Check if the weapon belongs to the unit.
-      if (weapon.getPropertyValue('ownerId') !== this.getPropertyValue('id')) {
-        return false;
-      }
+      // if (weapon.getPropertyValue('ownerId') !== this.get('id')) {
+      //   return false;
+      // }
 
       // 2. Check if the unit can wield it.
-      const weaponsAllowed = this.getPropertyValue('weaponsAllowed');
+      const weaponsAllowed = this.get('weaponsAllowed');
 
       return weaponsAllowed[weapon.getPropertyValue('type')] ?
         true : false;
@@ -159,7 +175,7 @@ export const baseUnit = (state = {}) => {
      */
     equip(weapon = {}) {
       if (this.canEquip(weapon)) {
-        this.setPropertyValue('weapon', weapon);
+        this.set('weapon', weapon);
       }
 
       return this;
@@ -169,12 +185,12 @@ export const baseUnit = (state = {}) => {
      * Return an object containing battle stats values.
      * @param {Object} opponent Opponnent to get the values against.
      */
-    getBattleStats (opponent = {}) {
+    getBattleStats(opponent = {}) {
       return {
-        atk         : this.getAtk(opponent),
-        criticalHit : this.getCriticalHit(),
-        evade       : this.getEvade(),
-        hit         : this.getHitRate(opponent)
+        atk: this.getAtk(opponent),
+        criticalHit: this.getCriticalHit(),
+        evade: this.getEvade(),
+        hit: this.getHitRate(opponent)
       };
     },
 
@@ -185,8 +201,8 @@ export const baseUnit = (state = {}) => {
      * @returns {Number} Damages value.
      */
     getAtk(opponent = {}) {
-      const weapon = this.getPropertyValue('weapon');
-      const { magic, strength } = this.getFightingStats();
+      const weapon = this.get('weapon');
+      const { mag, str } = this.getFightingStats();
 
       if (!weapon.getPropertyValue) return 0; // no weapon wield
 
@@ -195,16 +211,16 @@ export const baseUnit = (state = {}) => {
       let weaponAtk = weapon.getPropertyValue('atk');
 
       if (weapon.getPropertyValue('damageType') === WEAPON_DAMAGE_TYPES.physical) {
-        totalAtk = weaponAtk + strength;
+        totalAtk = weaponAtk + str;
 
         opponentDamageReduction = opponent.getPropertyValue ?
-          opponent.getPropertyValue('defense') : 0;
+          opponent.getPropertyValue('def') : 0;
 
       } else {
-        totalAtk = weaponAtk + magic;
+        totalAtk = weaponAtk + mag;
 
         opponentDamageReduction = opponent.getPropertyValue ?
-          opponent.getPropertyValue('resistance') : 0;
+          opponent.getPropertyValue('res') : 0;
       }
 
       // Opponent => damage reduction
@@ -218,14 +234,14 @@ export const baseUnit = (state = {}) => {
      * if the unit's value is >= 4 points than the enemy.
      */
     getAtkSpeed() {
-      const { constitution, speed } = this;
-      const { weight } = this.getPropertyValue('weapon');
+      const { cons, spd } = this;
+      const { weight } = this.get('weapon');
 
       if (typeof weight === 'undefined') return 0;
 
-      const burden = Math.max((weight - constitution), 0);
+      const burden = Math.max((weight - cons), 0);
 
-      return speed - burden;
+      return spd - burden;
     },
 
     /**
@@ -237,16 +253,16 @@ export const baseUnit = (state = {}) => {
     getHitRate() {
       if (!mergedState.weapon.accuracy) return 0;
 
-      const { luck, magic, skill } = this.getFightingStats();
-      const { accuracy, type } = this.getPropertyValue('weapon');
+      const { lck, mag, skl } = this.getFightingStats();
+      const { accuracy, type } = this.get('weapon');
 
       if (type === WEAPON_TYPES.staff) {
-        return (magic * 5) + skill + 30;
+        return (mag * 5) + skl + 30;
       }
 
       const weaponRankBonus = this.getWeaponRankBonus()['accuracy'];
 
-      return (skill * 2) + (luck * 0.5) + weaponRankBonus + accuracy;
+      return (skl * 2) + (lck * 0.5) + weaponRankBonus + accuracy;
     },
 
     /**
@@ -256,15 +272,15 @@ export const baseUnit = (state = {}) => {
      * http://fireemblem.wikia.com/wiki/Critical_hit
      */
     getCriticalHit(opponent = {}) {
-      const skill = this.getPropertyValue('skill');
-      const { criticalRate, rank } = this.getPropertyValue('weapon');
-      const ennemyLuck = opponent.getPropertyValue('luck');
+      const skl = this.get('skl');
+      const { criticalRate, rank } = this.get('weapon');
+      const ennemyLuck = opponent.getPropertyValue('lck');
 
       let sRankBonus = 0;
 
       if (rank === WEAPON_RANK.S) sRankBonus = 5;
 
-      return ((skill / 2) + sRankBonus + criticalRate) - ennemyLuck;
+      return ((skl / 2) + sRankBonus + criticalRate) - ennemyLuck;
     },
 
     /**
@@ -274,9 +290,9 @@ export const baseUnit = (state = {}) => {
      */
     getEvade() {
       const atkSpeed = this.getAtkSpeed() * 2;
-      const luck = this.getPropertyValue('luck');
+      const lck = this.get('lck');
 
-      return atkSpeed + luck;
+      return atkSpeed + lck;
     },
 
     /**
@@ -284,27 +300,27 @@ export const baseUnit = (state = {}) => {
      */
     getFightingStats() {
       const {
-        constitution,
-        defense,
+        cons,
+        def,
         hp,
-        magic,
-        luck,
-        resistance,
-        skill,
-        speed,
-        strength
+        mag,
+        lck,
+        res,
+        skl,
+        spd,
+        str
       } = mergedState;
 
       return {
-        constitution,
-        defense,
+        cons,
+        def,
         hp,
-        magic,
-        luck,
-        resistance,
-        skill,
-        speed,
-        strength
+        mag,
+        lck,
+        res,
+        skl,
+        spd,
+        str
       };
     },
 
@@ -312,7 +328,7 @@ export const baseUnit = (state = {}) => {
      * Return the property's value.
      * @param {String} prop Property to get value of.
      */
-    getPropertyValue(prop = '') {
+    get(prop = '') {
       return mergedState[prop];
     },
 
@@ -321,13 +337,13 @@ export const baseUnit = (state = {}) => {
      * @returns {Number} Range value.
      */
     getRange() {
-      const { range } = this.getPropertyValue('weapon');
+      const { range } = this.get('weapon');
 
       return Number.isInteger(range) ? range : 0;
     },
 
     getWeaponRankBonus() {
-      const { rank, type } = this.getPropertyValue('weapon');
+      const { rank, type } = this.get('weapon');
 
       let bonus = {
         accuracy: 0,
@@ -388,7 +404,7 @@ export const baseUnit = (state = {}) => {
      * Increment a unit's statistic with the passed value.
      * @param {Object} stats Contains statistic name and value to add.
      */
-    incrementStats(stats) {
+    increment(stats) {
       const { name, value } = stats;
 
       if (!name || !value) return this;
@@ -405,7 +421,7 @@ export const baseUnit = (state = {}) => {
      * @param {String} prop Property name
      * @param {*} value Value to set to the property.
      */
-    setPropertyValue(prop = '', value) {
+    set(prop = '', value) {
       mergedState[prop] = value;
 
       return this;

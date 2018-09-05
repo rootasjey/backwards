@@ -36,9 +36,14 @@ export default class Game extends Phaser.Scene {
     this.load.on('complete', this.onLoadComplete, this);
     this.createProgressBar();
 
-    this.load.image('mapTileset', 'roguelikeSheet_transparent.png');
-    this.load.image('charactersTileset', 'roguelikeChar_transparent.png');
-    this.load.tilemapTiledJSON('sampleMap1', 'sampleMap1.json');
+    this.load.json('consummables', './data/consumables.json');
+    this.load.json('heroes', './data/heroes.json');
+    this.load.json('units', './data/units.json');
+    this.load.json('weapons', './data/weapons.json');
+
+    this.load.image('mapTileset', './level0/terrain.png');
+    this.load.image('charactersTileset', './level0/characters.png');
+    this.load.tilemapTiledJSON('level0', './level0/level0.json');
   }
 
   /**
@@ -49,15 +54,11 @@ export default class Game extends Phaser.Scene {
    *  @param {object} data Initialization parameters.
    */
   create(/* data */) {
-    // Build Map
-    // ---------
-    const map = this.make.tilemap({ key: 'sampleMap1' });
+    const map = this.make.tilemap({ key: 'level0' });
 
-    const mapTilesset = map.addTilesetImage(
-      'roguelikeSheet_transparent', 'mapTileset');
+    const mapTilesset = map.addTilesetImage('terrain', 'mapTileset');
 
-    const charactersTileset = map.addTilesetImage(
-      'roguelikeChar_transparent', 'charactersTileset');
+    const charactersTileset = map.addTilesetImage('characters', 'charactersTileset');
 
     const floor = map.createStaticLayer('Floor', mapTilesset);
     const carpet = map.createStaticLayer('Carpet', mapTilesset);
@@ -81,12 +82,10 @@ export default class Game extends Phaser.Scene {
     this.layerCharacters.setDisplaySize(window.innerHeight, window.innerWidth);
     this.layerCursor.setDisplaySize(window.innerHeight, window.innerWidth);
 
-    // // MARKER
-    // // ------
-    // this.marker = this.add.graphics();
-    // this.marker.lineStyle(1, 0xffffff, 1);
-    // this.marker.strokeRect(0, 0, this.map.tileWidth * this.scaleFactor, this.map.tileHeight * this.scaleFactor);
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
+
+    // char test
+    // const unit = createUnit(this.cache.json.get('heroes').Ophie);
   }
 
   /**
