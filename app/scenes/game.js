@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
 
     this.load.json('consummables', './data/consumables.json');
     this.load.json('heroes', './data/heroes.json');
-    this.load.json('units', './data/units.json');
+    this.load.json('units', './data/unitsClasses.json');
     this.load.json('weapons', './data/weapons.json');
 
     this.load.image('mapTileset', './level0/terrain.png');
@@ -85,7 +85,7 @@ export default class Game extends Phaser.Scene {
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
 
     // char test
-    // const unit = createUnit(this.cache.json.get('heroes').Ophie);
+    // const unit = createUnit(this.cache.json.get('heroes').Emilie);
   }
 
   /**

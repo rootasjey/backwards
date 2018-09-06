@@ -1,8 +1,8 @@
 {
-  "Ophie": {
+  "emilie": {
     "class": "Myrmidon",
-    "desc": "A strong-hearted renegade who often acts before he thinks.",
-    "gender": "2",
+    "desc": "A strong-hearted renegade who often acts before she thinks.",
+    "gender": "f",
     "inventory":
     [
       {
@@ -11,28 +11,32 @@
       }
     ],
     "level": 1,
-    "name": "Ophie",
+    "name": "Emilie",
     "skills": {},
     "stats": {
       "base": {
+        "cons": 2,
+        "def": 1,
         "hp": 12,
-        "str": 3,
+        "lck": 2,
         "mag": 1,
+        "move": 4,
+        "res": 1,
         "skl": 5,
         "spd": 7,
-        "lck": 2,
-        "def": 1,
-        "res": 1
+        "str": 3
       },
       "growth": {
+        "cons": 2,
+        "def": 1,
         "hp": 105,
-        "str": 55,
+        "lck": 2,
         "mag": 1,
+        "move": 4,
+        "res": 1,
         "skl": 5,
         "spd": 7,
-        "lck": 2,
-        "def": 1,
-        "res": 1
+        "str": 55
       }
     },
     "wexp": {

@@ -1,27 +1,24 @@
 import test from 'ava';
 
 import heroes from '../app/static/assets/data/heroes.json';
+import units from '../app/static/assets/data/unitsClasses.json';
 
 import weapons from '../app/static/assets/data/weapons.json';
 
-import { createUnit } from '../app/objects/createUnit';
+import { unitsFactory } from '../app/objects/unitsFactory';
 
 test('An unit should have some default values', (t) => {
-  const ophie = createUnit(heroes.Ophie);
-  const ophieStats = ophie.getFightingStats();
+  const createUnit = unitsFactory({dataHeroes: heroes, dataUnits: units});
+  const emilie = createUnit('emilie');
 
   // Stats value are number
-  for (const stat in ophieStats) {
-    if (ophieStats.hasOwnProperty(stat)) {
-      const value = ophieStats[stat];
-      t.true(Number.isInteger(value));
-    }
-  }
+  Object.entries(emilie.getFightingStats())
+    .map(([, value]) => { Number.isInteger(value); });
 
-  const oldSpeed = ophie.get('spd');
+  const oldSpeed = emilie.get('spd');
 
   // Test increment stats function.
-  const speedIncr = ophie
+  const speedIncr = emilie
     .increment({ name: 'spd', value: 1})
     .get('spd');
 
@@ -33,8 +30,8 @@ test('An unit should have some default values', (t) => {
   // ----------------------
   // Trainee has currently no waepon
   // -------------------------------
-  t.true(ophie.getAtk() === 0);
-  t.true(ophie.getRange() === 0);
+  t.true(emilie.getAtk() === 0);
+  t.true(emilie.getRange() === 0);
 
   // ..............
   // --------------
@@ -42,11 +39,11 @@ test('An unit should have some default values', (t) => {
   // --------------
   const sword = Object.assign({}, weapons['Iron Sword']);
 
-  const oldSize = ophie.inventory.getSize();
+  const oldSize = emilie.inventory.getSize();
 
-  ophie.inventory.add(sword);
+  emilie.inventory.add(sword);
 
-  t.true(ophie.inventory.getSize() > oldSize);
+  t.true(emilie.inventory.getSize() > oldSize);
 
   // .................
   // -----------------

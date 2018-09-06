@@ -12,19 +12,33 @@ import { createInventory } from './createInventory';
  * The initial stats will help to determine which character class to choose.
  * @param {Object} stats Initial or previous character's stats.
  */
-export const createUnit = (stats) => {
-  const unit = baseUnit(stats);
+export const unitsFactory = ({dataHeroes = {}, dataUnits = {}}) => {
+  return (hero = '') => {
+    let data = {};
 
-  unit.inventory = createInventory({ items: stats.inventory, unit });
+    hero = hero.toLowerCase();
 
-  return unit;
+    if (dataHeroes[hero]) {
+      data = Object.assign({}, dataHeroes[hero]);
+      data = Object.assign({}, dataUnits[data.class], data);
+
+    } else { data = Object.assign({}, dataUnits[hero]); }
+
+    Object.assign(data, data.stats.base);
+
+    const unit = createUnit(data);
+
+    unit.inventory = createInventory({ items: data.inventory, unit });
+
+    return unit;
+  };
 };
 
 /**
  * Unit base structure.
  * @param {Object} state Unit statistics.
  */
-const baseUnit = (state = {}) => {
+const createUnit = (state = {}) => {
   // ~~~~~~~~~~~~~~~~~~~
   // Internal Properties
   // ~~~~~~~~~~~~~~~~~~~

@@ -1,7 +1,6 @@
 {
   "Myrmidon": {
     "desc": "Swordfighters with superior speed and skill.",
-    "move": 4,
     "name": "Myrmidon",
     "promotion": {
       "from": "",
@@ -11,34 +10,40 @@
     "skills": {},
     "stats": {
       "base": {
+        "cons": 2,
+        "def": 1,
         "hp": 11,
-        "str": 3,
+        "lck": 2,
         "mag": 1,
+        "move": 4,
+        "res": 1,
         "skl": 5,
         "spd": 7,
-        "lck": 2,
-        "def": 1,
-        "res": 1
+        "str": 3
       },
       "growth": {
+        "cons": 2,
+        "def": 1,
         "hp": 105,
-        "str": 55,
+        "lck": 2,
         "mag": 1,
+        "move": 4,
+        "res": 1,
         "skl": 5,
         "spd": 7,
-        "lck": 2,
-        "def": 1,
-        "res": 1
+        "str": 55
       },
       "max": {
+        "cons": 2,
+        "def": 1,
         "hp": 105,
-        "str": 55,
+        "lck": 2,
         "mag": 1,
+        "move": 4,
+        "res": 1,
         "skl": 5,
         "spd": 7,
-        "lck": 2,
-        "def": 1,
-        "res": 1
+        "str": 55
       }
     },
     "tier": 1,
