@@ -4,6 +4,7 @@
     "damageType": "physical",
     "desc": "",
     "hit": 90,
+    "itemType": "weapon",
     "name": "Iron Sword",
     "range": 1,
     "rank": "E",

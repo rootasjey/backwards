@@ -22,6 +22,10 @@ export const createInventory = ({ items = [], unit = {} }) => {
       return this;
     },
 
+    find () {
+      return items.find(...arguments);
+    },
+
     /**
      * Return an array of items.
      * @returns {Array} Array of all items.

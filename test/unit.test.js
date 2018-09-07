@@ -49,12 +49,16 @@ test('An unit should have some default values', (t) => {
   // -----------------
   // Weapon equip test
   // -----------------
-  // t.true(trainee.canEquip(sword));
+  t.deepEqual(emilie.get('weapon'), {});
 
-  // trainee.equip(sword);
+  const weapon = emilie.inventory
+    .find(element => element.itemType === 'weapon');
 
-  // t.true(sword.getPropertyValue('atk') > 0);
+  t.true(emilie.canEquip(weapon));
 
-  // t.is(trainee.getPropertyValue('weapon'), sword);
-  // t.true(trainee.getAtk() > 0);
+  emilie.equip(weapon);
+
+  t.deepEqual(emilie.get('weapon'), weapon);
+
+  t.true(emilie.getAtk() > 0);
 });
