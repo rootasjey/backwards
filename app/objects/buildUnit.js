@@ -246,7 +246,7 @@ export const buildUnit = (state = {}) => {
     getCriticalHit(opponent = {}) {
       const skl = this.get('skl');
       const { criticalRate, rank } = this.get('weapon');
-      const ennemyLuck = opponent.getPropertyValue('lck');
+      const ennemyLuck = opponent.get('lck');
 
       let sRankBonus = 0;
 
