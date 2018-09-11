@@ -89,6 +89,8 @@ export default class Game extends Phaser.Scene {
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
 
     this.buildUnitOnMap(this.layerCharacters);
+
+    this.handleKeyboard();
   }
 
   buildUnitOnMap(layer = {}) {
@@ -118,7 +120,51 @@ export default class Game extends Phaser.Scene {
     this.handleMouseCursor();
   }
 
+  handleKeyboard() {
+    this.input.keyboard.on('keydown_UP', () => {
+      const { x, y } = this.highlightCursor;
+      const previousY = y - 1;
+
+      if (previousY <= this.layerCursor.layer.y) return;
+
+      this.layerCursor.removeTileAt(x, y);
+      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, x, previousY);
+    });
+
+    this.input.keyboard.on('keydown_DOWN', () => {
+      const { x, y } = this.highlightCursor;
+      const nextY = y + 1;
+
+      if (nextY >= this.layerCursor.layer.height) return;
+
+      this.layerCursor.removeTileAt(x, y);
+      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, x, nextY);
+    });
+
+    this.input.keyboard.on('keydown_LEFT', () => {
+      const { x, y } = this.highlightCursor;
+      const previousX = x - 1;
+
+      if (previousX <= this.layerCursor.layer.x) return;
+
+      this.layerCursor.removeTileAt(x, y);
+      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, previousX, y);
+    });
+
+    this.input.keyboard.on('keydown_RIGHT', () => {
+      const { x, y } = this.highlightCursor;
+      const nextX = x + 1;
+
+      if (nextX <= this.layerCursor.layer.x) return;
+
+      this.layerCursor.removeTileAt(x, y);
+      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, nextX, y);
+    });
+  }
+
   handleMouseCursor() {
+    if (!this.input.activePointer.justMoved) return;
+
     const { x, y } = this.input.activePointer;
 
     // Out of boundaries
