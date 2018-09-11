@@ -10,6 +10,23 @@
  </tileset>
  <tileset firstgid="1768" name="characters" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
   <image source="characters.png" width="918" height="203"/>
+  <tile id="270">
+   <properties>
+    <property name="unitName" value="emilie"/>
+   </properties>
+  </tile>
+  <tile id="541">
+   <properties>
+    <property name="atk" type="int" value="3"/>
+    <property name="def" type="int" value="1"/>
+    <property name="life" type="int" value="10"/>
+    <property name="move" type="int" value="4"/>
+    <property name="name" value="man-8"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="2416" name="characters" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
+  <image source="characters.png" width="918" height="203"/>
   <tile id="541">
    <properties>
     <property name="atk" type="int" value="3"/>
@@ -148,8 +165,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2038,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2309,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

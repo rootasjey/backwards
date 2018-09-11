@@ -28,7 +28,7 @@ test('An unit should have some default values', (t) => {
   // ----------------------
   // Zero battle value test
   // ----------------------
-  // Trainee has currently no waepon
+  // Unit has currently no waepon
   // -------------------------------
   t.true(emilie.getAtk() === 0);
   t.true(emilie.getRange() === 0);

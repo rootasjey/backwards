@@ -1,4 +1,6 @@
 import CONST from 'data/const';
+import { unitsFactory } from '../objects/unitsFactory';
+
 const Rectangle = Phaser.Geom.Rectangle;
 
 export default class Game extends Phaser.Scene {
@@ -29,6 +31,8 @@ export default class Game extends Phaser.Scene {
     this.layerMovement = null;
     this.highlightCursor = null;
     this.selectedCharacter = null;
+
+    this.createUnit = undefined;
   }
 
   preload() {
@@ -84,8 +88,22 @@ export default class Game extends Phaser.Scene {
 
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
 
-    // char test
-    // const unit = createUnit(this.cache.json.get('heroes').Emilie);
+    this.buildUnitOnMap(this.layerCharacters);
+  }
+
+  buildUnitOnMap(layer = {}) {
+    this.createUnit = unitsFactory({
+      dataHeroes: this.cache.json.get('heroes'),
+      dataUnit: this.cache.json.get('units') });
+
+    const buildUnit = (tile) => {
+      tile.properties.unit = this.createUnit(tile.properties.unitName);
+      console.log(tile);
+      console.log(tile.properties.unit);
+    };
+
+    layer.forEachTile(buildUnit, undefined, 0, 0,
+      undefined, undefined, { isNotEmpty: true });
   }
 
   /**
@@ -194,9 +212,10 @@ export default class Game extends Phaser.Scene {
    * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
    */
   showAllowedMovement(tileCharacter) {
-    const { move } = tileCharacter.properties;
+    const { unit } = tileCharacter.properties;
+    const move = unit.get('move');
 
-    if (move === 0) return;
+    if (!move) return;
 
     const coord = {
       x: tileCharacter.x,
