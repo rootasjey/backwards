@@ -1,14 +1,12 @@
 /**
  * Create a new inventory
  * @param {Array} items Items which should be added to the inventory.
- * @param {Object} unit Unit's to which the inventory belongs.
  * @returns {Object} Inventory.
  */
-export const createInventory = ({ items = [], unit = {} }) => {
+export const buildInventory = ({ items = [] }) => {
   const internalState = {
     items,
-    maxItems: 5,
-    ownerId: unit.get('id')
+    maxItems: 5
   };
 
   return {
@@ -22,7 +20,7 @@ export const createInventory = ({ items = [], unit = {} }) => {
       return this;
     },
 
-    find () {
+    find() {
       return items.find(...arguments);
     },
 

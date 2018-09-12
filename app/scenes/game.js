@@ -98,7 +98,10 @@ export default class Game extends Phaser.Scene {
   buildUnitOnMap(layer = {}) {
     this.createUnit = unitsFactory({
       dataHeroes: this.cache.json.get('heroes'),
-      dataUnit: this.cache.json.get('units') });
+      dataUnit: this.cache.json.get('units'),
+      dataWeapons: this.cache.json.get('weapons'),
+      dataConsummables: this.cache.json.get('consummables')
+    });
 
     const buildUnit = (tile) => {
       tile.properties.unit = this.createUnit(tile.properties.unitName);

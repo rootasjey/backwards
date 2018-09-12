@@ -1,12 +1,19 @@
 import { buildUnit } from './buildUnit';
-import { createInventory } from './createInventory';
+import { inventoryFactory } from './inventoryFactory';
 
 /**
  * Create a new character according to an initial stats.
  * The initial stats will help to determine which character class to choose.
  * @param {Object} stats Initial or previous character's stats.
  */
-export const unitsFactory = ({dataHeroes = {}, dataUnits = {}}) => {
+export const unitsFactory = ({
+  dataHeroes = {},
+  dataUnits = {},
+  dataWeapons = {},
+  dataConsummables = {}}) => {
+
+  const createInventory = inventoryFactory({ dataWeapons, dataConsummables });
+
   return (hero = '') => {
     let data = {};
 
@@ -22,7 +29,7 @@ export const unitsFactory = ({dataHeroes = {}, dataUnits = {}}) => {
 
     const unit = buildUnit(data);
 
-    unit.inventory = createInventory({ items: data.inventory, unit });
+    unit.inventory = createInventory(unit);
 
     return unit;
   };
