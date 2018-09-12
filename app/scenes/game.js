@@ -162,6 +162,8 @@ export default class Game extends Phaser.Scene {
       this.layerCursor.removeTileAt(x, y);
       this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, nextX, y);
     });
+
+    this.input.keyboard.on('keyup_X', () => this.interactWithCharacter());
   }
 
   handleMouseCursor() {
@@ -207,7 +209,7 @@ export default class Game extends Phaser.Scene {
    * Fired when a character receives a pointer event.
    */
   interactWithCharacter() {
-    const { x, y } = this.input.activePointer;
+    const { x, y } = this.highlightCursor;
 
     if (this.selectedCharacter) {
       this.moveCharacterTo(x, y);
@@ -219,7 +221,7 @@ export default class Game extends Phaser.Scene {
       return;
     }
 
-    const tileCharacter = this.layerCharacters.getTileAtWorldXY(x, y);
+    const tileCharacter = this.layerCharacters.getTileAt(x, y);
 
     if (!tileCharacter) return;
 
@@ -233,9 +235,9 @@ export default class Game extends Phaser.Scene {
    * @param {Number} y y coordinate to move the selected character to.
    */
   moveCharacterTo(x, y) {
-    if (!this.layerMovement.hasTileAtWorldXY(x, y)) return;
+    if (!this.layerMovement.hasTileAt(x, y)) return;
 
-    const selectedMovementTile = this.layerMovement.getTileAtWorldXY(x, y);
+    const selectedMovementTile = this.layerMovement.getTileAt(x, y);
 
     this.layerCharacters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
     this.layerCharacters.putTileAt(this.selectedCharacter,
