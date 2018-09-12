@@ -4,8 +4,8 @@ import GameScene from 'scenes/game';
 
 window.game = new Phaser.Game({
   // See <https://github.com/photonstorm/phaser/blob/master/src/boot/Config.js>
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 768,
+  height: 768,
   // zoom: 1,
   // resolution: 1,
   type: Phaser.AUTO,

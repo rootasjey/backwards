@@ -76,15 +76,17 @@ export default class Game extends Phaser.Scene {
 
     // Sscale
     //-------
-    floor.setDisplaySize(window.innerHeight, window.innerWidth);
-    carpet.setDisplaySize(window.innerHeight, window.innerWidth);
-    objects.setDisplaySize(window.innerHeight, window.innerWidth);
-    details.setDisplaySize(window.innerHeight, window.innerWidth);
+    const { height, width } = window.game.config;
 
-    this.layerCollision.setDisplaySize(window.innerHeight, window.innerWidth);
-    this.layerMovement.setDisplaySize(window.innerHeight, window.innerWidth);
-    this.layerCharacters.setDisplaySize(window.innerHeight, window.innerWidth);
-    this.layerCursor.setDisplaySize(window.innerHeight, window.innerWidth);
+    floor.setDisplaySize(height, width);
+    carpet.setDisplaySize(height, width);
+    objects.setDisplaySize(height, width);
+    details.setDisplaySize(height, width);
+
+    this.layerCollision.setDisplaySize(height, width);
+    this.layerMovement.setDisplaySize(height, width);
+    this.layerCharacters.setDisplaySize(height, width);
+    this.layerCursor.setDisplaySize(height, width);
 
     this.highlightCursor = this.layerCursor.getTileAt(0, 0);
 
@@ -163,6 +165,10 @@ export default class Game extends Phaser.Scene {
   }
 
   handleMouseCursor() {
+    if (this.input.activePointer.isDown) {
+      this.onPointerDown();
+    }
+
     if (!this.input.activePointer.justMoved) return;
 
     const { x, y } = this.input.activePointer;
@@ -176,10 +182,6 @@ export default class Game extends Phaser.Scene {
     if (!this.layerCursor.hasTileAtWorldXY(x, y)) {
       this.layerCursor.removeTileAt(this.highlightCursor.x, this.highlightCursor.y);
       this.highlightCursor = this.layerCursor.putTileAtWorldXY(this.highlightCursor, x, y);
-    }
-
-    if (this.input.manager.activePointer.isDown) {
-      this.onPointerDown();
     }
   }
 
