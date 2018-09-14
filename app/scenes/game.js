@@ -93,6 +93,7 @@ export default class Game extends Phaser.Scene {
     this.buildUnitOnMap(this.layerCharacters);
 
     this.handleKeyboard();
+    this.showTileInfo();
   }
 
   buildUnitOnMap(layer = {}) {
@@ -191,11 +192,18 @@ export default class Game extends Phaser.Scene {
   }
 
   /**
-   * Display the tile information if any
+   * Display the tile information
    * along side characters and objects info.
    */
   showTileInfo() {
+    // const { height, width } = window.game.config;
 
+    // this.add.rectangle(width - 100, height - 200, 200, 200, 0x6666ff);
+    // const r = new Rectangle(0,0, 200, 200, 0x6666ff);
+
+    // this.add.text(width - 100, height - 200, 'Plain');
+    // this.add.text(width - 100, height - 150, 'DEF.');
+    // this.add.text(width - 100, height - 130, 'AVO.');
   }
 
   /**

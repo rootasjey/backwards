@@ -2,7 +2,7 @@
   "Iron Sword": {
     "atk": 3,
     "damageType": "physical",
-    "desc": "",
+    "desc": "A simple iron sword.",
     "hit": 90,
     "itemType": "weapon",
     "name": "Iron Sword",
