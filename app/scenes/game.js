@@ -12,27 +12,25 @@ export default class Game extends Phaser.Scene {
   constructor() {
     super('game');
 
-    this.progressBar = null;
-    this.progressBgRect = null;
-    this.progressRect = null;
+    this.createUnit;
+    this.cursor;
 
-    this.map = null;
-    this.currentTilesMovement = [];
-    this.lastSelectedChar = null;
-    this.layerField = null;
-    this.layerItems = null;
-    this.scaleFactor = 0;
-    this.tileset = null;
+    this.layers = {
+      carpet      : {},
+      characters  : {},
+      collision   : {},
+      cursor      : {},
+      floor       : {},
+      movement    : {},
+      objects     : {}
+    };
 
-    this.layerCharacters = null;
+    this.progressBar;
+    this.progressBgRect;
+    this.progressRect;
 
-    this.layerCollision = null;
-    this.layerCursor = null;
-    this.layerMovement = null;
-    this.highlightCursor = null;
-    this.selectedCharacter = null;
-
-    this.createUnit = undefined;
+    this.selectedCharacter;
+    this.tilesMovement = [];
   }
 
   preload() {
@@ -59,41 +57,40 @@ export default class Game extends Phaser.Scene {
    */
   create(/* data */) {
     const map = this.make.tilemap({ key: 'level0' });
-
     const mapTilesset = map.addTilesetImage('terrain', 'mapTileset');
-
     const charactersTileset = map.addTilesetImage('characters', 'charactersTileset');
 
-    const floor = map.createStaticLayer('Floor', mapTilesset);
-    const carpet = map.createStaticLayer('Carpet', mapTilesset);
-    const objects = map.createStaticLayer('Objects', mapTilesset);
-    const details = map.createStaticLayer('Details', mapTilesset);
+    const layers = this.layers;
 
-    this.layerCollision = map.createDynamicLayer('Collision', mapTilesset);
-    this.layerMovement = map.createDynamicLayer('Movement', mapTilesset);
-    this.layerCharacters = map.createDynamicLayer('Characters', charactersTileset);
-    this.layerCursor = map.createDynamicLayer('Cursor', mapTilesset);
+    layers.floor    = map.createStaticLayer('Floor', mapTilesset);
+    layers.carpet   = map.createStaticLayer('Carpet', mapTilesset);
+    layers.objects  = map.createStaticLayer('Objects', mapTilesset);
+    const details   = map.createStaticLayer('Details', mapTilesset);
+
+    layers.collision  = map.createDynamicLayer('Collision', mapTilesset);
+    layers.movement   = map.createDynamicLayer('Movement', mapTilesset);
+    layers.characters = map.createDynamicLayer('Characters', charactersTileset);
+    layers.cursor     = map.createDynamicLayer('Cursor', mapTilesset);
 
     // Sscale
     //-------
     const { height, width } = window.game.config;
 
-    floor.setDisplaySize(height, width);
-    carpet.setDisplaySize(height, width);
-    objects.setDisplaySize(height, width);
+    layers.floor.setDisplaySize(height, width);
+    layers.carpet.setDisplaySize(height, width);
+    layers.objects.setDisplaySize(height, width);
     details.setDisplaySize(height, width);
 
-    this.layerCollision.setDisplaySize(height, width);
-    this.layerMovement.setDisplaySize(height, width);
-    this.layerCharacters.setDisplaySize(height, width);
-    this.layerCursor.setDisplaySize(height, width);
+    layers.collision.setDisplaySize(height, width);
+    layers.movement.setDisplaySize(height, width);
+    layers.characters.setDisplaySize(height, width);
+    layers.cursor.setDisplaySize(height, width);
 
-    this.highlightCursor = this.layerCursor.getTileAt(0, 0);
+    this.cursor = layers.cursor.getTileAt(0, 0);
 
-    this.buildUnitOnMap(this.layerCharacters);
+    this.buildUnitOnMap(layers.characters);
 
     this.handleKeyboard();
-    this.showTileInfo();
   }
 
   buildUnitOnMap(layer = {}) {
@@ -128,43 +125,51 @@ export default class Game extends Phaser.Scene {
 
   handleKeyboard() {
     this.input.keyboard.on('keydown_UP', () => {
-      const { x, y } = this.highlightCursor;
+      const { x, y } = this.cursor;
       const previousY = y - 1;
 
-      if (previousY <= this.layerCursor.layer.y) return;
+      if (previousY <= this.layers.cursor.layer.y) return;
 
-      this.layerCursor.removeTileAt(x, y);
-      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, x, previousY);
+      this.layers.cursor.removeTileAt(x, y);
+      this.cursor = this.layers.cursor.putTileAt(this.cursor, x, previousY);
+
+      this.updateTileInfo();
     });
 
     this.input.keyboard.on('keydown_DOWN', () => {
-      const { x, y } = this.highlightCursor;
+      const { x, y } = this.cursor;
       const nextY = y + 1;
 
-      if (nextY >= this.layerCursor.layer.height) return;
+      if (nextY >= this.layers.cursor.layer.height) return;
 
-      this.layerCursor.removeTileAt(x, y);
-      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, x, nextY);
+      this.layers.cursor.removeTileAt(x, y);
+      this.cursor = this.layers.cursor.putTileAt(this.cursor, x, nextY);
+
+      this.updateTileInfo();
     });
 
     this.input.keyboard.on('keydown_LEFT', () => {
-      const { x, y } = this.highlightCursor;
+      const { x, y } = this.cursor;
       const previousX = x - 1;
 
-      if (previousX <= this.layerCursor.layer.x) return;
+      if (previousX <= this.layers.cursor.layer.x) return;
 
-      this.layerCursor.removeTileAt(x, y);
-      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, previousX, y);
+      this.layers.cursor.removeTileAt(x, y);
+      this.cursor = this.layers.cursor.putTileAt(this.cursor, previousX, y);
+
+      this.updateTileInfo();
     });
 
     this.input.keyboard.on('keydown_RIGHT', () => {
-      const { x, y } = this.highlightCursor;
+      const { x, y } = this.cursor;
       const nextX = x + 1;
 
-      if (nextX <= this.layerCursor.layer.x) return;
+      if (nextX <= this.layers.cursor.layer.x) return;
 
-      this.layerCursor.removeTileAt(x, y);
-      this.highlightCursor = this.layerCursor.putTileAt(this.highlightCursor, nextX, y);
+      this.layers.cursor.removeTileAt(x, y);
+      this.cursor = this.layers.cursor.putTileAt(this.cursor, nextX, y);
+
+      this.updateTileInfo();
     });
 
     this.input.keyboard.on('keyup_X', () => this.interactWithCharacter());
@@ -180,30 +185,80 @@ export default class Game extends Phaser.Scene {
     const { x, y } = this.input.activePointer;
 
     // Out of boundaries
-    if (x >= this.layerCursor.displayWidth ||
-      y >= this.layerCursor.displayHeight) {
+    if (x >= this.layers.cursor.displayWidth ||
+      y >= this.layers.cursor.displayHeight) {
       return;
     }
 
-    if (!this.layerCursor.hasTileAtWorldXY(x, y)) {
-      this.layerCursor.removeTileAt(this.highlightCursor.x, this.highlightCursor.y);
-      this.highlightCursor = this.layerCursor.putTileAtWorldXY(this.highlightCursor, x, y);
+    if (!this.layers.cursor.hasTileAtWorldXY(x, y)) {
+      this.layers.cursor.removeTileAt(this.cursor.x, this.cursor.y);
+      this.cursor = this.layers.cursor.putTileAtWorldXY(this.cursor, x, y);
+
+      this.updateTileInfo();
     }
   }
 
   /**
-   * Display the tile information
+   * Display tile information
    * along side characters and objects info.
    */
-  showTileInfo() {
-    // const { height, width } = window.game.config;
+  updateTileInfo() {
+    const info = this.getTileInfo();
+    this.drawTileInfo(info);
+  }
 
+  /**
+   * Return the current highlighted tile information.
+   * @return {Object} tile information.
+   */
+  getTileInfo() {
+    const defaultTileValues = {
+      name: ' - ',
+      avo: 0,
+      def: 0
+    };
+
+    let tileValues = Object.assign({}, defaultTileValues);
+
+    const tile = this.layers.floor.getTileAt(this.cursor.x, this.cursor.y);
+
+    if (tile) {
+      const { properties } = tile;
+      tileValues = Object.assign({}, tileValues, properties);
+    }
+
+    return tileValues;
+  }
+
+  /**
+   * Draw tile information to the screen.
+   * @param {Object} info Tile information.
+   */
+  drawTileInfo(info = {}) {
+    const { height, width } = window.game.config;
+
+    const dim = {
+      x: width - 150,
+      y: 10,
+      width: 140,
+      height: 130
+    };
+
+    // Need Phaser v3.13
     // this.add.rectangle(width - 100, height - 200, 200, 200, 0x6666ff);
-    // const r = new Rectangle(0,0, 200, 200, 0x6666ff);
 
-    // this.add.text(width - 100, height - 200, 'Plain');
-    // this.add.text(width - 100, height - 150, 'DEF.');
-    // this.add.text(width - 100, height - 130, 'AVO.');
+    this.add.graphics()
+      .fillStyle(0xFFFF, .8)
+      .fillRect(dim.x - 10, dim.y - 10, dim.width + 20, dim.height + 20)
+      .fillStyle(0x6666ff, .8)
+      .fillRect(dim.x, dim.y, dim.width, dim.height);
+
+    const x = width - 100;
+    const y = 30;
+
+    this.add.text(x, y, info.name);
+    this.add.text(x, y + 50, 'DEF. ' + info.def);
+    this.add.text(x, y + 70, 'AVO. ' + info.avo);
   }
 
   /**
@@ -220,19 +275,19 @@ export default class Game extends Phaser.Scene {
    * Fired when a character receives a pointer event.
    */
   interactWithCharacter() {
-    const { x, y } = this.highlightCursor;
+    const { x, y } = this.cursor;
 
     if (this.selectedCharacter) {
       this.moveCharacterTo(x, y);
 
-      this.currentTilesMovement =
-        this.hideAllowedMovement(this.layerMovement, this.currentTilesMovement);
+      this.tilesMovement =
+        this.hideAllowedMovement(this.layers.movement, this.tilesMovement);
 
       this.selectedCharacter = null;
       return;
     }
 
-    const tileCharacter = this.layerCharacters.getTileAt(x, y);
+    const tileCharacter = this.layers.characters.getTileAt(x, y);
 
     if (!tileCharacter) return;
 
@@ -246,12 +301,12 @@ export default class Game extends Phaser.Scene {
    * @param {Number} y y coordinate to move the selected character to.
    */
   moveCharacterTo(x, y) {
-    if (!this.layerMovement.hasTileAt(x, y)) return;
+    if (!this.layers.movement.hasTileAt(x, y)) return;
 
-    const selectedMovementTile = this.layerMovement.getTileAt(x, y);
+    const selectedMovementTile = this.layers.movement.getTileAt(x, y);
 
-    this.layerCharacters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
-    this.layerCharacters.putTileAt(this.selectedCharacter,
+    this.layers.characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
+    this.layers.characters.putTileAt(this.selectedCharacter,
       selectedMovementTile.x, selectedMovementTile.y);
   }
 
@@ -299,17 +354,17 @@ export default class Game extends Phaser.Scene {
     if (remainingMove === 0) return;
 
     // 1.Bounds check
-    if (x >= this.layerMovement.tilemap.width ||
-      y >= this.layerMovement.tilemap.height ||
+    if (x >= this.layers.movement.tilemap.width ||
+      y >= this.layers.movement.tilemap.height ||
       x < 0 || y < 0) {
       return;
     }
 
     // 2.Collision Environment check
-    if (this.layerCollision.hasTileAt(x, y)) return;
+    if (this.layers.collision.hasTileAt(x, y)) return;
 
     // 3.Collision Character check
-    const character = this.layerCharacters.getTileAt(x, y);
+    const character = this.layers.characters.getTileAt(x, y);
 
     if (character &&
       character.x !== this.selectedCharacter.x &&
@@ -318,9 +373,9 @@ export default class Game extends Phaser.Scene {
     }
 
     // 4.Avoid tile duplication
-    if (!this.layerMovement.hasTileAt(x, y)) {
-      const tileMovement = this.layerMovement.putTileAt(this.highlightCursor, x, y);
-      this.currentTilesMovement.push(tileMovement);
+    if (!this.layers.movement.hasTileAt(x, y)) {
+      const tileMovement = this.layers.movement.putTileAt(this.cursor, x, y);
+      this.tilesMovement.push(tileMovement);
     }
 
     const newRemainingMove = remainingMove - 1;

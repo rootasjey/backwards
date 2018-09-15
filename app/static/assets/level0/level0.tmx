@@ -2,9 +2,534 @@
 <map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
  <tileset firstgid="1" name="terrain" tilewidth="16" tileheight="16" spacing="3" margin="1" tilecount="1767" columns="57">
   <image source="terrain.png" width="1082" height="588"/>
+  <tile id="0">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="59">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="60">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="61">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="114">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="115">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="116">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="117">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="118">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="119">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="120">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="121">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="122">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="123">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="171">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="172">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="173">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="174">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="175">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="176">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="177">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="178">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="179">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="180">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="228">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="229">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="230">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="231">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="232">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="233">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="234">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="235">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="236">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="237">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="287">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="288">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="289">
+   <properties>
+    <property name="avo" type="int" value="10"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="290">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="291">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="292">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="293">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="294">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="1434">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1435">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1436">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1491">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1492">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1493">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1548">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1549">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1550">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1605">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1606">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1607">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1637">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1638">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1639">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1662">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1663">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1664">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1694">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1695">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1696">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
   <tile id="1698">
    <properties>
     <property name="collision" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1719">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1720">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1721">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1751">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1752">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="1753">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
    </properties>
   </tile>
  </tileset>
@@ -25,47 +550,35 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="2416" name="characters" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
-  <image source="characters.png" width="918" height="203"/>
-  <tile id="541">
-   <properties>
-    <property name="atk" type="int" value="3"/>
-    <property name="def" type="int" value="1"/>
-    <property name="life" type="int" value="10"/>
-    <property name="move" type="int" value="4"/>
-    <property name="name" value="man-8"/>
-   </properties>
-  </tile>
- </tileset>
  <layer name="Floor" width="30" height="30">
   <data encoding="csv">
-590,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,591,592,
 1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
 1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
 1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
-1493,174,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,175,176,1493,
-1493,231,172,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,289,173,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,701,699,699,699,699,699,699,699,702,1493,1493,1493,1493,1493,701,699,699,699,699,699,699,702,1493,231,233,1493,
-1493,231,233,1493,757,874,874,874,874,874,874,874,758,699,699,699,699,699,759,874,874,874,874,874,874,757,1493,231,233,1493,
-1493,231,233,1493,757,869,869,869,869,869,869,869,873,874,874,874,874,874,875,869,869,869,869,869,869,757,1493,231,233,1493,
-1493,231,233,1493,757,121,121,121,121,121,121,121,870,869,869,869,869,869,872,121,121,121,121,121,121,757,1493,231,233,1493,
-1493,231,233,1493,757,121,121,121,121,121,121,121,120,120,120,120,120,120,120,121,121,121,121,121,121,757,1493,231,233,1493,
-1493,231,233,1493,757,121,121,121,121,121,121,121,120,120,120,120,120,120,120,121,121,121,121,121,121,757,1493,231,233,1493,
-1493,231,233,1493,758,699,699,699,699,699,699,702,120,120,120,120,120,120,120,701,699,699,699,699,699,759,1493,231,233,1493,
-1493,231,233,1493,873,874,874,874,874,874,874,757,120,120,120,120,120,120,120,757,874,874,874,874,874,875,1493,231,233,1493,
-1493,231,233,1493,870,869,869,869,869,869,869,757,120,120,120,120,120,120,120,757,869,869,869,869,869,872,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,757,120,120,120,120,120,120,120,757,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,757,120,120,120,120,120,120,120,757,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,758,699,699,699,699,699,699,699,759,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,873,874,874,874,874,874,874,874,875,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,870,869,869,869,869,869,869,869,872,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,698,699,0,0,0,0,0,699,700,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,870,869,0,0,0,0,0,869,872,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,231,233,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,288,290,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,231,233,1493,
-1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,288,290,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,701,699,699,699,699,699,699,699,702,1493,1493,1493,1493,1493,701,699,699,699,699,699,699,702,1493,1493,1493,1493,
+1493,1493,1493,1493,757,874,874,874,874,874,874,874,758,699,699,699,699,699,759,874,874,874,874,874,874,757,1493,1493,1493,1493,
+1493,1493,1493,1493,757,869,869,869,869,869,869,869,873,874,874,874,874,874,875,869,869,869,869,869,869,757,1493,1493,1493,1493,
+1493,1493,1493,1493,757,121,121,121,121,121,121,121,870,869,869,869,869,869,872,121,121,121,121,121,121,757,1493,1493,1493,1493,
+1493,1493,1493,1493,757,121,121,121,121,121,121,121,120,120,120,120,120,120,120,121,121,121,121,121,121,757,1493,1493,1493,1493,
+1493,1493,1493,1493,757,121,121,121,121,121,121,121,120,120,120,120,120,120,120,121,121,121,121,121,121,757,1493,1493,1493,1493,
+1493,1493,1493,1493,758,699,699,699,699,699,699,702,120,120,120,120,120,120,120,701,699,699,699,699,699,759,1493,1493,1493,1493,
+1493,1493,1493,1493,873,874,874,874,874,874,874,757,120,120,120,120,120,120,120,757,874,874,874,874,874,875,1493,1493,1493,1493,
+1493,1493,1493,1493,870,869,869,869,869,869,869,757,120,120,120,120,120,120,120,757,869,869,869,869,869,872,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,757,120,120,120,120,120,120,120,757,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,757,120,120,120,120,120,120,120,757,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,758,699,699,699,699,699,699,699,759,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,873,874,874,874,874,874,874,874,875,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,870,869,869,869,869,869,869,869,872,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,698,699,0,0,0,0,0,699,700,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,870,869,0,0,0,0,0,869,872,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
+1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
 1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
 1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,
 1720,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493,1493
@@ -77,8 +590,8 @@
 0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,745,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,745,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,589,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,646,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -89,19 +602,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,923,924,924,924,925,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,980,981,981,981,982,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,1037,1038,1038,1038,1039,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,586,0,0,0,0,0,0,0,0,0,0,0,586,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,589,0,
+0,0,0,0,0,0,0,0,0,586,0,0,0,0,0,0,0,0,0,0,0,586,0,0,0,0,0,0,646,0,
 0,0,0,0,0,0,0,0,0,643,0,0,0,0,0,0,0,0,0,0,0,643,0,0,0,0,0,0,0,0,
 0,0,0,0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,745,0,0,0,0,
 0,0,0,0,0,0,0,0,0,586,0,0,0,983,984,984,984,985,0,0,0,586,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,643,0,0,0,983,984,984,984,985,0,0,0,643,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,745,0,0,0,0,0,
-0,745,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,745,745,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,745,0,6,3,4,5,6,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,745,0,0,0,0,0,0,0,6,60,61,62,6,0,0,0,0,0,0,745,0,0,0,0,0,
+0,745,0,0,0,0,0,0,0,0,0,0,0,6,117,118,119,6,745,745,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
