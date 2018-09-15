@@ -48,6 +48,22 @@ export default class Game extends Phaser.Scene {
     this.load.tilemapTiledJSON('level0', './level0/level0.json');
   }
 
+  init() {
+    this.addFonts();
+  }
+
+  addFonts() {
+    const styleElement = document.createElement('style');
+    document.head.appendChild(styleElement);
+    styleElement.classList.add('toto');
+
+    const { sheet } = styleElement;
+    const styles = '@font-face { font-family: "Stacked pixel"; src: url("assets/fonts/stackedPixel.ttf") format("truetype") }';
+
+    sheet.insertRule(styles, 0);
+    sheet.addRule('body', 'font-family: "Stacked pixel"');
+  }
+
   /**
    *  Called when a scene is initialized. Method responsible for setting up
    *  the game objects of the scene.
@@ -103,8 +119,8 @@ export default class Game extends Phaser.Scene {
 
     const buildUnit = (tile) => {
       tile.properties.unit = this.createUnit(tile.properties.unitName);
-      console.log(tile);
-      console.log(tile.properties.unit);
+      // console.log(tile);
+      // console.log(tile.properties.unit);
     };
 
     layer.forEachTile(buildUnit, undefined, 0, 0,
@@ -238,10 +254,10 @@ export default class Game extends Phaser.Scene {
     const { width } = window.game.config;
 
     const dim = {
-      x: width - 150,
-      y: 10,
-      width: 140,
-      height: 130
+      height  : 130,
+      width   : 140,
+      x       : width - 150,
+      y       : 10
     };
 
     // Need Phaser v3.13
@@ -253,12 +269,13 @@ export default class Game extends Phaser.Scene {
       .fillStyle(0x6666ff, .8)
       .fillRect(dim.x, dim.y, dim.width, dim.height);
 
+    const style = { fontFamily: 'Stacked pixel' };
     const x = width - 100;
     const y = 30;
 
-    this.add.text(x, y, info.name);
-    this.add.text(x, y + 50, 'DEF. ' + info.def);
-    this.add.text(x, y + 70, 'AVO. ' + info.avo);
+    this.add.text(x, y, info.name, style);
+    this.add.text(x, y + 50, 'DEF. ' + info.def, style);
+    this.add.text(x, y + 70, 'AVO. ' + info.avo, style);
   }
 
   /**

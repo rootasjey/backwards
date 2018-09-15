@@ -21,7 +21,7 @@ export default class BootScene extends Phaser.Scene {
   create () {
     // this.registry.set('score', 0);
     // this.scene.start('menu');
-    this.scene.start('game')
+    this.scene.start('game');
   }
 
   // extend:
