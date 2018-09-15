@@ -58,10 +58,10 @@ export default class Game extends Phaser.Scene {
     styleElement.classList.add('toto');
 
     const { sheet } = styleElement;
-    const styles = '@font-face { font-family: "Stacked pixel"; src: url("assets/fonts/stackedPixel.ttf") format("truetype") }';
+    const styles = '@font-face { font-family: "Kenney Pixel"; src: url("assets/fonts/Kenney Pixel.ttf") format("truetype") }';
 
     sheet.insertRule(styles, 0);
-    sheet.addRule('body', 'font-family: "Stacked pixel"');
+    sheet.addRule('body', 'font-family: "Kenney Pixel"');
   }
 
   /**
@@ -269,7 +269,7 @@ export default class Game extends Phaser.Scene {
       .fillStyle(0x6666ff, .8)
       .fillRect(dim.x, dim.y, dim.width, dim.height);
 
-    const style = { fontFamily: 'Stacked pixel' };
+    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
     const x = width - 100;
     const y = 30;
 
