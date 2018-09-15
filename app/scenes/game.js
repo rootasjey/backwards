@@ -20,7 +20,8 @@ export default class Game extends Phaser.Scene {
       cursor      : {},
       floor       : {},
       movement    : {},
-      objects     : {}
+      objects     : {},
+      uiTileInfo  : {},
     };
 
     this.progressBar;
@@ -29,6 +30,14 @@ export default class Game extends Phaser.Scene {
 
     this.selectedCharacter;
     this.tilesMovement = [];
+
+    this.ui = {
+      tileInfo: {
+        name: {},
+        def: {},
+        avo: {}
+      }
+    };
 
     addVisualLoader(this);
   }
@@ -44,7 +53,9 @@ export default class Game extends Phaser.Scene {
     this.load.json('weapons', './data/weapons.json');
 
     this.load.image('mapTileset', './level0/terrain.png');
+    this.load.image('uiTileset', './level0/ui.png');
     this.load.image('charactersTileset', './level0/characters.png');
+
     this.load.tilemapTiledJSON('level0', './level0/level0.json');
   }
 
@@ -75,6 +86,7 @@ export default class Game extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'level0' });
     const mapTilesset = map.addTilesetImage('terrain', 'mapTileset');
     const charactersTileset = map.addTilesetImage('characters', 'charactersTileset');
+    const uiTileset = map.addTilesetImage('ui', 'uiTileset');
 
     const layers = this.layers;
 
@@ -87,6 +99,7 @@ export default class Game extends Phaser.Scene {
     layers.movement   = map.createDynamicLayer('Movement', mapTilesset);
     layers.characters = map.createDynamicLayer('Characters', charactersTileset);
     layers.cursor     = map.createDynamicLayer('Cursor', mapTilesset);
+    layers.uiTileInfo  = map.createDynamicLayer('UITileInfo', uiTileset);
 
     // Sscale
     //-------
@@ -101,12 +114,26 @@ export default class Game extends Phaser.Scene {
     layers.movement.setDisplaySize(height, width);
     layers.characters.setDisplaySize(height, width);
     layers.cursor.setDisplaySize(height, width);
+    layers.uiTileInfo.setDisplaySize(height, width);
 
     this.cursor = layers.cursor.getTileAt(0, 0);
 
     this.buildUnitOnMap(layers.characters);
 
     this.handleKeyboard();
+
+    this.createTileInfoUI();
+  }
+
+  createTileInfoUI() {
+    const { width } = window.game.config;
+    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
+    const x = width - 200;
+    const y = 40;
+
+    this.ui.tileInfo.name = this.add.text(x, y, ' - ', Object.assign({}, style, {fontSize: 40}));
+    this.ui.tileInfo.def = this.add.text(x, y + 50, 'DEF. ', style);
+    this.ui.tileInfo.avo = this.add.text(x, y + 70, 'AVO. ', style);
   }
 
   buildUnitOnMap(layer = {}) {
@@ -251,31 +278,9 @@ export default class Game extends Phaser.Scene {
    * @param {Object} info Tile information.
    */
   drawTileInfo(info = {}) {
-    const { width } = window.game.config;
-
-    const dim = {
-      height  : 130,
-      width   : 140,
-      x       : width - 150,
-      y       : 10
-    };
-
-    // Need Phaser v3.13
-    // this.add.rectangle(width - 100, height - 200, 200, 200, 0x6666ff);
-
-    this.add.graphics()
-      .fillStyle(0xFFFF, .8)
-      .fillRect(dim.x - 10, dim.y - 10, dim.width + 20, dim.height + 20)
-      .fillStyle(0x6666ff, .8)
-      .fillRect(dim.x, dim.y, dim.width, dim.height);
-
-    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
-    const x = width - 100;
-    const y = 30;
-
-    this.add.text(x, y, info.name, style);
-    this.add.text(x, y + 50, 'DEF. ' + info.def, style);
-    this.add.text(x, y + 70, 'AVO. ' + info.avo, style);
+    this.ui.tileInfo.name.setText(info.name);
+    this.ui.tileInfo.def.setText('DEF. ' + info.def);
+    this.ui.tileInfo.avo.setText('AVO. ' + info.avo);
   }
 
   /**
