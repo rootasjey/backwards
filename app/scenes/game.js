@@ -235,7 +235,7 @@ export default class Game extends Phaser.Scene {
    * @param {Object} info Tile information.
    */
   drawTileInfo(info = {}) {
-    const { height, width } = window.game.config;
+    const { width } = window.game.config;
 
     const dim = {
       x: width - 150,
