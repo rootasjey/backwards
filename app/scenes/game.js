@@ -37,7 +37,14 @@ export default class Game extends Phaser.Scene {
       tileInfo: {
         name: {},
         def: {},
-        avo: {}
+        avo: {},
+        location: 'right',
+        coord: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0
+        }
       }
     };
 
@@ -120,14 +127,41 @@ export default class Game extends Phaser.Scene {
   }
 
   createTileInfoUI() {
-    const { width } = window.game.config;
-    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
-    const x = width - 200;
-    const y = 40;
+    this.findTileInfoUIBounds();
 
-    this.ui.tileInfo.name = this.add.text(x, y, ' - ', Object.assign({}, style, {fontSize: 40}));
-    this.ui.tileInfo.def = this.add.text(x, y + 50, 'DEF. ', style);
-    this.ui.tileInfo.avo = this.add.text(x, y + 70, 'AVO. ', style);
+    const { tileInfo } = this.ui;
+    const { left, top } = tileInfo.coord;
+
+    const { x, y } = this.layers.uiTileInfo.tileToWorldXY(left, top);
+    const pixelX = x + 20;
+    const pixelY = y + 10;
+
+    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
+
+    tileInfo.name = this.add.text(pixelX, pixelY, ' - ', Object.assign({}, style, {fontSize: 40}));
+    tileInfo.def = this.add.text(pixelX, pixelY + 50, 'DEF. ', style);
+    tileInfo.avo = this.add.text(pixelX, pixelY + 70, 'AVO. ', style);
+
+  }
+
+  findTileInfoUIBounds() {
+    const { uiTileInfo } = this.layers;
+    let { coord } = this.ui.tileInfo;
+
+    const { x, y } = uiTileInfo.findTile(
+      tile => typeof tile === 'object',
+      undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
+
+    coord.top = y;
+    coord.left = x;
+
+    for (let coordX = x; uiTileInfo.hasTileAt(coordX, y) ; coordX++) {
+      coord.right = coordX;
+    }
+
+    for (let coordY = y; uiTileInfo.hasTileAt(x, coordY); coordY++) {
+      coord.bottom = coordY;
+    }
   }
 
   buildUnitOnMap(layer = {}) {
@@ -290,6 +324,98 @@ export default class Game extends Phaser.Scene {
     this.ui.tileInfo.name.setText(info.name);
     this.ui.tileInfo.def.setText('DEF. ' + info.def);
     this.ui.tileInfo.avo.setText('AVO. ' + info.avo);
+
+    this.checkTileInfoXY();
+  }
+
+  /**
+   * Check tile info XY coord.
+   */
+  checkTileInfoXY() {
+    const { x, y } = this.cursor;
+    const { coord } = this.ui.tileInfo;
+    const distance = 3;
+
+    const isCloseLeft = Math.abs(x - coord.left) <= distance;
+    const isCloseRight = Math.abs(x - coord.right) <= distance;
+    const isCloseTop = Math.abs(y - coord.top) <= distance;
+    const isCloseBottom = Math.abs(y - coord.bottom) <= distance;
+
+    if (isCloseLeft && isCloseBottom) {
+      this.movePanel();
+      return;
+    }
+
+    if (isCloseLeft && isCloseTop) {
+      this.movePanel();
+      return;
+    }
+
+    if (isCloseRight && isCloseTop) {
+      this.movePanel();
+      return;
+    }
+
+    if (isCloseRight && isCloseBottom) {
+      this.movePanel();
+      return;
+    }
+  }
+
+  movePanel() {
+    const { coord } = this.ui.tileInfo;
+    let newStartX = 0;
+    let newStartY = 0;
+
+    let { location } = this.ui.tileInfo;
+
+    if (location === 'left') {
+      newStartX = 21;
+      newStartY = 1;
+
+      this.ui.tileInfo.location = 'right';
+    }
+
+    if (location === 'right') {
+      newStartX = 1;
+      newStartY = 1;
+
+      this.ui.tileInfo.location = 'left';
+    }
+
+    this.layers.uiTileInfo.copy(
+      coord.left,
+      coord.top,
+      coord.right - coord.left + 1,
+      coord.bottom - coord.top + 1,
+      newStartX,
+      newStartY);
+
+    this.layers.uiTileInfo.forEachTile((tile) => {
+      this.layers.uiTileInfo.removeTileAt(tile.x, tile.y);
+
+    }, undefined,
+    coord.left,
+    coord.top,
+    coord.right - coord.left + 1,
+    coord.bottom - coord.top + 1);
+
+    this.findTileInfoUIBounds();
+
+    this.updateTileInfoTextPosition();
+  }
+
+  updateTileInfoTextPosition() {
+    const { tileInfo } = this.ui;
+    const { left, top } = tileInfo.coord;
+
+    const { x, y } = this.layers.uiTileInfo.tileToWorldXY(left, top);
+    const pixelX = x + 20;
+    const pixelY = y + 10;
+
+    tileInfo.name.setPosition(pixelX, pixelY);
+    tileInfo.def.setPosition(pixelX, pixelY + 50);
+    tileInfo.avo.setPosition(pixelX, pixelY + 70);
   }
 
   /**
