@@ -37,6 +37,118 @@
     <property name="name" value="sea"/>
    </properties>
   </tile>
+  <tile id="5">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="32">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="47">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="48">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
   <tile id="57">
    <properties>
     <property name="avo" type="int" value="10"/>
@@ -70,6 +182,174 @@
     <property name="avo" type="int" value="10"/>
     <property name="def" type="int" value="0"/>
     <property name="name" value="sea"/>
+   </properties>
+  </tile>
+  <tile id="62">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="71">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="72">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="73">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="74">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="76">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="77">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="78">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="79">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="89">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="90">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="91">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="92">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="93">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="94">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="97">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="98">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="99">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="100">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="101">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="102">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="103">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="104">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="105">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
    </properties>
   </tile>
   <tile id="114">
@@ -142,6 +422,160 @@
     <property name="name" value="floor"/>
    </properties>
   </tile>
+  <tile id="128">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="129">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="130">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="131">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="133">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="134">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="135">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="136">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="146">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="147">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="148">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="149">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="150">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="151">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="154">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="155">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="156">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="157">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="158">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="159">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="160">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="161">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
   <tile id="171">
    <properties>
     <property name="avo" type="int" value="10"/>
@@ -210,6 +644,195 @@
     <property name="avo" type="int" value="0"/>
     <property name="def" type="int" value="0"/>
     <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="185">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="186">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="187">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="188">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="190">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="191">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="192">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="193">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="194">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="195">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="196">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="197">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="198">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="203">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="204">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="205">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="206">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="207">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="208">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="211">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="212">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="213">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="214">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="215">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="216">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="217">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="218">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
    </properties>
   </tile>
   <tile id="228">
@@ -282,6 +905,195 @@
     <property name="name" value="floor"/>
    </properties>
   </tile>
+  <tile id="242">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="243">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="244">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="245">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="bed"/>
+   </properties>
+  </tile>
+  <tile id="247">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="248">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="249">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="250">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="251">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="252">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="253">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="254">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="255">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="260">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="261">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="262">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="263">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="264">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="265">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="door"/>
+   </properties>
+  </tile>
+  <tile id="268">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="269">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="270">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="271">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="272">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="273">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="274">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="275">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
   <tile id="287">
    <properties>
     <property name="avo" type="int" value="10"/>
@@ -336,6 +1148,1742 @@
     <property name="avo" type="int" value="0"/>
     <property name="def" type="int" value="0"/>
     <property name="name" value="floor"/>
+   </properties>
+  </tile>
+  <tile id="304">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="305">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="306">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="307">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="5"/>
+    <property name="name" value="chair"/>
+   </properties>
+  </tile>
+  <tile id="312">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="325">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="326">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="327">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="328">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="329">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="330">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="331">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="332">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="342">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="343">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="344">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="345">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="346">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="369">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="table"/>
+   </properties>
+  </tile>
+  <tile id="382">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="383">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="384">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="385">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="386">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="387">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="388">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="389">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="399">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="400">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="401">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="402">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="403">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="439">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="440">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="441">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="442">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="443">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="444">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="445">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="446">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="window"/>
+   </properties>
+  </tile>
+  <tile id="458">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="459">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="460">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="513">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="514">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="515">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="516">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="517">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="526">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="527">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="528">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="529">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="530">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="531">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="536">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="540">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="old tree"/>
+   </properties>
+  </tile>
+  <tile id="541">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="542">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="543">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="544">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="570">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="571">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="572">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="573">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="574">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="583">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="584">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="585">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="586">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="587">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="588">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="593">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="597">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="old tree"/>
+   </properties>
+  </tile>
+  <tile id="629">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="630">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="631">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="640">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="641">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="642">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="643">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="644">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="645">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="650">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="654">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="old tree"/>
+   </properties>
+  </tile>
+  <tile id="684">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="685">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="686">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="687">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="688">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="697">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="698">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="699">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="700">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="701">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="702">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="703">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="704">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="705">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="706">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="707">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="708">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="709">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="710">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="711">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="712">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="713">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="714">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="715">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="716">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="717">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="741">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="742">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="743">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="744">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="745">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="754">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="755">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="756">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="757">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="758">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="759">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="760">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="761">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="762">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="763">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="764">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="765">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="766">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="767">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="768">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="769">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="770">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="771">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="772">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="773">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="774">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="800">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="801">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="802">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="flowers"/>
+   </properties>
+  </tile>
+  <tile id="811">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="812">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="813">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="814">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="815">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="816">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="817">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="818">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="819">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="820">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="821">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="822">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="823">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="824">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="825">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="826">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="827">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="828">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="829">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="830">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="831">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="855">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="856">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="857">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="858">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="859">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="868">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="869">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="870">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="871">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="872">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="873">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="874">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="875">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="876">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="877">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="878">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="879">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="880">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="881">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="882">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="883">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="884">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="885">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="886">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="887">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="888">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="912">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="913">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="914">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="915">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="916">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="922">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="923">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="924">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="925">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="926">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="927">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="928">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="929">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="930">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="931">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="932">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="933">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="934">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="935">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="936">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="937">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="938">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="939">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="940">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="941">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="942">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="943">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="944">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="945">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="971">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="972">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="973">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="plain"/>
+   </properties>
+  </tile>
+  <tile id="979">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="980">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="981">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="982">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="983">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="984">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="985">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="989">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="990">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="991">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="992">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="996">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="997">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="998">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="999">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1036">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="1037">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="1038">
+   <properties>
+    <property name="avo" type="int" value="0"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="carpet"/>
+   </properties>
+  </tile>
+  <tile id="1039">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1040">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1041">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1042">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1046">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1047">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1048">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1049">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1053">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1054">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1055">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
+   </properties>
+  </tile>
+  <tile id="1056">
+   <properties>
+    <property name="avo" type="int" value="5"/>
+    <property name="def" type="int" value="0"/>
+    <property name="name" value="stairs"/>
    </properties>
   </tile>
   <tile id="1434">
@@ -618,6 +3166,40 @@
 0,0,0,0,0,745,0,0,0,0,0,0,0,6,60,61,62,6,0,0,0,0,0,0,745,0,0,0,0,0,
 0,745,0,0,0,0,0,0,0,0,0,0,0,6,117,118,119,6,745,745,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="HiddenFloor" width="30" height="30" opacity="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,120,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,120,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>

@@ -18,7 +18,9 @@ export default class Game extends Phaser.Scene {
       characters  : {},
       collision   : {},
       cursor      : {},
+      details     : {},
       floor       : {},
+      hiddenFloor : {},
       movement    : {},
       objects     : {},
       uiTileInfo  : {},
@@ -88,40 +90,32 @@ export default class Game extends Phaser.Scene {
     const charactersTileset = map.addTilesetImage('characters', 'charactersTileset');
     const uiTileset = map.addTilesetImage('ui', 'uiTileset');
 
-    const layers = this.layers;
+    const { layers } = this;
 
-    layers.floor    = map.createStaticLayer('Floor', mapTilesset);
-    layers.carpet   = map.createStaticLayer('Carpet', mapTilesset);
-    layers.objects  = map.createStaticLayer('Objects', mapTilesset);
-    const details   = map.createStaticLayer('Details', mapTilesset);
+    layers.floor        = map.createStaticLayer('Floor', mapTilesset);
+    layers.hiddenFloor  = map.createStaticLayer('HiddenFloor', mapTilesset);
+    layers.carpet       = map.createStaticLayer('Carpet', mapTilesset);
+    layers.objects      = map.createStaticLayer('Objects', mapTilesset);
+    layers.details      = map.createStaticLayer('Details', mapTilesset);
 
-    layers.collision  = map.createDynamicLayer('Collision', mapTilesset);
-    layers.movement   = map.createDynamicLayer('Movement', mapTilesset);
-    layers.characters = map.createDynamicLayer('Characters', charactersTileset);
-    layers.cursor     = map.createDynamicLayer('Cursor', mapTilesset);
-    layers.uiTileInfo  = map.createDynamicLayer('UITileInfo', uiTileset);
+    layers.collision    = map.createDynamicLayer('Collision', mapTilesset);
+    layers.movement     = map.createDynamicLayer('Movement', mapTilesset);
+    layers.characters   = map.createDynamicLayer('Characters', charactersTileset);
+    layers.cursor       = map.createDynamicLayer('Cursor', mapTilesset);
+    layers.uiTileInfo   = map.createDynamicLayer('UITileInfo', uiTileset);
 
     // Sscale
     //-------
     const { height, width } = window.game.config;
 
-    layers.floor.setDisplaySize(height, width);
-    layers.carpet.setDisplaySize(height, width);
-    layers.objects.setDisplaySize(height, width);
-    details.setDisplaySize(height, width);
-
-    layers.collision.setDisplaySize(height, width);
-    layers.movement.setDisplaySize(height, width);
-    layers.characters.setDisplaySize(height, width);
-    layers.cursor.setDisplaySize(height, width);
-    layers.uiTileInfo.setDisplaySize(height, width);
+    Object
+      .values(layers)
+      .map((layer) => layer.setDisplaySize(height, width));
 
     this.cursor = layers.cursor.getTileAt(0, 0);
 
     this.buildUnitOnMap(layers.characters);
-
     this.handleKeyboard();
-
     this.createTileInfoUI();
   }
 
@@ -263,7 +257,22 @@ export default class Game extends Phaser.Scene {
 
     let tileValues = Object.assign({}, defaultTileValues);
 
-    const tile = this.layers.floor.getTileAt(this.cursor.x, this.cursor.y);
+    const { x, y } = this.cursor;
+    const { layers } = this;
+    let tile = {};
+
+    if (layers.objects.hasTileAt(x, y)) {
+      tile = layers.objects.getTileAt(x, y);
+
+    } else if (layers.hiddenFloor.hasTileAt(x, y)) {
+      tile = layers.hiddenFloor.getTileAt(x, y);
+
+    } else if (layers.carpet.hasTileAt(x, y)) {
+      tile = layers.carpet.getTileAt(x, y);
+
+    } else if (layers.floor.hasTileAt(x, y)) {
+      tile = layers.floor.getTileAt(x, y);
+    }
 
     if (tile) {
       const { properties } = tile;
