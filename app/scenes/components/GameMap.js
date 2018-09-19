@@ -224,7 +224,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       cursorLayer.removeTileAt(tileCursor.x, tileCursor.y);
       this.scene.gameMap.cursor = cursorLayer.putTileAtWorldXY(tileCursor, x, y);
 
-      this.scene.events.emit('cursorMoved', tileCursor, this.scene);
+      this.scene.events.emit('cursorMoved', this.scene.gameMap.cursor, this.scene);
     }
   }
 

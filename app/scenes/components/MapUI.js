@@ -88,7 +88,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     const info = mapUI.getTileInfo(tileCursor, gameMap);
 
-    mapUI.drawTileInfo(info)
+    mapUI
+      .drawTileInfo(info)
       .checkTileInfoXY(tileCursor, gameMap.layers.uiTileInfo);
   }
 
