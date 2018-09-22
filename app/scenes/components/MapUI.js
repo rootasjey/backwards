@@ -10,15 +10,13 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 }
     };
 
-    // TODO: fill this auto by default
     this.corners = {
       topLeft     : '',
-      topRight    : 'tilePanel',
+      topRight    : '',
       bottomRight : '',
-      bottomLeft  : 'charPanel',
+      bottomLeft  : '',
     };
 
-    // TODO: calculate this according to main camera
     this.cornersXY = {
       topLeft     : { x: 1,   y: 1  },
       topRight    : { x: 21,  y: 1  },
@@ -264,11 +262,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
           .findPanelBounds(name);
       });
 
-    this.createCharPanelText()
+    this
+      .createCharPanelText()
       .createTilePanelText()
-      .listenToEvents();
-
-    this.toggleCharPanel();
+      .listenToEvents()
+      .setAutoCorners()
+      .toggleCharPanel()
+      .getPanelsNames()
+      .map(name => this.movePanel(name));
 
     return this;
   }
@@ -345,12 +346,24 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  // TODO
   /**
-   * Set a panel to an empty corner.
-   * @param {String} panelName Panel's name.
+   * Set predefined corners according to window dimentions.
    */
-  setPanelPosition(name = '') {
+  setAutoCorners() {
+    const { cornersXY } = this;
+    const { innerHeight: height, innerWidth: width } = window;
+
+    const rightX = width - 200;
+    const bottomY = height - 140;
+
+    const { x, y } = this.scene.gameMap.map.worldToTileXY(rightX, bottomY);
+
+    cornersXY.topRight.x    = x;
+    cornersXY.bottomLeft.y  = y;
+    cornersXY.bottomRight.x = x;
+    cornersXY.bottomRight.y = y;
+
+    return this;
   }
 
   /**
