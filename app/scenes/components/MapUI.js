@@ -63,6 +63,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       this.movePanel(panelName);
       return this;
     }
+
+    return this;
   }
 
   createCharPanelText() {
@@ -151,8 +153,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
  */
   getCharPanelValues({ x = 0, y = 0 }, { layers = {} }) {
     const defaultValues = {
-      hp: 100,
-      name: ' - '
+      hp: 0,
+      name: ''
     };
 
     let values = Object.assign({}, defaultValues);
@@ -163,7 +165,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       tile = layers.characters.getTileAt(x, y);
     }
 
-    if (tile) {
+    if (tile.properties) {
       const { unit } = tile.properties;
 
       values = Object.assign({}, values, {
@@ -208,7 +210,6 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
    * @returns {Object} Contains x/y numbers representing coordinates.
    */
   getNextEmptyCornerXY(nextCorner = '') {
-    // const nextCorner = this.getNextEmptyCornerName();
     return this.cornersXY[nextCorner];
   }
 
@@ -266,6 +267,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this.createCharPanelText()
       .createTilePanelText()
       .listenToEvents();
+
+    return this;
   }
 
   /**
@@ -366,6 +369,32 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   /**
+   * Show a chararacter's stats if the cursor is on a char.
+   * If not, hide the panel.
+   * @param {Object} charStats Character's stats.
+   */
+  toggleCharPanel(charStats = {}) {
+    const { charPanel } = this.scene.gameMap.layers;
+    const { textsContainer } = this.panels.charPanel;
+
+    if (charStats.name) {
+      if (!charPanel.visible || !textsContainer.visible) {
+        charPanel.setVisible(true);
+        textsContainer.setVisible(true);
+      }
+
+      return this;
+    }
+
+    if (charPanel.visible || textsContainer.visible) {
+      charPanel.setVisible(false);
+      textsContainer.setVisible(false);
+    }
+
+    return this;
+  }
+
+  /**
    * Update char panel with refreshed texts values.
    * @param {Object} tileCursor Phaser tile object representing user cursor.
    * @param {Object} scene Phaser scene where the event fired.
@@ -377,7 +406,10 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     this
       .setTextPanel(charPanel, charValues)
-      .checkPanelPosition(tileCursor, charPanel);
+      .checkPanelPosition(tileCursor, charPanel)
+      .toggleCharPanel(charValues);
+
+    return this;
   }
 
   /**
@@ -411,6 +443,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
    */
   updatePanels(tileCursor = {}, scene = {}) {
     scene.mapUI.updateTilePanel(tileCursor, scene);
+    scene.mapUI.updateCharPanel(tileCursor, scene);
+
+    return this;
   }
 
   /**
@@ -437,5 +472,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this
       .setTextPanel(tilePanel, tileValues)
       .checkPanelPosition(tileCursor, tilePanel);
+
+    return this;
   }
 }
