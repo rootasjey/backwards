@@ -36,6 +36,29 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.tilesMovement = [];
   }
 
+  animateCursor(tileCursor = {}) {
+    const { tweens } = this.scene;
+
+    tweens.killTweensOf(tileCursor);
+
+    tweens.timeline({
+      targets: this.cursor,
+      duration: 1000,
+      yoyo: true,
+      loop: -1,
+
+      tweens: [
+        {
+          alpha: .8
+        },
+        {
+          alpha: 0
+        }]
+    });
+
+    return this;
+  }
+
   addTilesetImages() {
     const { map, tileset } = this;
 
@@ -48,6 +71,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   createMapCursor() {
     this.cursor = this.layers.cursor.getTileAt(0, 0);
+    this.animateCursor(this.cursor);
 
     return this;
   }
@@ -133,187 +157,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   /**
-   * Initialize map, layers, units and events.
-   */
-  init() {
-    this.createMap()
-      .addTilesetImages()
-      .createStaticLayers()
-      .createDynamicLayer()
-      .scaleToGameSize()
-      .createMapCursor()
-      .createUnits()
-      .listenToEvents();
-  }
-
-  listenToEvents() {
-    const { events } = this.scene;
-
-    events.on('subscribeMapEvents', this.enableEvents);
-    events.on('unsubscribeMapEvents', this.disableEvents);
-
-    this.enableEvents();
-  }
-
-  onMoveCursorUp() {
-    const { gameMap } = this.scene;
-    const { x, y } = gameMap.cursor;
-
-    const previousY = y - 1;
-
-    if (previousY <= gameMap.layers.cursor.layer.y) return;
-
-    gameMap.layers.cursor.removeTileAt(x, y);
-    gameMap.cursor = gameMap.layers.cursor.putTileAt(gameMap.cursor, x, previousY);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
-  }
-
-  onMoveCursorDown() {
-    const { gameMap } = this.scene;
-    const { x, y } = gameMap.cursor;
-
-    const nextY = y + 1;
-
-    if (nextY >= gameMap.layers.cursor.layer.height) return;
-
-    gameMap.layers.cursor.removeTileAt(x, y);
-    gameMap.cursor = gameMap.layers.cursor.putTileAt(gameMap.cursor, x, nextY);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
-  }
-
-  onMoveCursorLeft() {
-    const { gameMap } = this.scene;
-    const { x, y } = gameMap.cursor;
-
-    const previousX = x - 1;
-
-    if (previousX <= gameMap.layers.cursor.layer.x) return;
-
-    gameMap.layers.cursor.removeTileAt(x, y);
-    gameMap.cursor = gameMap.layers.cursor.putTileAt(gameMap.cursor, previousX, y);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
-  }
-
-  onMoveCursorRight() {
-    const { gameMap } = this.scene;
-    const { x, y } = gameMap.cursor;
-
-    const nextX = x + 1;
-
-    if (nextX >= gameMap.layers.cursor.layer.width) return;
-
-    gameMap.layers.cursor.removeTileAt(x, y);
-    gameMap.cursor = gameMap.layers.cursor.putTileAt(gameMap.cursor, nextX, y);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
-  }
-
-  onPointerDown() {
-    this.scene.gameMap.interactWithCharacter();
-  }
-
-  onPointerMove(pointer) {
-    const cursorLayer = this.scene.gameMap.layers.cursor;
-    let tileCursor = this.scene.gameMap.cursor;
-
-    const { x, y } = pointer;
-
-    // Out of boundaries
-    if (x >= cursorLayer.displayWidth ||
-      y >= cursorLayer.displayHeight) {
-      return;
-    }
-
-    if (!cursorLayer.hasTileAtWorldXY(x, y)) {
-      cursorLayer.removeTileAt(tileCursor.x, tileCursor.y);
-      this.scene.gameMap.cursor = cursorLayer.putTileAtWorldXY(tileCursor, x, y);
-
-      this.scene.events.emit('cursorMoved', this.scene.gameMap.cursor, this.scene);
-    }
-  }
-
-  /**
-   * Fired when a character receives a pointer event.
-   */
-  interactWithCharacter() {
-    const { x, y } = this.cursor;
-
-    if (this.selectedCharacter) {
-      this.moveCharacterTo(x, y);
-
-      this.tilesMovement =
-        this.hideAllowedMovement(this.layers.movement, this.tilesMovement);
-
-      this.selectedCharacter = null;
-      return;
-    }
-
-    const tileCharacter = this.layers.characters.getTileAt(x, y);
-
-    if (!tileCharacter) return;
-
-    this.selectedCharacter = tileCharacter;
-    this.showAllowedMovement(tileCharacter);
-  }
-
-  /**
-   * Move the selected character to the coordinates.
-   * @param {Number} x x coordinate to move the selected character to.
-   * @param {Number} y y coordinate to move the selected character to.
-   */
-  moveCharacterTo(x, y) {
-    if (!this.layers.movement.hasTileAt(x, y)) return;
-
-    const selectedMovementTile = this.layers.movement.getTileAt(x, y);
-
-    this.layers.characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
-    this.layers.characters.putTileAt(this.selectedCharacter,
-      selectedMovementTile.x, selectedMovementTile.y);
-  }
-
-  /**
-   * Hide the allowed movement of the last selected character.
-   * @param {Phaser.Tilemaps.DynamicTilemapLayer|Phaser.Tilemaps.StaticTilemapLayer} layer Layer to remove the tiles from.
-   * @param {Array<Phaser.Tilemaps.Tile>} tilesArray Array containing the tiles to remove.
-   */
-  hideAllowedMovement(layer, tilesArray) {
-    tilesArray.map((tile) => {
-      layer.removeTileAt(tile.x, tile.y);
-    });
-
-    return [];
-  }
-
-  /**
-   * Show the allowed movement for the target character tile.
-   * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
-   */
-  showAllowedMovement(tileCharacter) {
-    const { unit } = tileCharacter.properties;
-    const move = unit.get('move');
-
-    if (!move) return;
-
-    const coord = {
-      x: tileCharacter.x,
-      y: tileCharacter.y
-    };
-
-    const remainingMove = move + 1;
-
-    this.findValidNeighbours(coord, remainingMove);
-  }
-
-  /**
-   * Find the adjacent allowed movement and add the tiles found to a layer and an array.
-   * @param {coordinates} param0 Coordinate to check the adjacent tile movement.
-   * @param {Number} param0.x X coordinate.
-   * @param {Number} param0.y Y coordinate.
-   * @param {Number} remainingMove Max character's movement.
-   */
+ * Find the adjacent allowed movement and add the tiles found to a layer and an array.
+ * @param {coordinates} param0 Coordinate to check the adjacent tile movement.
+ * @param {Number} param0.x X coordinate.
+ * @param {Number} param0.y Y coordinate.
+ * @param {Number} remainingMove Max character's movement.
+ */
   findValidNeighbours({ x, y }, remainingMove) {
     if (remainingMove === 0) return;
 
@@ -355,6 +204,165 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.findValidNeighbours(coordRight, newRemainingMove);
   }
 
+  /**
+   * Hide the allowed movement of the last selected character.
+   * @param {Phaser.Tilemaps.DynamicTilemapLayer|Phaser.Tilemaps.StaticTilemapLayer} layer Layer to remove the tiles from.
+   * @param {Array<Phaser.Tilemaps.Tile>} tilesArray Array containing the tiles to remove.
+   */
+  hideAllowedMovement(layer, tilesArray) {
+    tilesArray.map((tile) => {
+      layer.removeTileAt(tile.x, tile.y);
+    });
+
+    return [];
+  }
+
+  /**
+   * Initialize map, layers, units and events.
+   */
+  init() {
+    this.createMap()
+      .addTilesetImages()
+      .createStaticLayers()
+      .createDynamicLayer()
+      .scaleToGameSize()
+      .createMapCursor()
+      .createUnits()
+      .listenToEvents();
+  }
+
+  /**
+   * Fired when a character receives a pointer event.
+   */
+  interactWithCharacter() {
+    const { x, y } = this.cursor;
+
+    if (this.selectedCharacter) {
+      this.moveCharacterTo(x, y);
+
+      this.tilesMovement =
+        this.hideAllowedMovement(this.layers.movement, this.tilesMovement);
+
+      this.selectedCharacter = null;
+      return;
+    }
+
+    const tileCharacter = this.layers.characters.getTileAt(x, y);
+
+    if (!tileCharacter) return;
+
+    this.selectedCharacter = tileCharacter;
+    this.showAllowedMovement(tileCharacter);
+  }
+
+  listenToEvents() {
+    const { events } = this.scene;
+
+    events.on('subscribeMapEvents', this.enableEvents);
+    events.on('unsubscribeMapEvents', this.disableEvents);
+
+    this.enableEvents();
+  }
+
+  /**
+   * Move the selected character to the coordinates.
+   * @param {Number} x x coordinate to move the selected character to.
+   * @param {Number} y y coordinate to move the selected character to.
+   */
+  moveCharacterTo(x, y) {
+    if (!this.layers.movement.hasTileAt(x, y)) return;
+
+    const selectedMovementTile = this.layers.movement.getTileAt(x, y);
+
+    this.layers.characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
+    this.layers.characters.putTileAt(this.selectedCharacter,
+      selectedMovementTile.x, selectedMovementTile.y);
+  }
+
+  onMoveCursorDown() {
+    const { gameMap } = this.scene;
+    const { x, y } = gameMap.cursor;
+
+    const nextY = y + 1;
+
+    if (nextY >= gameMap.layers.cursor.layer.height) return;
+
+    gameMap.moveCursorTo(x, nextY);
+
+    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
+  }
+
+  onMoveCursorLeft() {
+    const { gameMap } = this.scene;
+    const { x, y } = gameMap.cursor;
+
+    const previousX = x - 1;
+
+    if (previousX <= gameMap.layers.cursor.layer.x) return;
+
+    gameMap.moveCursorTo(previousX, y);
+
+    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
+  }
+
+  onMoveCursorRight() {
+    const { gameMap } = this.scene;
+    const { x, y } = gameMap.cursor;
+
+    const nextX = x + 1;
+
+    if (nextX >= gameMap.layers.cursor.layer.width) return;
+
+    gameMap.moveCursorTo(nextX, y);
+
+    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
+  }
+
+  onMoveCursorUp() {
+    const { gameMap } = this.scene;
+    const { x, y } = gameMap.cursor;
+
+    const previousY = y - 1;
+
+    if (previousY <= gameMap.layers.cursor.layer.y) return;
+
+    gameMap.moveCursorTo(x, previousY);
+
+    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
+  }
+
+  onPointerDown() {
+    this.scene.gameMap.interactWithCharacter();
+  }
+
+  onPointerMove(pointer) {
+    const cursorLayer = this.scene.gameMap.layers.cursor;
+    const { x, y } = pointer;
+
+    // Out of boundaries
+    if (x >= cursorLayer.displayWidth ||
+      y >= cursorLayer.displayHeight) {
+      return;
+    }
+
+    const { x: tileX, y: tileY } = cursorLayer.worldToTileXY(x, y);
+
+    if (!cursorLayer.hasTileAt(tileX, tileY)) {
+      this.scene.gameMap.moveCursorTo(tileX, tileY);
+    }
+  }
+
+  moveCursorTo(x = 0, y = 0) {
+    const cursorLayer = this.layers.cursor;
+
+    cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
+    this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
+
+    this.animateCursor(this.cursor);
+
+    this.scene.events.emit('cursorMoved', this.cursor, this.scene);
+  }
+
   scaleToGameSize() {
     const { height, width } = window.game.config;
     const { layers } = this;
@@ -364,5 +372,25 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .map((layer) => layer.setDisplaySize(height, width));
 
     return this;
+  }
+
+  /**
+   * Show the allowed movement for the target character tile.
+   * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
+   */
+  showAllowedMovement(tileCharacter) {
+    const { unit } = tileCharacter.properties;
+    const move = unit.get('move');
+
+    if (!move) return;
+
+    const coord = {
+      x: tileCharacter.x,
+      y: tileCharacter.y
+    };
+
+    const remainingMove = move + 1;
+
+    this.findValidNeighbours(coord, remainingMove);
   }
 }
