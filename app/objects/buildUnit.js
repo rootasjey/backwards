@@ -33,6 +33,11 @@ export const buildUnit = (state = {}) => {
     def: 0,
 
     /**
+     * Full Health Point.
+     */
+    fullHP: 10,
+
+    /**
      * Health Points.
      */
     hp: 10,

@@ -169,7 +169,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       const { unit } = tile.properties;
 
       values = Object.assign({}, values, {
-        hp: unit.get('hp'),
+        hp: `HP ${ unit.get('hp') } / ${ unit.get('fullHP') }`,
         name: unit.get('name')
       });
     }
@@ -267,6 +267,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this.createCharPanelText()
       .createTilePanelText()
       .listenToEvents();
+
+    this.toggleCharPanel();
 
     return this;
   }
@@ -403,6 +405,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const charPanel = 'charPanel';
     const { gameMap } = scene;
     const charValues = this.getCharPanelValues(tileCursor, gameMap);
+
+    if (!charValues.name) {
+      this.toggleCharPanel(charValues);
+      return this;
+    }
 
     this
       .setTextPanel(charPanel, charValues)
