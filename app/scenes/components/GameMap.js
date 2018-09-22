@@ -1,41 +1,47 @@
 import { unitsFactory } from '../../objects/unitsFactory';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
+  /**
+   * Manage in-game tile maps & layers.
+   * @param {Object} scene Phaser scene.
+   */
   constructor(scene) {
     super(scene, 'GameMap');
 
     this.cursor = {};
 
     this.layers = {
-      carpet: { },
-      characters: { },
-      collision: { },
-      cursor: { },
-      details: { },
-      floor: { },
-      hiddenFloor: { },
-      movement: { },
-      objects: { },
-      uiTileInfo: { },
+      carpet      : {},
+      characters  : {},
+      charPanel   : {},
+      collision   : {},
+      cursor      : {},
+      details     : {},
+      floor       : {},
+      hiddenFloor : {},
+      movement    : {},
+      objects     : {},
+      tilePanel   : {}
     };
 
     this.map = {};
     this.selectedCharacter = {};
-    this.tilesMovement = [];
 
     this.tileset = {
-      characters: { },
-      map: { },
-      ui: { }
+      characters: {},
+      map: {},
+      ui: {}
     };
+
+    this.tilesMovement = [];
   }
 
   addTilesetImages() {
     const { map, tileset } = this;
 
-    tileset.map = map.addTilesetImage('terrain', 'mapTileset');
     tileset.characters = map.addTilesetImage('characters', 'charactersTileset');
-    tileset.ui = map.addTilesetImage('ui', 'uiTileset');
+    tileset.map        = map.addTilesetImage('terrain', 'mapTileset');
+    tileset.ui         = map.addTilesetImage('ui', 'uiTileset');
 
     return this;
   }
@@ -49,11 +55,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   createDynamicLayer() {
     const { layers, map, tileset } = this;
 
-    layers.collision = map.createDynamicLayer('Collision', tileset.map);
-    layers.movement = map.createDynamicLayer('Movement', tileset.map);
+    layers.collision  = map.createDynamicLayer('Collision', tileset.map);
+    layers.movement   = map.createDynamicLayer('Movement', tileset.map);
     layers.characters = map.createDynamicLayer('Characters', tileset.characters);
-    layers.cursor = map.createDynamicLayer('Cursor', tileset.map);
-    layers.uiTileInfo = map.createDynamicLayer('UITileInfo', tileset.ui);
+    layers.cursor     = map.createDynamicLayer('Cursor', tileset.map);
+    layers.tilePanel  = map.createDynamicLayer('TilePanel', tileset.ui);
+    layers.charPanel  = map.createDynamicLayer('CharPanel', tileset.ui);
 
     return this;
   }
@@ -67,24 +74,24 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   createStaticLayers() {
     const { layers, map, tileset } = this;
 
-    layers.floor = map.createStaticLayer('Floor', tileset.map);
-    layers.hiddenFloor = map.createStaticLayer('HiddenFloor', tileset.map);
-    layers.carpet = map.createStaticLayer('Carpet', tileset.map);
-    layers.objects = map.createStaticLayer('Objects', tileset.map);
-    layers.details = map.createStaticLayer('Details', tileset.map);
+    layers.floor        = map.createStaticLayer('Floor', tileset.map);
+    layers.hiddenFloor  = map.createStaticLayer('HiddenFloor', tileset.map);
+    layers.carpet       = map.createStaticLayer('Carpet', tileset.map);
+    layers.objects      = map.createStaticLayer('Objects', tileset.map);
+    layers.details      = map.createStaticLayer('Details', tileset.map);
 
     return this;
   }
 
   createUnits() {
-    const { scene } = this;
+    const { json } = this.scene.cache;
     const layer = this.layers.characters;
 
     this.createUnit = unitsFactory({
-      dataHeroes: scene.cache.json.get('heroes'),
-      dataUnit: scene.cache.json.get('units'),
-      dataWeapons: scene.cache.json.get('weapons'),
-      dataConsummables: scene.cache.json.get('consummables')
+      dataConsummables  : json.get('consummables'),
+      dataHeroes        : json.get('heroes'),
+      dataUnit          : json.get('units'),
+      dataWeapons       : json.get('weapons')
     });
 
     const buildUnit = (tile) => {
@@ -98,29 +105,29 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   disableEvents() {
-    const { scene } = this;
+    const { input } = this.scene;
 
-    scene.input.off('pointerdown', this.onPointerDown);
-    scene.input.off('pointermove', this.onPointerMove);
+    input.off('pointerdown', this.onPointerDown);
+    input.off('pointermove', this.onPointerMove);
 
-    scene.input.keyboard.off('keydown_UP', this.onMoveCursorUp);
-    scene.input.keyboard.off('keydown_DOWN', this.onMoveCursorDown);
-    scene.input.keyboard.off('keydown_LEFT', this.onMoveCursorLeft);
-    scene.input.keyboard.off('keydown_RIGHT', this.onMoveCursorRight);
+    input.keyboard.off('keydown_UP', this.onMoveCursorUp);
+    input.keyboard.off('keydown_DOWN', this.onMoveCursorDown);
+    input.keyboard.off('keydown_LEFT', this.onMoveCursorLeft);
+    input.keyboard.off('keydown_RIGHT', this.onMoveCursorRight);
 
     return this;
   }
 
   enableEvents() {
-    const { scene } = this;
+    const { input } = this.scene;
 
-    scene.input.on('pointerdown', this.onPointerDown);
-    scene.input.on('pointermove', this.onPointerMove);
+    input.on('pointerdown', this.onPointerDown);
+    input.on('pointermove', this.onPointerMove);
 
-    scene.input.keyboard.on('keydown_UP', this.onMoveCursorUp);
-    scene.input.keyboard.on('keydown_DOWN', this.onMoveCursorDown);
-    scene.input.keyboard.on('keydown_LEFT', this.onMoveCursorLeft);
-    scene.input.keyboard.on('keydown_RIGHT', this.onMoveCursorRight);
+    input.keyboard.on('keydown_UP', this.onMoveCursorUp);
+    input.keyboard.on('keydown_DOWN', this.onMoveCursorDown);
+    input.keyboard.on('keydown_LEFT', this.onMoveCursorLeft);
+    input.keyboard.on('keydown_RIGHT', this.onMoveCursorRight);
 
     return this;
   }
@@ -140,10 +147,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   listenToEvents() {
-    const { scene } = this;
+    const { events } = this.scene;
 
-    scene.events.on('subscribeMapEvents', this.enableEvents);
-    scene.events.on('unsubscribeMapEvents', this.disableEvents);
+    events.on('subscribeMapEvents', this.enableEvents);
+    events.on('unsubscribeMapEvents', this.disableEvents);
 
     this.enableEvents();
   }

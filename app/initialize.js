@@ -15,7 +15,7 @@ window.game = new Phaser.Game({
   // seed: null,
   title: 'cycles-system',
   url: 'https://github.com/rootasjey/cycles-system',
-  version: '0.0.2',
+  version: '0.0.3',
   // input: {
   //   keyboard: true,
   //   mouse: true,

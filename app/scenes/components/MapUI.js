@@ -1,110 +1,229 @@
 export default class MapUI extends Phaser.GameObjects.GameObject {
+  /**
+   * Manage UI overlay on in-game maps.
+   * @param {Object} scene Phaser's scene
+   */
   constructor(scene) {
     super(scene, 'MapUI');
 
-    this.texts = {
-      avo: { },
-      def: { },
-      name: { }
+    this.config = {
+      textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 }
     };
 
-    this.location = 'right';
-
-    this.coord = {
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0
+    // TODO: fill this auto by default
+    this.corners = {
+      topLeft     : '',
+      topRight    : 'tilePanel',
+      bottomRight : '',
+      bottomLeft  : 'charPanel',
     };
-  }
 
-  createTileInfoUI() {
-    const { left, top } = this.coord;
+    // TODO: calculate this according to main camera
+    this.cornersXY = {
+      topLeft     : { x: 1,   y: 1  },
+      topRight    : { x: 21,  y: 1  },
+      bottomRight : { x: 21,  y: 21 },
+      bottomLeft  : { x: 1,   y: 21 },
+    };
 
-    const { x, y } = this.scene.gameMap.layers.uiTileInfo.tileToWorldXY(left, top);
-    const pixelX = x + 20;
-    const pixelY = y + 10;
-
-    const style = { fontFamily: 'Kenney Pixel', fontSize: 30 };
-
-    this.texts.name = this.scene.add.text(pixelX, pixelY, ' - ', Object.assign({}, style, { fontSize: 40 }));
-    this.texts.def = this.scene.add.text(pixelX, pixelY + 50, 'DEF. ', style);
-    this.texts.avo = this.scene.add.text(pixelX, pixelY + 70, 'AVO. ', style);
-
-    return this;
-  }
-
-  findTileInfoUIBounds() {
-    const { uiTileInfo } = this.scene.gameMap.layers;
-    let { coord } = this;
-
-    const { x, y } = uiTileInfo.findTile(
-      tile => typeof tile === 'object',
-      undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
-
-    coord.top = y;
-    coord.left = x;
-
-    for (let coordX = x; uiTileInfo.hasTileAt(coordX, y); coordX++) {
-      coord.right = coordX;
-    }
-
-    for (let coordY = y; uiTileInfo.hasTileAt(x, coordY); coordY++) {
-      coord.bottom = coordY;
-    }
-
-    return this;
-  }
-
-  listenToEvents() {
-    const { scene } = this;
-
-    scene.events.on('subscribeMapUIEvents', this.enableEvents);
-    scene.events.on('unsubscribeMapUIEvents', this.disableEvents);
-
-    this.enableEvents();
-  }
-
-  enableEvents() {
-    this.scene.events.on('cursorMoved', this.updateTileInfo);
-  }
-
-  disableEvents() {
-    this.scene.events.off('cursorMoved', this.updateTileInfo);
-  }
-
-  init() {
-    this.findTileInfoUIBounds()
-      .createTileInfoUI()
-      .listenToEvents();
+    this.panels = {};
   }
 
   /**
-   * Display tile information
-   * along side characters and objects info.
+   * Check if the user cursor overlay a panel UI
+   * with a min tile distance allowed between cursor & panel.
+   * @param {Object} param0 TileCursor object
+   * @param {String} panelName Panel's name to check its position.
    */
-  updateTileInfo(tileCursor, scene) {
-    const { gameMap, mapUI } = scene;
+  checkPanelPosition({ x, y }, panelName) {
+    const distance = 3;
+    const { bounds } = this.panels[panelName];
 
-    const info = mapUI.getTileInfo(tileCursor, gameMap);
+    const isCloseBottom = Math.abs(y - bounds.bottom) <= distance;
+    const isCloseLeft   = Math.abs(x - bounds.left  ) <= distance;
+    const isCloseRight  = Math.abs(x - bounds.right ) <= distance;
+    const isCloseTop    = Math.abs(y - bounds.top   ) <= distance;
 
-    mapUI
-      .drawTileInfo(info)
-      .checkTileInfoXY(tileCursor, gameMap.layers.uiTileInfo);
+    if (isCloseLeft && isCloseBottom) {
+      this.movePanel(panelName);
+      return this;
+    }
+
+    if (isCloseLeft && isCloseTop) {
+      this.movePanel(panelName);
+      return this;
+    }
+
+    if (isCloseRight && isCloseTop) {
+      this.movePanel(panelName);
+      return this;
+    }
+
+    if (isCloseRight && isCloseBottom) {
+      this.movePanel(panelName);
+      return this;
+    }
+  }
+
+  createCharPanelText() {
+    const { add, gameMap }  = this.scene;
+    const { charPanel }     = this.panels;
+    const { texts }         = charPanel;
+    const { left, top }     = charPanel.bounds;
+    const { textStyle }     = this.config;
+
+    let { x, y } = gameMap.layers.charPanel.tileToWorldXY(left, top);
+
+    x += 20;
+    y += 10;
+
+    texts.name  = add.text(0, 0, ' hero name ', Object.assign({}, textStyle, { fontSize: 40 }));
+    texts.hp    = add.text(0, 50, 'HP ', textStyle);
+
+    charPanel.textsContainer = add.container(x, y, [texts.name, texts.hp]);
+
+    return this;
+  }
+
+  createTilePanelText() {
+    const { add, gameMap }  = this.scene;
+    const { tilePanel }     = this.panels;
+    const { texts }         = tilePanel;
+    const { left, top }     = tilePanel.bounds;
+    const { textStyle }     = this.config;
+
+    let { x, y } = gameMap.layers.tilePanel.tileToWorldXY(left, top);
+
+    x += 20;
+    y += 10;
+
+    texts.name  = add.text(0, 0, ' - ', Object.assign({}, textStyle, { fontSize: 40 }));
+    texts.def   = add.text(0, 50, 'DEF. ', textStyle);
+    texts.avo   = add.text(0, 70, 'AVO. ', textStyle);
+
+    tilePanel.textsContainer = add.container(x, y, [texts.name, texts.def, texts.avo]);
+
+    return this;
+  }
+
+  disableEvents() {
+    this.scene.events.off('cursorMoved', this.updatePanels);
+
+    return this;
+  }
+
+  enableEvents() {
+    this.scene.events.on('cursorMoved', this.updatePanels);
+
+    return this;
+  }
+
+  /**
+   * Find and set a panel top/left/right/bottom boundaries.
+   * @param {String} name Panel's name.
+   */
+  findPanelBounds(name = '') {
+    const { [name]: layer } = this.scene.gameMap.layers;
+    const { bounds } = this.panels[name];
+
+    const { x, y } = layer.findTile(
+      tile => typeof tile === 'object',
+      undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
+
+    bounds.top  = y;
+    bounds.left = x;
+
+    for (let coordX = x; layer.hasTileAt(coordX, y); coordX++) {
+      bounds.right = coordX;
+    }
+
+    for (let coordY = y; layer.hasTileAt(x, coordY); coordY++) {
+      bounds.bottom = coordY;
+    }
+
+    return this;
+  }
+
+  /**
+ * Return the current pointed characters information.
+ * @param {Object} param0 XY coordinates.
+ * @param {GameMap} param1 GameMap containing layers.
+ */
+  getCharPanelValues({ x = 0, y = 0 }, { layers = {} }) {
+    const defaultValues = {
+      hp: 100,
+      name: ' - '
+    };
+
+    let values = Object.assign({}, defaultValues);
+
+    let tile = {};
+
+    if (layers.characters.hasTileAt(x, y)) {
+      tile = layers.characters.getTileAt(x, y);
+    }
+
+    if (tile) {
+      const { unit } = tile.properties;
+
+      values = Object.assign({}, values, {
+        hp: unit.get('hp'),
+        name: unit.get('name')
+      });
+    }
+
+    return values;
+  }
+
+  /**
+   * Return the panels' name to create.
+   * @returns {Array<String>} Array of panels' name.
+   */
+  getPanelsNames() {
+    return ['tilePanel', 'charPanel'];
+  }
+
+  /**
+  * Return the next empty corner name.
+  * @returns {String} Next empty corner's name.
+  */
+  getNextEmptyCornerName() {
+    let nextCorner;
+
+    Object.keys(this.corners)
+      .some((key) => {
+        if (!this.corners[key]) {
+          nextCorner = key;
+          return true;
+        }
+
+        return false;
+      });
+
+    return nextCorner;
+  }
+
+  /**
+   * Get the next empty corner coordinates.
+   * @returns {Object} Contains x/y numbers representing coordinates.
+   */
+  getNextEmptyCornerXY(nextCorner = '') {
+    // const nextCorner = this.getNextEmptyCornerName();
+    return this.cornersXY[nextCorner];
   }
 
   /**
    * Return the current highlighted tile information.
    * @return {Object} tile information.
    */
-  getTileInfo({x, y}, {layers}) {
-    const defaultTileValues = {
+  getTilePanelValues({ x, y }, { layers }) {
+    const defaultValues = {
       name: ' - ',
       avo: 0,
       def: 0
     };
 
-    let tileValues = Object.assign({}, defaultTileValues);
+    let values = Object.assign({}, defaultValues);
 
     let tile = {};
 
@@ -123,109 +242,200 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     if (tile) {
       const { properties } = tile;
-      tileValues = Object.assign({}, tileValues, properties);
+      values = Object.assign({}, values, properties);
     }
 
-    return tileValues;
+    return Object.assign(values, {
+      avo: `AVO.    ${values.avo}`,
+      def: `DEF.    ${values.def}`
+    });
   }
 
   /**
-   * Draw tile information to the screen.
-   * @param {Object} info Tile information.
+   * Create UI panels.
    */
-  drawTileInfo(info = {}) {
-    this.texts.name.setText(info.name);
-    this.texts.def.setText('DEF. ' + info.def);
-    this.texts.avo.setText('AVO. ' + info.avo);
+  init() {
+    this
+      .getPanelsNames()
+      .map(name => {
+        this
+          .initProperties(name)
+          .findPanelBounds(name);
+      });
+
+    this.createCharPanelText()
+      .createTilePanelText()
+      .listenToEvents();
+  }
+
+  /**
+   * Create panel's properties.
+   * @param {String} name Panel's name.
+   */
+  initProperties(name) {
+    this.panels[name] = {
+      bounds: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      texts: {}
+    };
+
+    return this;
+  }
+
+  listenToEvents() {
+    const { events } = this.scene;
+
+    events.on('subscribeMapUIEvents', this.enableEvents);
+    events.on('unsubscribeMapUIEvents', this.disableEvents);
+
+    this.enableEvents();
 
     return this;
   }
 
   /**
-   * Check tile info XY coord.
+   * Move a panel from its current position to an empty one.
+   * This happens when user cursor (almost) overlay panel UI.
+   * @param {String} name Panel's name to move.
    */
-  checkTileInfoXY({ x, y }, uiTileInfo) {
-    const { coord } = this;
-    const distance = 3;
+  movePanel(name = '') {
+    const panel = this.panels[name];
+    const panelLayer = this.scene.gameMap.layers[name];
 
-    const isCloseLeft = Math.abs(x - coord.left) <= distance;
-    const isCloseRight = Math.abs(x - coord.right) <= distance;
-    const isCloseTop = Math.abs(y - coord.top) <= distance;
-    const isCloseBottom = Math.abs(y - coord.bottom) <= distance;
+    const { bounds } = panel;
 
-    if (isCloseLeft && isCloseBottom) {
-      this.movePanel(uiTileInfo);
-      return;
-    }
+    const nextCorner = this.getNextEmptyCornerName();
+    const { x, y } = this.getNextEmptyCornerXY(nextCorner);
 
-    if (isCloseLeft && isCloseTop) {
-      this.movePanel(uiTileInfo);
-      return;
-    }
+    this.updateCorner(name, nextCorner);
 
-    if (isCloseRight && isCloseTop) {
-      this.movePanel(uiTileInfo);
-      return;
-    }
+    // Copy panel to a new position
+    panelLayer.copy(
+      bounds.left,
+      bounds.top,
+      bounds.right - bounds.left + 1,
+      bounds.bottom - bounds.top + 1,
+      x,
+      y);
 
-    if (isCloseRight && isCloseBottom) {
-      this.movePanel(uiTileInfo);
-      return;
-    }
-  }
-
-  movePanel(uiTileInfo) {
-    const { coord } = this;
-    let newStartX = 0;
-    let newStartY = 0;
-
-    let { location } = this;
-
-    if (location === 'left') {
-      newStartX = 21;
-      newStartY = 1;
-
-      this.location = 'right';
-    }
-
-    if (location === 'right') {
-      newStartX = 1;
-      newStartY = 1;
-
-      this.location = 'left';
-    }
-
-    uiTileInfo.copy(
-      coord.left,
-      coord.top,
-      coord.right - coord.left + 1,
-      coord.bottom - coord.top + 1,
-      newStartX,
-      newStartY);
-
-    uiTileInfo.forEachTile((tile) => {
-      uiTileInfo.removeTileAt(tile.x, tile.y);
-
+    // Remove old panel position
+    panelLayer.forEachTile((tile) => {
+      panelLayer.removeTileAt(tile.x, tile.y);
     }, undefined,
-    coord.left,
-    coord.top,
-    coord.right - coord.left + 1,
-    coord.bottom - coord.top + 1);
+    bounds.left,
+    bounds.top,
+    bounds.right - bounds.left + 1,
+    bounds.bottom - bounds.top + 1);
 
-    this.findTileInfoUIBounds();
+    this.findPanelBounds(name);
 
-    this.updateTileInfoTextPosition(uiTileInfo);
+    const { x: textX, y: textY } = panelLayer.tileToWorldXY(x, y);
+
+    this.updatePanelTextPosition({ x: textX + 20, y: textY + 10 }, name);
+
+    return this;
   }
 
-  updateTileInfoTextPosition(uiTileInfo) {
-    const { left, top } = this.coord;
+  // TODO
+  /**
+   * Set a panel to an empty corner.
+   * @param {String} panelName Panel's name.
+   */
+  setPanelPosition(name = '') {
+  }
 
-    const { x, y } = uiTileInfo.tileToWorldXY(left, top);
-    const pixelX = x + 20;
-    const pixelY = y + 10;
+  /**
+   * Set new text value to targeted panel.
+   * @param {String} name Panel's name.
+   * @param {Object} values Key-value pairs to set.
+   */
+  setTextPanel(name = '', values = {}) {
+    const panel = this.panels[name];
 
-    this.texts.name.setPosition(pixelX, pixelY);
-    this.texts.def.setPosition(pixelX, pixelY + 50);
-    this.texts.avo.setPosition(pixelX, pixelY + 70);
+    Object
+      .entries(values)
+      .forEach(([key, value]) => {
+        panel.texts[key].setText(value);
+      });
+
+    return this;
+  }
+
+  /**
+   * Update char panel with refreshed texts values.
+   * @param {Object} tileCursor Phaser tile object representing user cursor.
+   * @param {Object} scene Phaser scene where the event fired.
+   */
+  updateCharPanel(tileCursor = {}, scene = {}) {
+    const charPanel = 'charPanel';
+    const { gameMap } = scene;
+    const charValues = this.getCharPanelValues(tileCursor, gameMap);
+
+    this
+      .setTextPanel(charPanel, charValues)
+      .checkPanelPosition(tileCursor, charPanel);
+  }
+
+  /**
+   * Set a new corner to the targeted panel.
+   * @param {String} name Panel's name to update the corner.
+   * @param {String} newCorner New corner's name.
+   */
+  updateCorner(name = '', newCorner = '') {
+    // Empty last corner
+    Object
+      .entries(this.corners)
+      .some(([key, value]) => {
+        if (value === name) {
+          this.corners[key] = '';
+          return true;
+        }
+
+        return false;
+      });
+
+    // Update new corner
+    this.corners[newCorner] = name;
+
+    return this;
+  }
+
+  /**
+   * React to user inputs -> cursor moved.
+   * @param {Object} tileCursor Phaser tile object representing user cursor.
+   * @param {Object} scene Phaser scene where the event fired.
+   */
+  updatePanels(tileCursor = {}, scene = {}) {
+    scene.mapUI.updateTilePanel(tileCursor, scene);
+  }
+
+  /**
+   * Move text's panel when the panel has moved.
+   * @param {Object} param0 X/Y coordinates
+   * @param {String} name Panel's name.
+   */
+  updatePanelTextPosition({ x = 0, y = 0 }, name = '') {
+    this.panels[name].textsContainer.setPosition(x, y);
+
+    return this;
+  }
+
+  /**
+   * Update tile panel with refreshed texts values.
+   * @param {Object} tileCursor Phaser tile object representing user cursor.
+   * @param {Object} scene Phaser scene where the event fired.
+   */
+  updateTilePanel(tileCursor = {}, scene = {}) {
+    const tilePanel = 'tilePanel';
+    const { gameMap } = scene;
+    const tileValues = this.getTilePanelValues(tileCursor, gameMap);
+
+    this
+      .setTextPanel(tilePanel, tileValues)
+      .checkPanelPosition(tileCursor, tilePanel);
   }
 }

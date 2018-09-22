@@ -3,7 +3,7 @@
   "description": "A turn based game system built on phaser.io",
   "private": true,
   "author": "Jeremie CORPINOT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": "",
   "scripts": {
     "start": "brunch watch --server",
