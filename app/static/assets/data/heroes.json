@@ -17,6 +17,7 @@
       "base": {
         "cons": 2,
         "def": 1,
+        "fullHP": 12,
         "hp": 12,
         "lck": 2,
         "mag": 1,
@@ -29,6 +30,7 @@
       "growth": {
         "cons": 2,
         "def": 1,
+        "fullHP": 105,
         "hp": 105,
         "lck": 2,
         "mag": 1,
