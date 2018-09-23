@@ -11,7 +11,7 @@
     "test": "ava"
   },
   "dependencies": {
-    "phaser": "3.12.0"
+    "phaser": "3.13.0"
   },
   "devDependencies": {
     "auto-reload-brunch": "2.7.1",
