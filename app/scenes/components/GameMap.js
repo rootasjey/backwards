@@ -36,6 +36,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.tilesMovement = [];
   }
 
+  addTilesetImages() {
+    const { map, tileset } = this;
+
+    tileset.characters = map.addTilesetImage('characters', 'charactersTileset');
+    tileset.map        = map.addTilesetImage('terrain', 'mapTileset');
+    tileset.ui         = map.addTilesetImage('ui', 'uiTileset');
+
+    return this;
+  }
+
   animateCursor(tileCursor = {}) {
     const { tweens } = this.scene;
 
@@ -59,12 +69,19 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  addTilesetImages() {
-    const { map, tileset } = this;
+  animateTileMovement() {
+    let delay = 0;
 
-    tileset.characters = map.addTilesetImage('characters', 'charactersTileset');
-    tileset.map        = map.addTilesetImage('terrain', 'mapTileset');
-    tileset.ui         = map.addTilesetImage('ui', 'uiTileset');
+    this.tilesMovement.map((tile) => {
+      this.scene.tweens.add({
+        targets: tile,
+        alpha: 1,
+        duration: 1000,
+        delay: delay
+      });
+
+      delay += 25;
+    });
 
     return this;
   }
@@ -80,7 +97,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { layers, map, tileset } = this;
 
     layers.collision  = map.createDynamicLayer('Collision', tileset.map);
-    layers.movement   = map.createDynamicLayer('Movement', tileset.map);
+    layers.movement   = map.createDynamicLayer('Movement', tileset.ui);
     layers.characters = map.createDynamicLayer('Characters', tileset.characters);
     layers.cursor     = map.createDynamicLayer('Cursor', tileset.map);
     layers.tilePanel  = map.createDynamicLayer('TilePanel', tileset.ui);
@@ -187,7 +204,11 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     // 4.Avoid tile duplication
     if (!this.layers.movement.hasTileAt(x, y)) {
-      const tileMovement = this.layers.movement.putTileAt(this.cursor, x, y);
+      const tileMovement = this.layers.movement.putTileAt(2569, x, y);
+
+      // Alpha will be animate later to show movement
+      tileMovement.setAlpha(0);
+
       this.tilesMovement.push(tileMovement);
     }
 
@@ -392,5 +413,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const remainingMove = move + 1;
 
     this.findValidNeighbours(coord, remainingMove);
+    this.animateTileMovement();
+
+    return this;
   }
 }
