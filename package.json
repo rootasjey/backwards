@@ -3,7 +3,7 @@
   "description": "A turn based game system built on phaser.io",
   "private": true,
   "author": "Jeremie CORPINOT",
-  "version": "0.0.3",
+  "version": "0.4.0",
   "repository": "",
   "scripts": {
     "start": "brunch watch --server",
@@ -17,9 +17,9 @@
     "auto-reload-brunch": "2.7.1",
     "ava": "1.0.0-beta.8",
     "babel-brunch": "github:babel/babel-brunch",
-    "brunch": "2.10.16",
-    "eslint": "5.4.0",
-    "esm": "^3.0.81"
+    "brunch": "2.10.17",
+    "eslint": "5.6.0",
+    "esm": "3.0.84"
   },
   "ava": {
     "babel": {
