@@ -3085,6 +3085,7 @@
   <image source="characters.png" width="918" height="203"/>
   <tile id="270">
    <properties>
+    <property name="spritesIds" value="270"/>
     <property name="unitName" value="emilie"/>
    </properties>
   </tile>

@@ -1,7 +1,3 @@
-// ~~~~~~~~~~~~~~~~~~
-// CONSTANTS: WEAPONS
-// ~~~~~~~~~~~~~~~~~~
-
 /**
  * Weapons and magic types.
  */

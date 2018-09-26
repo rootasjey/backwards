@@ -5438,6 +5438,7 @@
             {
              "270":
                 {
+                 "spritesIds":"270",
                  "unitName":"emilie"
                 },
              "541":
@@ -5453,6 +5454,7 @@
             {
              "270":
                 {
+                 "spritesIds":"string",
                  "unitName":"string"
                 },
              "541":

@@ -1,4 +1,6 @@
-import { unitsFactory } from '../../objects/unitsFactory';
+import PF from 'pathfinding';
+
+import { unitsFactory } from '../../logic/unitsFactory';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
   /**
@@ -25,6 +27,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     };
 
     this.map = {};
+    this.mapMatrix = [];
     this.selectedCharacter = {};
 
     this.tileset = {
@@ -112,6 +115,24 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  createMapMatrix() {
+    const { height, width } = this.map;
+    const matrix = [];
+
+    for (let y = 0; y < height; y++) {
+      const row = [];
+
+      for (let x = 0; x < width; x++) {
+        row.push(this.getBinaryCellType(x, y));
+      }
+
+      matrix.push(row);
+    }
+
+    this.mapMatrix = matrix;
+    return this;
+  }
+
   createStaticLayers() {
     const { layers, map, tileset } = this;
 
@@ -137,12 +158,25 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     const buildUnit = (tile) => {
       tile.properties.unit = this.createUnit(tile.properties.unitName);
+      tile.properties.sprite = this.createUnitSprite(tile);
     };
 
     layer.forEachTile(buildUnit, undefined, 0, 0,
       undefined, undefined, { isNotEmpty: true });
 
     return this;
+  }
+
+  createUnitSprite(tile) {
+    const { x, y } = this.map.tileToWorldXY(tile.x, tile.y);
+    const id = Number.parseInt(tile.properties.spritesIds);
+
+    tile.setAlpha(0);
+    const add = tile.height / 1.4;
+
+    return this.scene.add
+      .sprite(x + add, y + add, 'charactersSheet', id)
+      .setScale(1.4);
   }
 
   disableEvents() {
@@ -225,6 +259,27 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.findValidNeighbours(coordRight, newRemainingMove);
   }
 
+  getBinaryCellType(x, y) {
+    const { layers } = this;
+
+    if (layers.collision.hasTileAt(x, y) ||
+      layers.characters.hasTileAt(x, y)) {
+
+      return 1;
+    }
+
+    return 0;
+  }
+
+  getCharacterPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
+    let grid = new PF.Grid(this.mapMatrix);
+    const finder = new PF.BestFirstFinder();
+
+    const path = finder.findPath(startX, startY, endX, endY, grid);
+    console.log(path);
+    return path;
+  }
+
   /**
    * Hide the allowed movement of the last selected character.
    * @param {Phaser.Tilemaps.DynamicTilemapLayer|Phaser.Tilemaps.StaticTilemapLayer} layer Layer to remove the tiles from.
@@ -249,6 +304,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .scaleToGameSize()
       .createMapCursor()
       .createUnits()
+      .createMapMatrix()
       .listenToEvents();
   }
 
@@ -287,17 +343,23 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   /**
    * Move the selected character to the coordinates.
-   * @param {Number} x x coordinate to move the selected character to.
-   * @param {Number} y y coordinate to move the selected character to.
+   * @param {Number} endX x coordinate to move the selected character to.
+   * @param {Number} endY y coordinate to move the selected character to.
    */
-  moveCharacterTo(x, y) {
-    if (!this.layers.movement.hasTileAt(x, y)) return;
+  moveCharacterTo(endX, endY) {
+    if (!this.layers.movement.hasTileAt(endX, endY)) return;
 
-    const selectedMovementTile = this.layers.movement.getTileAt(x, y);
+    const { x: startX, y: startY } = this.selectedCharacter;
 
-    this.layers.characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
-    this.layers.characters.putTileAt(this.selectedCharacter,
-      selectedMovementTile.x, selectedMovementTile.y);
+    this.getCharacterPath({ startX, startY }, { endX, endY });
+
+    this.layers.characters.removeTileAt(startX, startY);
+    this.layers.characters.putTileAt(this.selectedCharacter, endX, endY);
+
+    // sprite anim
+    const { sprite } = this.selectedCharacter.properties;
+    const { x, y } = this.map.tileToWorldXY(endX, endY);
+    sprite.setPosition(x, y);
   }
 
   onMoveCursorDown() {
