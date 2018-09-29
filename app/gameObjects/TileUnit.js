@@ -6,12 +6,23 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     super(scene, 'TileUnit');
 
+    this.isAnimating = false;
+
     this.tile = tile;
 
     this.sprite = this.createUnitSprite(tile);
     this.unit = createUnit(tile.properties.unitName);
 
     this.tilesMovement = [];
+
+    this.once('destroy', () => {
+      this.sprite.destroy();
+
+      this.isAnimating = undefined;
+      this.tile = undefined;
+      this.tilesMovement = undefined;
+      this.unit = undefined;
+    });
   }
 
   animateTileMovement() {
@@ -48,13 +59,13 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
           scaleX: 1.4,
           scaleY: 1.4,
           duration: 500,
-          ease: 'Sine.easeIn'
+          ease: 'Power1'
         },
         {
           scaleX: 1.7,
           scaleY: 1.7,
           duration: 500,
-          ease: 'Sine.easeOut'
+          ease: 'Power1'
         }]
     });
   }
@@ -65,11 +76,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const { x, y } = tile.tilemap.tileToWorldXY(tile.x, tile.y);
     const id = Number.parseInt(tile.properties.spritesIds);
 
-    // tile.setAlpha(0);
-    const add = tile.height / 1.4;
+    const deltaToCenter = tile.height / 1.4;
 
     return scene.add
-      .sprite(x + add, y + add, 'charactersSheet', id)
+      .sprite(x + deltaToCenter, y + deltaToCenter, 'charactersSheet', id)
       .setScale(1.4)
       .setAlpha(0);
   }
@@ -136,9 +146,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     let grid = new PF.Grid(mapMatrix);
     const finder = new PF.BestFirstFinder();
 
-    const path = finder.findPath(startX, startY, endX, endY, grid);
-    console.log(path);
-    return path;
+    return finder.findPath(startX, startY, endX, endY, grid);
   }
 
   /**
@@ -161,32 +169,44 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
  * @param {Number} endY y coordinate to move the selected character to.
  */
   moveCharacterTo(endX, endY) {
-    const { tilemap } = this.tile;
-    const { layers } = this.scene.gameMap;
+    return new Promise((resolve) => {
+      const { layers } = this.scene.gameMap;
 
-    if (!layers.movement.hasTileAt(endX, endY)) return;
+      if (!layers.movement.hasTileAt(endX, endY)) {
+        return resolve(this);
+      }
 
-    const { x: startX, y: startY } = this.tile;
+      const { tilemap } = this.tile;
+      const { x: startX, y: startY } = this.tile;
+      const deltaToCenter = this.tile.height / 1.4;
+      const path = this.getCharacterPath({ startX, startY }, { endX, endY });
 
-    this.getCharacterPath({ startX, startY }, { endX, endY });
+      this.isAnimating = true;
 
-    layers.characters.removeTileAt(startX, startY);
-    layers.characters.putTileAt(this.tile, endX, endY);
-
-    this.tile.x = endX;
-    this.tile.y = endY;
-
-    // sprite anim
-    const { x: pixelX, y: pixelY } = tilemap.tileToWorldXY(endX, endY);
-    this.sprite.setPosition(pixelX, pixelY);
-
-    return this;
+      this.scene.tweens.timeline({
+        onComplete: () => {
+          this.isAnimating = false;
+          resolve(this);
+        },
+        targets: this.sprite,
+        tweens: path.map(([x, y]) => {
+          return {
+            x: tilemap.tileToWorldX(x) + deltaToCenter,
+            y: tilemap.tileToWorldY(y) + deltaToCenter,
+            duration: 100
+          };
+        })
+      });
+    });
   }
 
   /**
    * Remove sprite animation from tile.
    */
   sendToBack() {
+    // Prevent cancelling movement animation
+    if (this.isAnimating) return;
+
     this.tile.setAlpha(1);
     this.sprite.setAlpha(0);
 

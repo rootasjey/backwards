@@ -193,16 +193,21 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    */
   highlightChar(x = 0, y = 0) {
     if (this.layers.characters.hasTileAt(x, y)) {
-      const { tileUnit } = this.layers.characters.getTileAt(x, y).properties;
+      this.lastPointedChar = this.layers.characters.getTileAt(x, y);
+      const { tileUnit } = this.lastPointedChar.properties;
 
       tileUnit.bringToFront();
-      this.lastPointedChar = tileUnit;
-      return;
+      return this;
     }
 
-    if (this.lastPointedChar) {
-      this.lastPointedChar.sendToBack();
+    if (this.lastPointedChar &&
+        this.lastPointedChar !== this.selectedCharacter) {
+
+      this.lastPointedChar.properties.tileUnit.sendToBack();
+      this.lastPointedChar = undefined;
     }
+
+    return this;
   }
 
   /**
@@ -228,12 +233,27 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     if (this.selectedCharacter) {
       const { tileUnit } = this.selectedCharacter.properties;
+      const { characters } = this.layers;
+      const { createUnit } = this;
 
       tileUnit
         .moveCharacterTo(x, y)
-        .hideAllowedMovement();
+        .then(unit => unit.hideAllowedMovement())
+        .then(() => {
+          const tile = characters
+            .putTileAt(this.selectedCharacter, x, y)
+            .setAlpha(1);
 
-      this.selectedCharacter = null;
+          tile.properties.tileUnit = new TileUnit({ tile, createUnit });
+
+          characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
+
+          tileUnit.destroy();
+          this.selectedCharacter.destroy();
+          this.selectedCharacter = undefined;
+          this.lastPointedChar = undefined;
+        });
+
       return;
     }
 
