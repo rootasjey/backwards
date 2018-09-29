@@ -11,6 +11,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     this.cursor = {};
 
+    this.lastPointedChar;
+
     this.layers = {
       carpet      : {},
       characters  : {},
@@ -46,16 +48,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  animateCursor(tileCursor = {}) {
-    const { tweens } = this.scene;
-
-    tweens.killTweensOf(tileCursor);
-
-    tweens.timeline({
+  animateCursor() {
+    this.scene.tweens.timeline({
       targets: this.cursor,
       duration: 1000,
-      yoyo: true,
       loop: -1,
+      yoyo: true,
 
       tweens: [
         {
@@ -189,6 +187,25 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   /**
+   * Highlight and animate current pointed character.
+   * @param {Number} x x coordinate in tile units.
+   * @param {Number} y y coordinate in tile units.
+   */
+  highlightChar(x = 0, y = 0) {
+    if (this.layers.characters.hasTileAt(x, y)) {
+      const { tileUnit } = this.layers.characters.getTileAt(x, y).properties;
+
+      tileUnit.bringToFront();
+      this.lastPointedChar = tileUnit;
+      return;
+    }
+
+    if (this.lastPointedChar) {
+      this.lastPointedChar.sendToBack();
+    }
+  }
+
+  /**
    * Initialize map, layers, units and events.
    */
   init() {
@@ -230,6 +247,15 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .tileUnit.showAllowedMovement();
   }
 
+  /**
+   * Kill previous cursor animation.
+   * => cursor blink
+   */
+  killCursorAnimation() {
+    this.scene.tweens.killTweensOf(this.cursor);
+    return this;
+  }
+
   listenToEvents() {
     const { events } = this.scene;
 
@@ -248,8 +274,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (nextY >= gameMap.layers.cursor.layer.height) return;
 
     gameMap.moveCursorTo(x, nextY);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
   }
 
   onMoveCursorLeft() {
@@ -261,8 +285,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (previousX <= gameMap.layers.cursor.layer.x) return;
 
     gameMap.moveCursorTo(previousX, y);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
   }
 
   onMoveCursorRight() {
@@ -274,8 +296,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (nextX >= gameMap.layers.cursor.layer.width) return;
 
     gameMap.moveCursorTo(nextX, y);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
   }
 
   onMoveCursorUp() {
@@ -287,8 +307,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (previousY <= gameMap.layers.cursor.layer.y) return;
 
     gameMap.moveCursorTo(x, previousY);
-
-    this.scene.events.emit('cursorMoved', gameMap.cursor, this.scene);
   }
 
   onPointerDown() {
@@ -315,12 +333,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   moveCursorTo(x = 0, y = 0) {
     const cursorLayer = this.layers.cursor;
 
+    this.killCursorAnimation();
+
     cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
     this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
 
     this.animateCursor(this.cursor);
 
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
+
+    this.highlightChar(x, y);
   }
 
   scaleToGameSize() {

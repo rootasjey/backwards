@@ -15,11 +15,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   animateTileMovement() {
-    const { scene } = this;
     let delay = 0;
 
     this.tilesMovement.map((tile) => {
-      scene.tweens.add({
+      this.scene.tweens.add({
         targets: tile,
         alpha: 1,
         duration: 1000,
@@ -30,6 +29,34 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     });
 
     return this;
+  }
+
+  /**
+   * Add sprite animation to tile.
+   */
+  bringToFront() {
+    this.tile.setAlpha(0);
+    this.sprite.setAlpha(1);
+
+    this.scene.tweens.timeline({
+      targets: this.sprite,
+      loop: -1,
+      yoyo: true,
+
+      tweens: [
+        {
+          scaleX: 1.4,
+          scaleY: 1.4,
+          duration: 500,
+          ease: 'Sine.easeIn'
+        },
+        {
+          scaleX: 1.7,
+          scaleY: 1.7,
+          duration: 500,
+          ease: 'Sine.easeOut'
+        }]
+    });
   }
 
   createUnitSprite(tile) {
@@ -121,6 +148,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const layerMovement = this.scene.gameMap.layers.movement;
 
     this.tilesMovement.map((tile) => {
+      this.scene.tweens.killTweensOf(tile);
       layerMovement.removeTileAt(tile.x, tile.y);
     });
 
@@ -149,17 +177,26 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.tile.y = endY;
 
     // sprite anim
-    // const { sprite } = this.tile.properties;
-    // const { x, y } = tilemap.tileToWorldXY(endX, endY);
-    // this.sprite.setPosition(x, y);
+    const { x: pixelX, y: pixelY } = tilemap.tileToWorldXY(endX, endY);
+    this.sprite.setPosition(pixelX, pixelY);
 
     return this;
   }
 
   /**
- * Show the allowed movement for the target character tile.
- * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
- */
+   * Remove sprite animation from tile.
+   */
+  sendToBack() {
+    this.tile.setAlpha(1);
+    this.sprite.setAlpha(0);
+
+    this.scene.tweens.killTweensOf(this.sprite);
+  }
+
+  /**
+   * Show the allowed movement for the target character tile.
+   * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
+   */
   showAllowedMovement() {
     const { tile } = this;
     const move = this.unit.get('move');
