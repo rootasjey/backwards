@@ -1,6 +1,5 @@
-import PF from 'pathfinding';
-
 import { unitsFactory } from '../../logic/unitsFactory';
+import TileUnit from '../../gameObjects/TileUnit';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
   /**
@@ -28,15 +27,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     this.map = {};
     this.mapMatrix = [];
-    this.selectedCharacter = {};
+    this.selectedCharacter;
 
     this.tileset = {
       characters: {},
       map: {},
       ui: {}
     };
-
-    this.tilesMovement = [];
   }
 
   addTilesetImages() {
@@ -67,23 +64,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
         {
           alpha: 0
         }]
-    });
-
-    return this;
-  }
-
-  animateTileMovement() {
-    let delay = 0;
-
-    this.tilesMovement.map((tile) => {
-      this.scene.tweens.add({
-        targets: tile,
-        alpha: 1,
-        duration: 1000,
-        delay: delay
-      });
-
-      delay += 25;
     });
 
     return this;
@@ -156,27 +136,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       dataWeapons       : json.get('weapons')
     });
 
-    const buildUnit = (tile) => {
-      tile.properties.unit = this.createUnit(tile.properties.unitName);
-      tile.properties.sprite = this.createUnitSprite(tile);
+    const { createUnit } = this;
+
+    const createTileUnit = (tile) => {
+      tile.properties.tileUnit = new TileUnit({ tile, createUnit });
     };
 
-    layer.forEachTile(buildUnit, undefined, 0, 0,
+    layer.forEachTile(createTileUnit, undefined, 0, 0,
       undefined, undefined, { isNotEmpty: true });
 
     return this;
-  }
-
-  createUnitSprite(tile) {
-    const { x, y } = this.map.tileToWorldXY(tile.x, tile.y);
-    const id = Number.parseInt(tile.properties.spritesIds);
-
-    tile.setAlpha(0);
-    const add = tile.height / 1.4;
-
-    return this.scene.add
-      .sprite(x + add, y + add, 'charactersSheet', id)
-      .setScale(1.4);
   }
 
   disableEvents() {
@@ -207,58 +176,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
- * Find the adjacent allowed movement and add the tiles found to a layer and an array.
- * @param {coordinates} param0 Coordinate to check the adjacent tile movement.
- * @param {Number} param0.x X coordinate.
- * @param {Number} param0.y Y coordinate.
- * @param {Number} remainingMove Max character's movement.
- */
-  findValidNeighbours({ x, y }, remainingMove) {
-    if (remainingMove === 0) return;
-
-    // 1.Bounds check
-    if (x >= this.layers.movement.tilemap.width ||
-      y >= this.layers.movement.tilemap.height ||
-      x < 0 || y < 0) {
-      return;
-    }
-
-    // 2.Collision Environment check
-    if (this.layers.collision.hasTileAt(x, y)) return;
-
-    // 3.Collision Character check
-    const character = this.layers.characters.getTileAt(x, y);
-
-    if (character &&
-      character.x !== this.selectedCharacter.x &&
-      character.y !== this.selectedCharacter.y) {
-      return;
-    }
-
-    // 4.Avoid tile duplication
-    if (!this.layers.movement.hasTileAt(x, y)) {
-      const tileMovement = this.layers.movement.putTileAt(2569, x, y);
-
-      // Alpha will be animate later to show movement
-      tileMovement.setAlpha(0);
-
-      this.tilesMovement.push(tileMovement);
-    }
-
-    const newRemainingMove = remainingMove - 1;
-
-    const coordUp = { x, y: y - 1 };
-    const coordDown = { x, y: y + 1 };
-    const coordLeft = { x: x - 1, y };
-    const coordRight = { x: x + 1, y };
-
-    this.findValidNeighbours(coordUp, newRemainingMove);
-    this.findValidNeighbours(coordDown, newRemainingMove);
-    this.findValidNeighbours(coordLeft, newRemainingMove);
-    this.findValidNeighbours(coordRight, newRemainingMove);
-  }
-
   getBinaryCellType(x, y) {
     const { layers } = this;
 
@@ -269,28 +186,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     return 0;
-  }
-
-  getCharacterPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
-    let grid = new PF.Grid(this.mapMatrix);
-    const finder = new PF.BestFirstFinder();
-
-    const path = finder.findPath(startX, startY, endX, endY, grid);
-    console.log(path);
-    return path;
-  }
-
-  /**
-   * Hide the allowed movement of the last selected character.
-   * @param {Phaser.Tilemaps.DynamicTilemapLayer|Phaser.Tilemaps.StaticTilemapLayer} layer Layer to remove the tiles from.
-   * @param {Array<Phaser.Tilemaps.Tile>} tilesArray Array containing the tiles to remove.
-   */
-  hideAllowedMovement(layer, tilesArray) {
-    tilesArray.map((tile) => {
-      layer.removeTileAt(tile.x, tile.y);
-    });
-
-    return [];
   }
 
   /**
@@ -315,10 +210,11 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x, y } = this.cursor;
 
     if (this.selectedCharacter) {
-      this.moveCharacterTo(x, y);
+      const { tileUnit } = this.selectedCharacter.properties;
 
-      this.tilesMovement =
-        this.hideAllowedMovement(this.layers.movement, this.tilesMovement);
+      tileUnit
+        .moveCharacterTo(x, y)
+        .hideAllowedMovement();
 
       this.selectedCharacter = null;
       return;
@@ -329,7 +225,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (!tileCharacter) return;
 
     this.selectedCharacter = tileCharacter;
-    this.showAllowedMovement(tileCharacter);
+
+    this.selectedCharacter.properties
+      .tileUnit.showAllowedMovement();
   }
 
   listenToEvents() {
@@ -339,27 +237,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     events.on('unsubscribeMapEvents', this.disableEvents);
 
     this.enableEvents();
-  }
-
-  /**
-   * Move the selected character to the coordinates.
-   * @param {Number} endX x coordinate to move the selected character to.
-   * @param {Number} endY y coordinate to move the selected character to.
-   */
-  moveCharacterTo(endX, endY) {
-    if (!this.layers.movement.hasTileAt(endX, endY)) return;
-
-    const { x: startX, y: startY } = this.selectedCharacter;
-
-    this.getCharacterPath({ startX, startY }, { endX, endY });
-
-    this.layers.characters.removeTileAt(startX, startY);
-    this.layers.characters.putTileAt(this.selectedCharacter, endX, endY);
-
-    // sprite anim
-    const { sprite } = this.selectedCharacter.properties;
-    const { x, y } = this.map.tileToWorldXY(endX, endY);
-    sprite.setPosition(x, y);
   }
 
   onMoveCursorDown() {
@@ -453,29 +330,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     Object
       .values(layers)
       .map((layer) => layer.setDisplaySize(height, width));
-
-    return this;
-  }
-
-  /**
-   * Show the allowed movement for the target character tile.
-   * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
-   */
-  showAllowedMovement(tileCharacter) {
-    const { unit } = tileCharacter.properties;
-    const move = unit.get('move');
-
-    if (!move) return;
-
-    const coord = {
-      x: tileCharacter.x,
-      y: tileCharacter.y
-    };
-
-    const remainingMove = move + 1;
-
-    this.findValidNeighbours(coord, remainingMove);
-    this.animateTileMovement();
 
     return this;
   }

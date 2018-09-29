@@ -163,8 +163,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       tile = layers.characters.getTileAt(x, y);
     }
 
-    if (tile.properties) {
-      const { unit } = tile.properties;
+    if (tile.properties && tile.properties.tileUnit) {
+      const { unit } = tile.properties.tileUnit;
 
       values = Object.assign({}, values, {
         hp: `HP ${ unit.get('hp') } / ${ unit.get('fullHP') }`,
