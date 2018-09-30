@@ -68,6 +68,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
           ease: 'Power1'
         }]
     });
+
+    this.showAllowedMovement();
   }
 
   createUnitSprite(tile) {
@@ -161,6 +163,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     });
 
     this.tilesMovement = [];
+
+    return this;
   }
 
   /**
@@ -211,6 +215,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.sprite.setAlpha(0);
 
     this.scene.tweens.killTweensOf(this.sprite);
+
+    this.hideAllowedMovement();
   }
 
   /**
@@ -221,7 +227,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const { tile } = this;
     const move = this.unit.get('move');
 
-    if (!move) return;
+    if (!move) return this;
+    if (this.tilesMovement.length > 0) return this;
 
     const coord = {
       x: tile.x,

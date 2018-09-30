@@ -50,3 +50,10 @@ A typical player turn:
 
 [1]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 [2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_2015_support_in_Mozilla
+
+## Thanks
+
+Thanks to these awesome tools and assets, I can have fun building a game
+
+* [Kenney assets](https://www.kenney.nl)
+* [Phaser 3](http://phaser.io)
