@@ -232,47 +232,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x, y } = this.cursor;
 
     if (this.selectedCharacter) {
-      const { tileUnit } = this.selectedCharacter.properties;
-      const { characters } = this.layers;
-      const { createUnit } = this;
-
-      // Target tile is where the char is already
-      if (x === this.selectedCharacter.x &&
-          y === this.selectedCharacter.y) {
-
-        tileUnit.hideAllowedMovement();
-        this.selectedCharacter = undefined;
-        this.lastPointedChar = undefined;
-
-        return;
-      }
-
-      tileUnit
-        .moveCharacterTo(x, y)
-        .then(unit => unit.hideAllowedMovement())
-        .then(() => {
-          const tile = characters
-            .putTileAt(this.selectedCharacter, x, y)
-            .setAlpha(1);
-
-          tile.properties.tileUnit = new TileUnit({ tile, createUnit });
-
-          characters.removeTileAt(this.selectedCharacter.x, this.selectedCharacter.y);
-
-          tileUnit.destroy();
-          this.selectedCharacter.destroy();
-          this.selectedCharacter = undefined;
-          this.lastPointedChar = undefined;
-        });
-
+      this.updateCharacterPosition(x, y);
       return;
     }
 
-    const tileCharacter = this.layers.characters.getTileAt(x, y);
+    if (!this.layers.characters.hasTileAt(x, y)) {
+      return;
+    }
 
-    if (!tileCharacter) return;
-
-    this.selectedCharacter = tileCharacter;
+    this.selectedCharacter = this.layers
+      .characters.getTileAt(x, y);
 
     this.selectedCharacter.properties
       .tileUnit.tintAllowedMovement();
@@ -383,6 +352,68 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     Object
       .values(layers)
       .map((layer) => layer.setDisplaySize(height, width));
+
+    return this;
+  }
+
+  /**
+   * Handle character's movement on layer.
+   * @param {Number} x The x coordinate to move char to.
+   * @param {Number} y The y coordinate to move char to.
+   */
+  updateCharacterPosition(x = 0, y = 0) {
+    const { layers: { characters }, createUnit } = this;
+
+    const { properties: { tileUnit },
+      x: charX, y: charY } = this.selectedCharacter;
+
+    tileUnit
+      .moveCharacterTo(x, y)
+      .then((result) => {
+        result.tileUnit.hideAllowedMovement();
+        return result;
+      })
+      .then((result) => {
+        if (!result.moved) return;
+
+        const tile = characters
+          .putTileAt(this.selectedCharacter, x, y)
+          .setAlpha(1);
+
+        tile.properties.tileUnit = new TileUnit({ tile, createUnit });
+
+        this.updateMapMatrix({ added: tile, removed: this.selectedCharacter });
+
+        characters.removeTileAt(charX, charY);
+
+        tileUnit.destroy();
+        this.selectedCharacter.destroy();
+
+      })
+      .finally(() => {
+        this.selectedCharacter = undefined;
+        this.lastPointedChar = undefined;
+      });
+
+    return this;
+  }
+
+  /**
+   * Update matrix cells (which one is (un-)reachable).
+   * @param {Object} collisions Added & removed collisions.
+   */
+  updateMapMatrix(collisions = {}) {
+    const { added, removed } = collisions;
+
+    if (added) {
+      const { x, y } = added;
+      this.mapMatrix[y][x] = 1;
+    }
+
+    if (removed) {
+      const { x, y } = removed;
+      this.mapMatrix[y][x] = 0;
+    }
 
     return this;
   }

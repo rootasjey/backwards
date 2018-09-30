@@ -30,10 +30,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.tilesMovement.map((tile) => {
       this.scene.tweens.add({
-        targets: tile,
-        alpha: 1,
-        duration: 500,
-        delay: delay
+        alpha     : 1,
+        delay     : delay,
+        duration  : 500,
+        targets   : tile
       });
 
       delay += 15;
@@ -177,7 +177,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       const { layers } = this.scene.gameMap;
 
       if (!layers.movement.hasTileAt(endX, endY)) {
-        return resolve(this);
+        return resolve({ tileUnit: this, moved: false });
       }
 
       const { tilemap } = this.tile;
@@ -185,12 +185,16 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       const deltaToCenter = this.tile.height / 1.4;
       const path = this.getCharacterPath({ startX, startY }, { endX, endY });
 
+      if (path.length === 1) { // start === end
+        return resolve({ tileUnit: this, moved: false });
+      }
+
       this.isAnimating = true;
 
       this.scene.tweens.timeline({
         onComplete: () => {
           this.isAnimating = false;
-          resolve(this);
+          resolve({ tileUnit: this, moved: true });
         },
         targets: this.sprite,
         tweens: path.map(([x, y]) => {
