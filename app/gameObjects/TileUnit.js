@@ -32,7 +32,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       this.scene.tweens.add({
         targets: tile,
         alpha: 1,
-        duration: 1000,
+        duration: 500,
         delay: delay
       });
 
@@ -239,6 +239,24 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.findValidNeighbours(coord, remainingMove);
     this.animateTileMovement();
+
+    return this;
+  }
+
+  tintAllowedMovement() {
+    let delay = 0;
+
+    this.tilesMovement
+      .map(tile => {
+        this.scene.tweens.add({
+          delay     : delay,
+          duration  : 25,
+          targets   : tile,
+          tint      : 0x358F55
+        });
+
+        delay += 25;
+      });
 
     return this;
   }

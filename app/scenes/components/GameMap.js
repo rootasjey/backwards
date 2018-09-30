@@ -236,6 +236,17 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       const { characters } = this.layers;
       const { createUnit } = this;
 
+      // Target tile is where the char is already
+      if (x === this.selectedCharacter.x &&
+          y === this.selectedCharacter.y) {
+
+        tileUnit.hideAllowedMovement();
+        this.selectedCharacter = undefined;
+        this.lastPointedChar = undefined;
+
+        return;
+      }
+
       tileUnit
         .moveCharacterTo(x, y)
         .then(unit => unit.hideAllowedMovement())
@@ -264,7 +275,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.selectedCharacter = tileCharacter;
 
     this.selectedCharacter.properties
-      .tileUnit.showAllowedMovement();
+      .tileUnit.tintAllowedMovement();
   }
 
   /**
