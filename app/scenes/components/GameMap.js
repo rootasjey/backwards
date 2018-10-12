@@ -343,7 +343,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   onPointerMove(pointer) {
     const cursorLayer = this.scene.gameMap.layers.cursor;
-    const { x, y } = pointer;
+
+    const x = pointer.x + this.cameras.main.scrollX;
+    const y = pointer.y + this.cameras.main.scrollY;
 
     // Out of boundaries
     if (x >= cursorLayer.displayWidth ||

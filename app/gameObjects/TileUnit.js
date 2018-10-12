@@ -18,10 +18,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.once('destroy', () => {
       this.sprite.destroy();
 
-      this.isAnimating = undefined;
-      this.tile = undefined;
-      this.tilesMovement = undefined;
-      this.unit = undefined;
+      this.isAnimating    = undefined;
+      this.tile           = undefined;
+      this.tilesMovement  = undefined;
+      this.unit           = undefined;
     });
   }
 
@@ -75,7 +75,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   createUnitSprite(tile) {
     const { scene } = tile.layer.tilemapLayer;
 
-    const { x, y } = tile.tilemap.tileToWorldXY(tile.x, tile.y);
+    const { x, y } = tile.layer.tilemapLayer.tileToWorldXY(tile.x, tile.y);
     const id = Number.parseInt(tile.properties.spritesIds);
 
     const deltaToCenter = tile.height / 1.4;
@@ -180,8 +180,9 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         return resolve({ tileUnit: this, moved: false });
       }
 
-      const { tilemap } = this.tile;
-      const { x: startX, y: startY } = this.tile;
+      const { layer: { tilemapLayer },
+        x: startX, y: startY } = this.tile;
+
       const deltaToCenter = this.tile.height / 1.4;
       const path = this.getCharacterPath({ startX, startY }, { endX, endY });
 
@@ -199,8 +200,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         targets: this.sprite,
         tweens: path.map(([x, y]) => {
           return {
-            x: tilemap.tileToWorldX(x) + deltaToCenter,
-            y: tilemap.tileToWorldY(y) + deltaToCenter,
+            x: tilemapLayer.tileToWorldX(x) + deltaToCenter,
+            y: tilemapLayer.tileToWorldY(y) + deltaToCenter,
             duration: 100
           };
         })
