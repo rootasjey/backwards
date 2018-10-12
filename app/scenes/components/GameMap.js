@@ -67,6 +67,21 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  /**
+   * Check cursor is on map edge
+   * @param {Number} x The x coordinate.
+   * @param {Number} y The y coordinate.
+   */
+  checkPanCam(x = 0, y = 0) {
+    const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
+
+    if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
+      || worldX < 60 || worldY < 60) {
+
+      this.scene.cameras.main.pan(worldX, worldY, 500);
+    }
+  }
+
   createMapCursor() {
     this.cursor = this.layers.cursor.getTileAt(0, 0);
     this.animateCursor(this.cursor);
@@ -174,6 +189,18 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  /**
+   * Fix some layers so they won't scroll with the camera.
+   */
+  fixLayers() {
+    const { layers } = this;
+
+    layers.tilePanel.setScrollFactor(0);
+    layers.charPanel.setScrollFactor(0);
+
+    return this;
+  }
+
   getBinaryCellType(x, y) {
     const { layers } = this;
 
@@ -219,6 +246,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .createStaticLayers()
       .createDynamicLayer()
       .scaleToGameSize()
+      .fixLayers()
       .createMapCursor()
       .createUnits()
       .createMapMatrix()
@@ -343,6 +371,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
 
     this.highlightChar(x, y);
+
+    this.checkPanCam(x, y);
   }
 
   scaleToGameSize() {

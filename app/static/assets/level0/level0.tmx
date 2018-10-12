@@ -3099,8 +3099,8 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="2416" name="ui" tilewidth="16" tileheight="16" spacing="2" tilecount="990" columns="30">
-  <image source="ui.png" width="538" height="592"/>
+ <tileset firstgid="2416" name="ui" tilewidth="16" tileheight="16" spacing="4" margin="1" tilecount="1188" columns="30">
+  <image source="ui.png" width="598" height="658"/>
  </tileset>
  <layer name="Floor" width="30" height="30">
   <data encoding="csv">

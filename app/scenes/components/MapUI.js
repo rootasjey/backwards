@@ -80,7 +80,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     texts.name  = add.text(0, 0, ' hero name ', Object.assign({}, textStyle, { fontSize: 40 }));
     texts.hp    = add.text(0, 50, 'HP ', textStyle);
 
-    charPanel.textsContainer = add.container(x, y, [texts.name, texts.hp]);
+    charPanel.textsContainer = add
+      .container(x, y, [texts.name, texts.hp])
+      .setScrollFactor(0);
 
     return this;
   }
@@ -101,7 +103,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     texts.def   = add.text(0, 50, 'DEF. ', textStyle);
     texts.avo   = add.text(0, 70, 'AVO. ', textStyle);
 
-    tilePanel.textsContainer = add.container(x, y, [texts.name, texts.def, texts.avo]);
+    tilePanel.textsContainer = add
+      .container(x, y, [texts.name, texts.def, texts.avo])
+      .setScrollFactor(0);
 
     return this;
   }
@@ -281,12 +285,12 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   initProperties(name) {
     this.panels[name] = {
       bounds: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0
+        top     : 0,
+        bottom  : 0,
+        left    : 0,
+        right   : 0
       },
-      texts: {}
+      texts     : {}
     };
 
     return this;
@@ -341,7 +345,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     const { x: textX, y: textY } = panelLayer.tileToWorldXY(x, y);
 
-    this.updatePanelTextPosition({ x: textX + 20, y: textY + 10 }, name);
+    this.updatePanelTextPosition({ x: textX, y: textY }, name);
 
     return this;
   }
@@ -470,10 +474,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   /**
    * Move text's panel when the panel has moved.
+   * Take camera scroll into account.
    * @param {Object} param0 X/Y coordinates
    * @param {String} name Panel's name.
    */
   updatePanelTextPosition({ x = 0, y = 0 }, name = '') {
+    x = x + 20 - this.scene.cameras.main.scrollX;
+    y = y + 10 - this.scene.cameras.main.scrollY;
+
     this.panels[name].textsContainer.setPosition(x, y);
 
     return this;

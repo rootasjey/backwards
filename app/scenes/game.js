@@ -69,6 +69,13 @@ export default class Game extends Phaser.Scene {
 
     this.mapUI = this.add.existing(new MapUI(this));
     this.mapUI.init();
+
+    this.setCameraBorders();
+  }
+
+  setCameraBorders() {
+    const { displayHeight, displayWidth } = this.gameMap.layers.floor;
+    this.cameras.main.setBounds(0, 0, displayHeight + 60, displayWidth + 60);
   }
 
   /**
