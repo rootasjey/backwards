@@ -3,7 +3,7 @@ Cycles System
 
 [WIP] A turn-based game system built with [Phaser 3](http://phaser.io).
 
-<img src='./screenshot.png' height='500' />
+<img src='./screenshot.gif' height='500' />
 
 ## Roadmap
 
