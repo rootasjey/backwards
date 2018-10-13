@@ -10,6 +10,9 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.tile = tile;
 
+    this.tilesPath = [];
+    this.movementTint = 16777215;
+
     this.sprite = this.createUnitSprite(tile);
     this.unit = createUnit(tile.properties.unitName);
 
@@ -30,7 +33,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.tilesMovement.map((tile) => {
       this.scene.tweens.add({
-        alpha     : 1,
+        alpha     : .5,
         delay     : delay,
         duration  : 500,
         targets   : tile
@@ -210,6 +213,31 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /**
+   * Fired when this current unit is selected
+   * and pointer has moved.
+   */
+  onCursorMoved(cursor, scene) {
+    const { layers: {movement}, selectedCharacter } = scene.gameMap;
+    const { tileUnit } = selectedCharacter.properties;
+
+    const { x: startX, y: startY } = tileUnit.tile;
+    const { x: endX, y: endY } = cursor;
+
+    const inRange = tileUnit.tilesMovement
+      .some(tile => tile.x === endX && tile.y === endY );
+
+    if (!inRange) return;
+
+    // Revert back past movement tiles to their original tint
+    tileUnit.tilesPath.map(tile => tile.tint = tileUnit.movementTint);
+
+    tileUnit.tilesPath = tileUnit
+      .getCharacterPath({ startX, startY }, { endX, endY })
+      .map(([x, y]) => movement.getTileAt(x, y))
+      .map(tile => { tile.tint = 0x358F55; return tile; });
+  }
+
+  /**
    * Remove sprite animation from tile.
    */
   sendToBack() {
@@ -222,6 +250,17 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.scene.tweens.killTweensOf(this.sprite);
 
     this.hideAllowedMovement();
+  }
+
+  /**
+   * Select this unit.
+   */
+  select() {
+    this.tintAllowedMovement();
+
+    this.scene.events.on('cursorMoved', this.onCursorMoved);
+
+    return this;
   }
 
   /**
@@ -254,14 +293,26 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.tilesMovement
       .map(tile => {
         this.scene.tweens.add({
+          alpha     : 1,
           delay     : delay,
           duration  : 25,
-          targets   : tile,
-          tint      : 0x358F55
+          targets   : tile
         });
 
         delay += 25;
       });
+
+    return this;
+  }
+
+
+  /**
+   * Unselect this unit.
+   */
+  unselect() {
+    this.hideAllowedMovement();
+
+    this.scene.events.off('cursorMoved', this.onCursorMoved);
 
     return this;
   }

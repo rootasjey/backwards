@@ -282,7 +282,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .characters.getTileAt(x, y);
 
     this.selectedCharacter.properties
-      .tileUnit.tintAllowedMovement();
+      .tileUnit.select();
   }
 
   /**
@@ -316,6 +316,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
       this.scene.cameras.main.pan(worldX, worldY, 500);
     }
+
+    return this;
   }
 
   onMoveCursorDown() {
@@ -394,7 +396,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       gameMap.moveCursorTo(tileX, tileY);
     }
 
-    // Pointer delta ?
     gameMap.dragCamera(pointer);
   }
 
@@ -406,13 +407,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
     this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
 
-    this.animateCursor(this.cursor);
+    this
+      .animateCursor(this.cursor)
+      .highlightChar(x, y)
+      .moveCamera(x, y);
 
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
-
-    this.highlightChar(x, y);
-
-    this.moveCamera(x, y);
   }
 
   scaleToGameSize() {
@@ -440,7 +440,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     tileUnit
       .moveCharacterTo(x, y)
       .then((result) => {
-        result.tileUnit.hideAllowedMovement();
+        result.tileUnit.unselect();
         return result;
       })
       .then((result) => {
