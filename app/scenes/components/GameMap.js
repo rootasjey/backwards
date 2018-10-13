@@ -9,6 +9,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   constructor(scene) {
     super(scene, 'GameMap');
 
+    this.canDrag = false;
+
     this.cursor = {};
 
     this.lastPointedChar;
@@ -65,21 +67,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     });
 
     return this;
-  }
-
-  /**
-   * Check cursor is on map edge
-   * @param {Number} x The x coordinate.
-   * @param {Number} y The y coordinate.
-   */
-  checkPanCam(x = 0, y = 0) {
-    const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
-
-    if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
-      || worldX < 60 || worldY < 60) {
-
-      this.scene.cameras.main.pan(worldX, worldY, 500);
-    }
   }
 
   createMapCursor() {
@@ -164,6 +151,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   disableEvents() {
     const { input } = this.scene;
 
+    input.off('pointerup', this.onPointerUp);
     input.off('pointerdown', this.onPointerDown);
     input.off('pointermove', this.onPointerMove);
 
@@ -175,9 +163,31 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  /**
+   * Drag the camera with pointer down.
+   * @param {Object} pointer Phaser pointer.
+   */
+  dragCamera(pointer = {}) {
+    if (!this.canDrag) return;
+
+    const { x, y } = pointer.position;
+    const { x: prevX, y: prevY } = pointer.prevPosition;
+
+    const deltaX = x - prevX;
+    const deltaY = y - prevY;
+
+    const camX = this.scene.cameras.main.scrollX;
+    const camY = this.scene.cameras.main.scrollY;
+
+    this.scene.cameras.main.setScroll(camX - deltaX, camY - deltaY, 500);
+
+    return this;
+  }
+
   enableEvents() {
     const { input } = this.scene;
 
+    input.on('pointerup', this.onPointerUp);
     input.on('pointerdown', this.onPointerDown);
     input.on('pointermove', this.onPointerMove);
 
@@ -293,6 +303,21 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.enableEvents();
   }
 
+  /**
+   * Move camera if cursor is on map edge.
+   * @param {Number} x The x coordinate.
+   * @param {Number} y The y coordinate.
+   */
+  moveCamera(x = 0, y = 0) {
+    const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
+
+    if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
+      || worldX < 60 || worldY < 60) {
+
+      this.scene.cameras.main.pan(worldX, worldY, 500);
+    }
+  }
+
   onMoveCursorDown() {
     const { gameMap } = this.scene;
     const { x, y } = gameMap.cursor;
@@ -338,11 +363,21 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   onPointerDown() {
-    this.scene.gameMap.interactWithCharacter();
+    const { gameMap } = this.scene;
+
+    gameMap.canDrag = true;
+  }
+
+  onPointerUp() {
+    const { gameMap } = this.scene;
+
+    gameMap.canDrag = false;
+    gameMap.interactWithCharacter();
   }
 
   onPointerMove(pointer) {
-    const cursorLayer = this.scene.gameMap.layers.cursor;
+    const { gameMap } = this.scene;
+    const cursorLayer = gameMap.layers.cursor;
 
     const x = pointer.x + this.cameras.main.scrollX;
     const y = pointer.y + this.cameras.main.scrollY;
@@ -356,8 +391,11 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x: tileX, y: tileY } = cursorLayer.worldToTileXY(x, y);
 
     if (!cursorLayer.hasTileAt(tileX, tileY)) {
-      this.scene.gameMap.moveCursorTo(tileX, tileY);
+      gameMap.moveCursorTo(tileX, tileY);
     }
+
+    // Pointer delta ?
+    gameMap.dragCamera(pointer);
   }
 
   moveCursorTo(x = 0, y = 0) {
@@ -374,7 +412,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     this.highlightChar(x, y);
 
-    this.checkPanCam(x, y);
+    this.moveCamera(x, y);
   }
 
   scaleToGameSize() {
