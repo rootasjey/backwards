@@ -314,9 +314,33 @@ export const buildUnit = (state = {}) => {
      * @returns {Number} Range value.
      */
     getRange() {
-      const { range } = this.get('weapon');
+      const inventory = this.inventory;
 
-      return Number.isInteger(range) ? range : 0;
+      let min;
+      let max;
+
+      inventory.getItems()
+        .filter(item => item.itemType === 'weapon')
+        .map(item => {
+          const rangeValues = item.range.split('-');
+
+          let minR = parseInt(rangeValues[0]);
+          let maxR = parseInt(rangeValues[0]);
+
+          rangeValues.map(range => { minR = range < minR ? range : minR; });
+          rangeValues.map(range => { maxR = range > maxR ? range : maxR; });
+
+          min = typeof min === 'undefined' ? minR : min;
+          max = typeof max === 'undefined' ? maxR : max;
+
+          min = minR < min ? minR : min;
+          max = maxR > max ? maxR : max;
+        });
+
+      min = Number.isInteger(min) ? min : 0;
+      max = Number.isInteger(max) ? max : 0;
+
+      return { min, max };
     },
 
     getWeaponRankBonus() {

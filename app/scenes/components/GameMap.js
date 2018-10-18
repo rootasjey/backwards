@@ -16,6 +16,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.lastPointedChar;
 
     this.layers = {
+      attackRange : {},
       carpet      : {},
       characters  : {},
       charPanel   : {},
@@ -79,12 +80,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   createDynamicLayer() {
     const { layers, map, tileset } = this;
 
-    layers.collision  = map.createDynamicLayer('Collision', tileset.map);
-    layers.movement   = map.createDynamicLayer('Movement', tileset.ui);
-    layers.characters = map.createDynamicLayer('Characters', tileset.characters);
-    layers.cursor     = map.createDynamicLayer('Cursor', tileset.map);
-    layers.tilePanel  = map.createDynamicLayer('TilePanel', tileset.ui);
-    layers.charPanel  = map.createDynamicLayer('CharPanel', tileset.ui);
+    layers.collision    = map.createDynamicLayer('Collision', tileset.map);
+    layers.attackRange  = map.createDynamicLayer('AttackRange', tileset.ui);
+    layers.movement     = map.createDynamicLayer('Movement', tileset.ui);
+    layers.characters   = map.createDynamicLayer('Characters', tileset.characters);
+    layers.cursor       = map.createDynamicLayer('Cursor', tileset.map);
+    layers.tilePanel    = map.createDynamicLayer('TilePanel', tileset.ui);
+    layers.charPanel    = map.createDynamicLayer('CharPanel', tileset.ui);
 
     return this;
   }

@@ -130,9 +130,13 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const { [name]: layer } = this.scene.gameMap.layers;
     const { bounds } = this.panels[name];
 
-    const { x, y } = layer.findTile(
+    const tileToFind = layer.findTile(
       tile => typeof tile === 'object',
       undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
+
+    if (!tileToFind) return this;
+
+    const { x, y } = tileToFind;
 
     bounds.top  = y;
     bounds.left = x;

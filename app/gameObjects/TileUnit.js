@@ -6,17 +6,15 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     super(scene, 'TileUnit');
 
-    this.isAnimating = false;
-
-    this.tile = tile;
-
-    this.tilesPath = [];
-    this.movementTint = 16777215;
-
-    this.sprite = this.createUnitSprite(tile);
-    this.unit = createUnit(tile.properties.unitName);
-
-    this.tilesMovement = [];
+    Object.assign(this, {
+      isAnimating   : false,
+      movementTint  : 16777215,
+      sprite        : this.createUnitSprite(tile),
+      tile          : tile,
+      tilesMovement : [],
+      tilesPath     : [],
+      unit          : createUnit(tile.properties.unitName)
+    });
 
     this.once('destroy', () => {
       this.sprite.destroy();
@@ -72,7 +70,9 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         }]
     });
 
-    this.showAllowedMovement();
+    this
+      .showAllowedMovement()
+      .showWeaponRange();
   }
 
   createUnitSprite(tile) {
@@ -283,6 +283,40 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.findValidNeighbours(coord, remainingMove);
     this.animateTileMovement();
+
+    return this;
+  }
+
+  /**
+   * Show character's weapon range.
+   * (Consider all current weapons in inventory).
+   */
+  showWeaponRange() {
+    const range = this.unit.getRange();
+    // const { tile } = this;
+
+    // const coord = {
+    //   x: tile.x,
+    //   y: tile.y
+    // };
+
+    // const move = this.unit.get('move');
+
+    // console.log(range);
+
+    // if (range.min === 0 && range.max === 0) return this;
+
+    // const remainingRange = range + 1;
+
+    // const atkRangeStartX = coord.x + move;
+
+    // Put atk range tiles from unit tile
+    if (this.tilesMovement.length === 0) {
+    }
+
+    this.tilesMovement.map(tile => {
+      // check if tile has neightboors
+    });
 
     return this;
   }

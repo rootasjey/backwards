@@ -6,7 +6,7 @@
     "hit": 90,
     "itemType": "weapon",
     "name": "Iron Sword",
-    "range": 1,
+    "range": "1",
     "rank": "E",
     "type": "sword",
     "usage": 45,
