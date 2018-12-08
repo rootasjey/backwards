@@ -1,26 +1,32 @@
 {
-  "name": "cycles-system",
-  "description": "A turn based game system built on phaser.io",
-  "private": true,
+  "name": "cycles",
+  "version": "0.7.0",
   "author": "Jeremie CORPINOT",
-  "version": "0.6.0",
-  "repository": "",
+  "description": "A turn based game system built with Phaser",
+  "license": "MIT",
   "scripts": {
-    "start": "brunch watch --server",
-    "build": "brunch build --production",
-    "test": "ava"
+    "build:dev": "webpack --env dev",
+    "build:prd": "webpack --env prd",
+    "start": "webpack-dev-server -d --env dev",
+    "watch": "webpack --env dev --watch"
   },
   "dependencies": {
+    "copy-webpack-plugin": "4.6.0",
     "pathfinding": "0.4.18",
-    "phaser": "3.14.0"
+    "phaser": "3.15.1"
   },
   "devDependencies": {
-    "auto-reload-brunch": "2.7.1",
+    "@types/node": "10.12.12",
+    "@types/pathfinding": "0.0.2",
+    "@types/webpack": "4.4.20",
     "ava": "1.0.0-beta.8",
-    "babel-brunch": "github:babel/babel-brunch",
-    "brunch": "2.10.17",
-    "eslint": "5.6.1",
-    "esm": "3.0.84"
+    "raw-loader": "0.5.1",
+    "ts-loader": "5.3.1",
+    "tslint": "5.11.0",
+    "typescript": "3.2.2",
+    "webpack": "4.27.1",
+    "webpack-cli": "3.1.2",
+    "webpack-dev-server": "3.1.10"
   },
   "ava": {
     "babel": {

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        "moduleResolution": "node",
+        "module": "CommonJS",
+        "strict": true,
+        "sourceMap": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "resolveJsonModule": true
+    },
+    "include": [
+        "./src/**/*",
+        "./typings"
+    ]
+}

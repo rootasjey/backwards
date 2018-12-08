@@ -1,0 +1,17 @@
+{
+  "Iron Sword": {
+    "atk": 3,
+    "crt": 5,
+    "damageType": "physical",
+    "desc": "A simple iron sword.",
+    "hit": 90,
+    "itemType": "weapon",
+    "name": "Iron Sword",
+    "range": "1",
+    "rank": "E",
+    "type": "sword",
+    "usage": 45,
+    "value": 100,
+    "weight": 3
+  }
+}
