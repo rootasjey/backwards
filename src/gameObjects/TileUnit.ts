@@ -6,15 +6,21 @@ import { Game } from '../scenes/Game';
 export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   private isAnimating: boolean = false;
+
   private movementTint: number = 16777215;
+
   private sprite: any;
+
   private tile: Phaser.Tilemaps.Tile;
+
   private tilesMovement: Phaser.Tilemaps.Tile[] = [];
+
   private tilesPath: Phaser.Tilemaps.Tile[] = [];
+
   private unit: Unit;
 
   constructor({ scene, tile, createUnit }:
-    { scene: Phaser.Scene, tile: Phaser.Tilemaps.Tile, createUnit: Function}) {
+    { scene: Phaser.Scene, tile: Phaser.Tilemaps.Tile, createUnit: (hero: string) => Unit }) {
 
     super(scene, 'TileUnit');
 
@@ -22,23 +28,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.unit = createUnit(tile.properties.unitName); // TODO: PR in Phaser for properties: any
     this.tile = tile;
 
-    // Object.assign(this, {
-    //   isAnimating   : false,
-    //   movementTint  : 16777215,
-    //   sprite        : this.createUnitSprite(tile),
-    //   tile,
-    //   tilesMovement : [],
-    //   tilesPath     : [],
-    //   unit          : createUnit(tile.properties.unitName)
-    // });
-
     this.once('destroy', () => {
       this.sprite.destroy();
-
-      // this.isAnimating    = undefined;
-      // this.tile           = undefined;
-      // this.tilesMovement  = undefined;
-      // this.unit           = undefined;
     });
   }
 
@@ -113,7 +104,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
    * @param {Number} param0.y Y coordinate.
    * @param {Number} remainingMove Max character's movement.
    */
-  public findValidNeighbours({ x, y }: { x: number, y:number }, remainingMove: number) {
+  public findValidNeighbours({ x, y }: { x: number, y: number }, remainingMove: number) {
     if (remainingMove === 0) { return; }
 
     // const { layers } = this.scene.gameMap;
@@ -302,7 +293,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     const coord = {
       x: tile.x,
-      y: tile.y
+      y: tile.y,
     };
 
     const remainingMove = move + 1;

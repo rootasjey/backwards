@@ -59,7 +59,8 @@ export default class Play extends Phaser.Scene {
     styleElement.classList.add('toto');
 
     const sheet = styleElement.sheet as CSSStyleSheet;
-    const styles = '@font-face { font-family: "Kenney Pixel"; src: url("assets/fonts/Kenney Pixel.ttf") format("truetype") }';
+    const styles = '@font-face { font-family: "Kenney Pixel";' +
+      'src: url("assets/fonts/Kenney Pixel.ttf") format("truetype") }';
 
     if (!sheet) { return; }
 
@@ -75,18 +76,8 @@ export default class Play extends Phaser.Scene {
    *  @param {object} data Initialization parameters.
    */
   public create(/* data */) {
-    // this.gameMap = this.add.existing(new GameMap(this));
-    // this.gameMap.init();
-
     Game.gameMap = new GameMap(this);
-    //this.add.existing(Game.gameMap);
-    //Game.gameMap.init();
-
-    // this.mapUI = this.add.existing(new MapUI(this));
-    // this.mapUI.init();
     Game.mapUI = new MapUI(this);
-    // this.add.existing(Game.mapUI);
-    // Game.mapUI.init();
 
     this.setCameraBorders();
   }

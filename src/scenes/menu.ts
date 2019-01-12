@@ -7,7 +7,7 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   public init(data: any) {
-    console.debug('init', this.scene.key, data, this);
+    // console.debug('init', this.scene.key, data, this);
   }
 
   public create() {
@@ -17,7 +17,7 @@ export default class MenuScene extends Phaser.Scene {
     this.add.text(400, 300, 'START', {
       fill: CONST.colors.white,
       fontFamily: CONST.fonts.default,
-      fontSize: 48
+      fontSize: 48,
     })
       .setOrigin(0.5)
       .setShadow(0, 1, CONST.colors.aqua, 10);
@@ -25,7 +25,7 @@ export default class MenuScene extends Phaser.Scene {
     this.add.text(400, 450, 'Last Score: ' + this.registry.get('score'), {
       fill: CONST.colors.gold,
       fontFamily: CONST.fonts.default,
-      fontSize: 24
+      fontSize: 24,
     })
       .setOrigin(0.5)
       .setShadow(0, 1, CONST.colors.black, 5);

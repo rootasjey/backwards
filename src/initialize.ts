@@ -1,6 +1,6 @@
 import BootScene from './scenes/boot';
-import PlayScene from './scenes/play';
 import MenuScene from './scenes/menu';
+import PlayScene from './scenes/play';
 
 import { Game } from './scenes/Game';
 
