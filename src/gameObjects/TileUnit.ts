@@ -40,11 +40,11 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       this.scene.tweens.add({
         alpha     : .5,
         delay,
-        duration  : 500,
+        duration  : 250,
         targets   : tile,
       });
 
-      delay += 15;
+      delay += 10;
     });
 
     return this;
@@ -77,7 +77,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         }],
     });
 
-    this
+    return this
       .showAllowedMovement()
       .showWeaponRange();
   }
@@ -341,6 +341,13 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   public tintAllowedMovement() {
     let delay = 0;
 
+    // Double check tile's movement.
+    // Can happens if the cursor didn't move on unit before click.
+    if (this.tilesMovement.length === 0) {
+      this.bringToFront();
+      delay = 500;
+    }
+
     this.tilesMovement
       .map((tile) => {
         this.scene.tweens.add({
@@ -350,7 +357,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
           targets   : tile,
         });
 
-        delay += 25;
+        delay += 10;
       });
 
     return this;

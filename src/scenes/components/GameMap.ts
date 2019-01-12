@@ -258,16 +258,23 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   public highlightChar(x: number = 0, y: number = 0) {
     if (this.layers.characters.hasTileAt(x, y)) {
       this.lastPointedChar = this.layers.characters.getTileAt(x, y);
-      const { tileUnit } = this.lastPointedChar.properties;
+
+      const tileUnit = this.lastPointedChar
+        .properties.tileUnit as TileUnit;
 
       tileUnit.bringToFront();
+
       return this;
     }
 
     if (this.lastPointedChar &&
         this.lastPointedChar !== this.selectedCharacter) {
 
-      this.lastPointedChar.properties.tileUnit.sendToBack();
+      const tileUnit = this.lastPointedChar
+        .properties.tileUnit as TileUnit;
+
+      tileUnit.sendToBack();
+
       this.lastPointedChar = undefined;
     }
 
