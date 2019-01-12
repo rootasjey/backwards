@@ -26,6 +26,10 @@ export class Unit {
     return this.state.hp;
   }
 
+  get inventory() {
+    return this.state.inventory;
+  }
+
   /**
    * Return the amount of cells this unit can move.
    */
@@ -149,7 +153,7 @@ export class Unit {
    */
   public getCriticalHit(opponent?: Unit): number {
     const skl = this.state.skl;
-    let ennemyLuck = opponent ? opponent.state.lck : 0;
+    const ennemyLuck = opponent ? opponent.state.lck : 0;
 
     if (!this.state.weapon) { return 0; }
 
@@ -197,9 +201,9 @@ export class Unit {
   /**
    * Return Unit's inventory.
    */
-  public getInvetory() {
-    return this.state.inventory;
-  }
+  // public getInvetory() {
+  //   return this.state.inventory;
+  // }
 
   /**
    * Return unit's attack range.
