@@ -5,7 +5,7 @@ import units from '../assets/data/unitsClasses.json';
 
 import weapons from '../assets/data/weapons.json';
 
-import { unitsFactory } from '../src/logic/unitsFactory';
+import { unitsFactory } from '../src/logic/unitsFactory.ts';
 
 test('An unit should have some default values', (t) => {
   const createUnit = unitsFactory({dataHeroes: heroes, dataUnits: units});
