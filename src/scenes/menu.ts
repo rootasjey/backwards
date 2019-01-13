@@ -1,4 +1,4 @@
-import CONST from '../data/const';
+import gameConst from '../const/GameConst';
 
 export default class MenuScene extends Phaser.Scene {
 
@@ -15,20 +15,20 @@ export default class MenuScene extends Phaser.Scene {
     sky.alpha = 0.5;
 
     this.add.text(400, 300, 'START', {
-      fill: CONST.colors.white,
-      fontFamily: CONST.fonts.default,
+      fill: gameConst.colors.white,
+      fontFamily: gameConst.fonts.default,
       fontSize: 48,
     })
       .setOrigin(0.5)
-      .setShadow(0, 1, CONST.colors.aqua, 10);
+      .setShadow(0, 1, gameConst.colors.aqua, 10);
 
     this.add.text(400, 450, 'Last Score: ' + this.registry.get('score'), {
-      fill: CONST.colors.gold,
-      fontFamily: CONST.fonts.default,
+      fill: gameConst.colors.gold,
+      fontFamily: gameConst.fonts.default,
       fontSize: 24,
     })
       .setOrigin(0.5)
-      .setShadow(0, 1, CONST.colors.black, 5);
+      .setShadow(0, 1, gameConst.colors.black, 5);
 
     this.input.on('pointerup', this.start, this);
   }

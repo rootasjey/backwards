@@ -1,9 +1,4 @@
-import {
-  damageTypes as WEAPON_DAMAGE_TYPES,
-  rank as WEAPON_RANK,
-  types as WEAPON_TYPES,
-
-} from './const';
+import WeaponConst from '../const/WeaponConst';
 
 export class Unit {
   private state: UnitState;
@@ -97,7 +92,7 @@ export class Unit {
     let totalAtk = 0;
     const weaponAtk = weapon.atk;
 
-    if (weapon.damageType === WEAPON_DAMAGE_TYPES.physical) {
+    if (weapon.damageType === WeaponConst.damageTypes.physical) {
       totalAtk = weaponAtk + str;
 
       opponentDamageReduction = opponent ?
@@ -154,6 +149,7 @@ export class Unit {
   public getCriticalHit(opponent?: Unit): number {
     const skl = this.state.skl;
     const ennemyLuck = opponent ? opponent.state.lck : 0;
+    const { rank: WEAPON_RANK } = WeaponConst;
 
     if (!this.state.weapon) { return 0; }
 
@@ -189,7 +185,7 @@ export class Unit {
     const { lck, mag, skl } = this.state;
     const { hit, type } = this.state.weapon;
 
-    if (type === WEAPON_TYPES.staff) {
+    if (type === WeaponConst.types.staff) {
       return (mag * 5) + skl + 30;
     }
 
@@ -253,6 +249,8 @@ export class Unit {
    * @param {Object} stats Contains statistic name and value to add.
    */
   public getWeaponRankBonus(): WeaponRankBonus {
+    const { rank: WEAPON_RANK, types: WEAPON_TYPES } = WeaponConst;
+
     let bonus = {
       hit       : 0,
       atk       : 0,

@@ -1,5 +1,5 @@
 import 'phaser';
-import CONST from '../data/const';
+import gameConst from '../const/GameConst';
 
 const Rectangle = Phaser.Geom.Rectangle;
 
@@ -44,14 +44,18 @@ export default class BootScene extends Phaser.Scene {
 
   public onLoadProgress(progress: number) {
     // console.debug('progress', progress);
-    if (!this.progressBar || !this.progressBgRect || !this.progressRect) { return; }
+    if (!this.progressBar ||
+        !this.progressBgRect ||
+        !this.progressRect) { return; }
+
+    const { darkGray, red, white } = gameConst.hexColors;
 
     this.progressRect.width = progress * this.progressBgRect.width;
     this.progressBar
       .clear()
-      .fillStyle(CONST.hexColors.darkGray)
+      .fillStyle(darkGray)
       .fillRectShape(this.progressBgRect)
-      .fillStyle(this.load.totalFailed ? CONST.hexColors.red : CONST.hexColors.white)
+      .fillStyle(this.load.totalFailed ? red : white)
       .fillRectShape(this.progressRect);
   }
 }

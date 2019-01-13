@@ -3,11 +3,11 @@ import { Unit } from '../logic/Unit';
 
 import { Game } from '../scenes/Game';
 
+import gameConst from '../const/GameConst';
+
 export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   private isAnimating: boolean = false;
-
-  private movementTint: number = 16777215;
 
   private sprite: any;
 
@@ -245,13 +245,18 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     if (!inRange) { return; }
 
+    const {
+      tileMovementActive: activeColor,
+      tileMovementPassive: passiveColor,
+    } = gameConst.colors;
+
     // Revert back past movement tiles to their original tint
-    tileUnit.tilesPath.map((tile) => tile.tint = tileUnit.movementTint);
+    tileUnit.tilesPath.map((tile) => tile.tint = passiveColor);
 
     tileUnit.tilesPath = tileUnit
       .getCharacterPath({ startX, startY }, { endX, endY })
       .map(([x, y]) => movement.getTileAt(x, y))
-      .map((tile) => { tile.tint = 0x358F55; return tile; });
+      .map((tile) => { tile.tint = activeColor; return tile; });
   }
 
   /**

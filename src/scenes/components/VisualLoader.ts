@@ -1,4 +1,4 @@
-import CONST from '../../data/const';
+import gameConst from '../../const/GameConst';
 const Rectangle = Phaser.Geom.Rectangle;
 
 export class VisualLoader {
@@ -42,13 +42,15 @@ export class VisualLoader {
     // console.debug('progress', progress);
     if (!this.progressBar || !this.progressBgRect || !this.progressRect) { return; }
 
+    const { red, white } = gameConst.hexColors;
+
     this.progressRect.width = progress * this.progressBgRect.width;
 
     this.progressBar
       .clear()
-      .fillStyle(CONST.hexColors.darkGray)
+      .fillStyle(gameConst.hexColors.darkGray)
       .fillRectShape(this.progressBgRect)
-      .fillStyle(this.scene.load.totalFailed ? CONST.hexColors.red : CONST.hexColors.white)
+      .fillStyle(this.scene.load.totalFailed ? red : white)
       .fillRectShape(this.progressRect);
   }
 }
