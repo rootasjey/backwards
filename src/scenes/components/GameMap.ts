@@ -107,10 +107,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     layers.tilePanel    = map.createDynamicLayer('TilePanel', tileset.ui, 0, 0);
     layers.charPanel    = map.createDynamicLayer('CharPanel', tileset.ui, 0, 0);
 
-    // layers.charPanel.findTile(
-    //   (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',
-    //   undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
-
     return this;
   }
 

@@ -1,5 +1,10 @@
 import WeaponConst from '../const/WeaponConst';
 
+enum ItemType {
+  consumable = 'consumable',
+  weapon = 'weapon',
+}
+
 export class Unit {
   private state: UnitState;
 
@@ -195,13 +200,6 @@ export class Unit {
   }
 
   /**
-   * Return Unit's inventory.
-   */
-  // public getInvetory() {
-  //   return this.state.inventory;
-  // }
-
-  /**
    * Return unit's attack range.
    */
   public getRange() {
@@ -211,7 +209,7 @@ export class Unit {
     let max: number = 0;
 
     inventory.getItems()
-      .filter((item) => item.type === 'weapon')
+      .filter((item) => item.itemType === ItemType.weapon)
       .map((item) => {
         // Diff range formats: '0', '1-3'
         const rangeValues = item.range.split('-');

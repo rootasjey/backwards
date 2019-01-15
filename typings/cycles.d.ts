@@ -12,6 +12,8 @@ interface Consumable {
     target: string;
     value: number;
   };
+
+  itemType: ItemType;
   name: string;
   range: string;
   type: string;
@@ -31,15 +33,20 @@ interface DataConsummables {
   [key: string]: any;
 }
 
-interface UnitsFactoryParameters {
-  dataConsummables: any;
-  dataHeroes: any;
-  dataUnits: any;
-  dataWeapons: any;
-}
-
 interface GameMapLayers {
   [index: string]: Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
+  attackRange: Phaser.Tilemaps.DynamicTilemapLayer,
+  carpet: Phaser.Tilemaps.StaticTilemapLayer,
+  characters: Phaser.Tilemaps.DynamicTilemapLayer,
+  charPanel: Phaser.Tilemaps.DynamicTilemapLayer,
+  collision: Phaser.Tilemaps.DynamicTilemapLayer,
+  cursor: Phaser.Tilemaps.DynamicTilemapLayer,
+  details: Phaser.Tilemaps.StaticTilemapLayer,
+  floor: Phaser.Tilemaps.StaticTilemapLayer,
+  hiddenFloor: Phaser.Tilemaps.StaticTilemapLayer,
+  movement: Phaser.Tilemaps.DynamicTilemapLayer,
+  objects: Phaser.Tilemaps.StaticTilemapLayer,
+  tilePanel: Phaser.Tilemaps.DynamicTilemapLayer,
 }
 
 interface IInventory {
@@ -60,6 +67,11 @@ interface InventoryGetItemsFun {
 interface InventoryRawItem {
   name: string;
   usage: number;
+}
+
+declare enum ItemType {
+  consumable = 'consumable',
+  weapon = 'weapon',
 }
 
 declare enum MagicalWeapons {
@@ -103,6 +115,29 @@ interface MapUIPanel {
   }
   texts: any;
   textsContainer?: Phaser.GameObjects.Container;
+}
+
+interface ParamsFadeInTiles {
+  options?: ParamsOptionsFadeInTiles;
+  tiles: Phaser.Tilemaps.Tile[];
+}
+
+interface ParamsFindNeighbours {
+  /**
+   * Tile x/y coordinates
+   */
+  coord: Coord;
+
+  /**
+   * Remaining allowed cell to inspect.
+   */
+  remainingMove: number;
+}
+
+interface ParamsOptionsFadeInTiles {
+  alpha?: number;
+  duration?: number;
+  opacity?: number;
 }
 
 declare enum PhysicalWeapons {
@@ -156,6 +191,14 @@ interface UnitDataConstructor {
 interface UnitCreateInventoryFun {
   (items: InventoryRawItem[]): IInventory;
 }
+
+interface UnitsFactoryParameters {
+  dataConsummables: any;
+  dataHeroes: any;
+  dataUnits: any;
+  dataWeapons: any;
+}
+
 
 interface UnitState {
   // ~~~~~~~~~~~~~~~
@@ -281,13 +324,14 @@ interface Weapon {
   damageType: string;
   desc: string;
   hit: number;
-  weaponType: string;
+  itemType: ItemType;
   name: string;
   range: string;
   rank: string;
   type: string;
   usage: number;
   value: number;
+  weaponType: string;
   weight: number;
 }
 
