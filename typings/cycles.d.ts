@@ -29,8 +29,42 @@ interface Coord {
   y: number;
 }
 
+interface CoordHash {
+  [key: string] : Coord;
+}
+
 interface DataConsummables {
   [key: string]: any;
+}
+
+interface fadeInTilesParams {
+  options?: fadeInTilesParamsOptions;
+  tiles: Phaser.Tilemaps.Tile[];
+}
+
+interface findTilesParams {
+  /**
+   * Tile x/y coordinates
+   */
+  coord: Coord;
+
+  /**
+   * Number of tiles to skip.
+   */
+  gap?: number;
+
+  /**
+   * Remaining allowed cell to inspect.
+   */
+  remainingMove: number;
+}
+
+interface fadeInTilesParamsOptions {
+  alpha?: number;
+  delay?: number;
+  delayStep?: number;
+  duration?: number;
+  opacity?: number;
 }
 
 interface GameMapLayers {
@@ -55,7 +89,7 @@ interface IInventory {
   getItems: InventoryGetItemsFun;
 }
 
-interface InventoryFactoryParameters {
+interface InventoryFactoryParam {
   dataConsummables: any;
   dataWeapons: any;
 }
@@ -117,29 +151,6 @@ interface MapUIPanel {
   textsContainer?: Phaser.GameObjects.Container;
 }
 
-interface ParamsFadeInTiles {
-  options?: ParamsOptionsFadeInTiles;
-  tiles: Phaser.Tilemaps.Tile[];
-}
-
-interface ParamsFindNeighbours {
-  /**
-   * Tile x/y coordinates
-   */
-  coord: Coord;
-
-  /**
-   * Remaining allowed cell to inspect.
-   */
-  remainingMove: number;
-}
-
-interface ParamsOptionsFadeInTiles {
-  alpha?: number;
-  duration?: number;
-  opacity?: number;
-}
-
 declare enum PhysicalWeapons {
   axe,
   bow,
@@ -151,6 +162,12 @@ interface PhysicalWeaponTriangleCorrespondance {
   axe: string;
   lance: string;
   sword: string;
+}
+
+interface TileUnitConstructorParam {
+  createUnit: Function /*(hero: string) => Unit*/;
+  scene: Phaser.Scene;
+  tile: Phaser.Tilemaps.Tile;
 }
 
 interface UnitData {
@@ -183,7 +200,7 @@ interface UnitStats {
   str: number;
 }
 
-interface UnitDataConstructor {
+interface UnitDataConstructorParam {
   createInventory: UnitCreateInventoryFun;
   unitData: UnitData;
 }
@@ -192,7 +209,7 @@ interface UnitCreateInventoryFun {
   (items: InventoryRawItem[]): IInventory;
 }
 
-interface UnitsFactoryParameters {
+interface UnitsFactoryParam {
   dataConsummables: any;
   dataHeroes: any;
   dataUnits: any;
@@ -317,6 +334,7 @@ interface UnitState {
 
 interface Weapon {
   atk: number;
+
   /**
    * Critical rate.
    */

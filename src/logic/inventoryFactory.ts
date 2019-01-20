@@ -4,7 +4,7 @@ import { Inventory } from './Inventory';
  * Create new inventory containing items.
  * @param {Object} param0 Contains items data
  */
-export const inventoryFactory = (data: InventoryFactoryParameters) => {
+export const inventoryFactory = (data: InventoryFactoryParam) => {
   const { dataWeapons, dataConsummables } = data;
 
   return (rawItems: InventoryRawItem[]) => {

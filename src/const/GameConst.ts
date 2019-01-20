@@ -4,6 +4,7 @@ class GameConst {
     black : '#000',
     gold  : '#fed141',
     white : '#fff',
+    tileAttack: 0x6F1E51,
     tileMovementActive: 0x358F55,
     tileMovementPassive: 16777215,
   };

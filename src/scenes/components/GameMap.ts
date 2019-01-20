@@ -298,8 +298,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.selectedCharacter = this.layers
       .characters.getTileAt(x, y);
 
-    this.selectedCharacter.properties
-      .tileUnit.select();
+    const tileUnit = this.selectedCharacter.properties.tileUnit as TileUnit;
+    tileUnit.select();
 
     this.cursor.tint = gameConst.colors.tileMovementActive;
   }

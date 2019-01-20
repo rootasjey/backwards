@@ -7,24 +7,55 @@ import gameConst from '../const/GameConst';
 
 export default class TileUnit extends Phaser.GameObjects.GameObject {
 
+  /**
+   * Coordinates where tiles attack shouldn't be put
+   * (Due to gap in attack range).
+   */
+  private coordGap: CoordHash = {};
+
+  /**
+   * True if the tile is being animated (sprite movement).
+   */
   private isAnimating: boolean = false;
 
+  /**
+   * Tile's sprite.
+   */
   private sprite: any;
 
+  /**
+   * Unit's tile (where the unit is localized on the map).
+   */
   private tile: Phaser.Tilemaps.Tile;
 
-  private tilesMovement: Phaser.Tilemaps.Tile[] = [];
+  /**
+   * Tiles showing this unit's attack range.
+   */
+  private tilesAtkRange: Phaser.Tilemaps.Tile[] = [];
 
-  private tilesAttackRange: Phaser.Tilemaps.Tile[] = [];
+  /**
+   * Tiles showing this unit's movement range.
+   */
+  private tilesMove: Phaser.Tilemaps.Tile[] = [];
 
+  /**
+   * Tiles representing this unit's path toward its destination.
+   */
   private tilesPath: Phaser.Tilemaps.Tile[] = [];
 
+  /**
+   * The unit associated.
+   */
   private unit: Unit;
 
-  constructor({ scene, tile, createUnit }:
-    { scene: Phaser.Scene, tile: Phaser.Tilemaps.Tile, createUnit: (hero: string) => Unit }) {
+  /**
+   * A combination of unit & tile.
+   * This object can perform actions (e.g. attack, move).
+   */
+  constructor(param: TileUnitConstructorParam) {
+    super(param.scene, 'TileUnit');
 
-    super(scene, 'TileUnit');
+    const { createUnit, tile } = param;
 
     this.sprite = this.createUnitSprite(tile);
     this.unit = createUnit(tile.properties.unitName); // TODO: PR in Phaser for properties: any
@@ -34,6 +65,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       this.sprite.destroy();
     });
   }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
 
   /**
    * Add sprite animation to tile.
@@ -63,11 +98,124 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     });
 
     return this
-      .showAllowedMovement()
-      .showWeaponRange();
+      .showMovement()
+      .showAllAtkRange();
   }
 
-  public createUnitSprite(tile: Phaser.Tilemaps.Tile) {
+  /**
+   * Move the selected character to the coordinates.
+   * @param {Number} endX x coordinate to move the selected character to.
+   * @param {Number} endY y coordinate to move the selected character to.
+   */
+  public moveCharacterTo(endX: number, endY: number) {
+    return new Promise((resolve) => {
+      const { layers } = Game.gameMap;
+
+      if (!layers.movement.hasTileAt(endX, endY)) {
+        return resolve({ tileUnit: this, moved: false });
+      }
+
+      const { layer: { tilemapLayer },
+        x: startX, y: startY } = this.tile;
+
+      const deltaToCenter = this.tile.height / 1.4;
+      const path = this.getUnitPath({ startX, startY }, { endX, endY });
+
+      if (path.length === 1) { // start === end
+        return resolve({ tileUnit: this, moved: false });
+      }
+
+      this.isAnimating = true;
+
+      this.scene.tweens.timeline({
+        onComplete: () => {
+          this.isAnimating = false;
+          resolve({ tileUnit: this, moved: true });
+        },
+        targets: this.sprite,
+        tweens: path.map(([x, y]) => {
+          return {
+            x: tilemapLayer.tileToWorldX(x) + deltaToCenter,
+            y: tilemapLayer.tileToWorldY(y) + deltaToCenter,
+            duration: 100,
+          };
+        }),
+      });
+    });
+  }
+
+  /**
+   * Remove sprite animation from tile.
+   */
+  public sendToBack() {
+    // Prevent cancelling movement animation
+    if (this.isAnimating) { return; }
+
+    this.tile.setAlpha(1);
+    this.sprite.setAlpha(0);
+
+    this.scene.tweens.killTweensOf(this.sprite);
+
+    this
+      .hideMovement()
+      .hideAttackRange();
+  }
+
+  /**
+   * Select this unit.
+   */
+  public select() {
+    this
+      .focusMovement()
+      .focusAllAtkRange();
+
+    this.scene.events.on('cursorMoved', this.onCursorMoved);
+
+    return this;
+  }
+
+  /**
+   * Unselect this unit.
+   */
+  public unselect() {
+    this
+      .hideMovement()
+      .hideAttackRange();
+
+    this.scene.events.off('cursorMoved', this.onCursorMoved, undefined, false);
+
+    return this;
+  }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
+  /**
+   * Add a single tile under the unit
+   * if the unit cannot move.
+   */
+  private addSelfTileIfNoMove(coord: Coord) {
+    const { x, y } = coord;
+    const { layers } = Game.gameMap;
+
+    const layerMovement = layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
+
+    if (!layerMovement.hasTileAt(x, y)) {
+      const tileMovement = layerMovement.putTileAt(2569, x, y);
+
+      tileMovement.setAlpha(0);
+
+      this.tilesMove.push(tileMovement);
+    }
+
+    return this;
+  }
+
+  /**
+   * Create the associated sprite to this unit.
+   */
+  private createUnitSprite(tile: Phaser.Tilemaps.Tile) {
     // const { scene } = tile.layer.tilemapLayer;
     const { scene } = this;
 
@@ -83,13 +231,251 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /**
-   * Find the adjacent allowed movement and add the tiles found to a layer and an array.
-   * @param {coordinates} param0 Coordinate to check the adjacent tile movement.
-   * @param {Number} param0.x X coordinate.
-   * @param {Number} param0.y Y coordinate.
-   * @param {Number} remainingMove Max character's movement.
+   * Return a unit's tiles path from a start to an end.
    */
-  public findValidNeighbours(params: ParamsFindNeighbours) {
+  private getUnitPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
+    const { mapMatrix } = Game.gameMap;
+
+    const grid = new PF.Grid(mapMatrix);
+    const finder = new PF.BestFirstFinder();
+
+    return finder.findPath(startX, startY, endX, endY, grid);
+  }
+
+  /**
+   * Reveal the passed array tiles (with animation).
+   */
+  private fadeInTiles(params: fadeInTilesParams) {
+    const { options, tiles } = params;
+
+    let alpha = .5;
+    let delay = 0;
+    let delayStep = 10;
+    let duration = 250;
+
+    if (options) {
+      alpha     = options.alpha ? options.alpha : alpha;
+      delay     = options.delay ? options.delay : delay;
+      delayStep = options.delayStep ? options.delayStep : delayStep;
+      duration  = options.duration ? options.duration : duration;
+    }
+
+    tiles.map((tile) => {
+      this.scene.tweens.add({
+        alpha,
+        delay,
+        duration,
+        targets: tile,
+      });
+
+      delay += delayStep;
+    });
+
+    return this;
+  }
+
+  /**
+   * Hide the allowed movement of the last selected character.
+   */
+  private hideMovement() {
+    const layerMovement = Game.gameMap.layers.movement;
+
+    this.tilesMove.map((tile) => {
+      this.scene.tweens.killTweensOf(tile);
+      layerMovement.removeTileAt(tile.x, tile.y);
+    });
+
+    this.tilesMove = [];
+
+    return this;
+  }
+
+  /**
+   * Hide the attack range of the last selected character.
+   */
+  private hideAttackRange() {
+    const layerAtkRange = Game.gameMap.layers.attackRange;
+
+    this.tilesAtkRange.map((tile) => {
+      this.scene.tweens.killTweensOf(tile);
+      layerAtkRange.removeTileAt(tile.x, tile.y);
+    });
+
+    this.tilesAtkRange = [];
+    this.coordGap = {};
+
+    return this;
+  }
+
+  /**
+   * Return true if the passed tile is on any edge.
+   */
+  private isEdgeTile(tile: Phaser.Tilemaps.Tile) {
+    const coordArray = [
+      { x: tile.x, y: tile.y + 1 }, // bottom
+      { x: tile.x - 1, y: tile.y }, // left
+      { x: tile.x + 1, y: tile.y }, // right
+      { x: tile.x, y: tile.y - 1 }, // top
+    ];
+
+    const isEdge = coordArray
+      .some((coord) => {
+        const { tilemap, tilemapLayer } = tile;
+
+        // boundaries check
+        if (coord.x > tilemap.width ||
+          coord.y > tilemap.height ||
+          coord.x < 0 || coord.y < 0) {
+          return false;
+        }
+
+        if (!tilemapLayer.hasTileAt(coord.x, coord.y)) {
+          return true;
+        }
+
+        return false;
+      });
+
+    return isEdge;
+  }
+
+  /**
+   * Fired when this current unit is selected
+   * and pointer has moved.
+   */
+  private onCursorMoved(cursor: Phaser.Input.Pointer) {
+    const movement = Game.gameMap.layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
+    const { selectedCharacter } = Game.gameMap;
+
+    if (!selectedCharacter ||
+      !selectedCharacter.properties ||
+      !selectedCharacter.properties.tileUnit) {
+      return;
+    }
+
+    const tileUnit = selectedCharacter.properties.tileUnit as TileUnit;
+
+    const { x: startX, y: startY } = tileUnit.tile;
+    const { x: endX, y: endY } = cursor;
+
+    const inRange = tileUnit.tilesMove
+      .some((tile) => tile.x === endX && tile.y === endY);
+
+    if (!inRange) { return; }
+
+    const {
+      tileMovementActive: activeColor,
+      tileMovementPassive: passiveColor,
+    } = gameConst.colors;
+
+    // Revert back past movement tiles to their original tint
+    tileUnit.tilesPath.map((tile) => tile.tint = passiveColor);
+
+    tileUnit.tilesPath = tileUnit
+      .getUnitPath({ startX, startY }, { endX, endY })
+      .map(([x, y]) => movement.getTileAt(x, y))
+      .map((tile) => { tile.tint = activeColor; return tile; });
+  }
+
+  /**
+   * Recursively add tiles which show attack range.
+   */
+  private recursiveFindAtkRange(params: findTilesParams) {
+    const { coord: { x, y }, remainingMove } = params;
+
+    const gap = params.gap ? params.gap : 0;
+
+    if (remainingMove === 0) { return; }
+
+    const { layers } = Game.gameMap;
+
+    const layerAtkRange = layers.attackRange;
+
+    // 1.Bounds check
+    if (x >= layerAtkRange.tilemap.width ||
+      y >= layerAtkRange.tilemap.height ||
+      x < 0 || y < 0) {
+      return;
+    }
+
+    // 2.Collision Environment check
+    if (layers.collision.hasTileAt(x, y)) { return; }
+
+    // 3.Avoid tile duplication
+    if (!layerAtkRange.hasTileAt(x, y) &&
+      !layers.movement.hasTileAt(x, y) &&
+      !this.coordGap[`${x},${y}`] &&
+      gap < 1) {
+
+      // const tileAtkRange = layerAtkRange.putTileAt(2525, x, y);
+      const tileAtkRange = layerAtkRange.putTileAt(2569, x, y);
+      tileAtkRange.tint = gameConst.colors.tileAttack;
+
+      // Alpha will be animate later to show atk range
+      tileAtkRange.setAlpha(0);
+
+      this.tilesAtkRange.push(tileAtkRange);
+    }
+
+    const newRemainingMove = gap > 0 ? remainingMove : remainingMove - 1;
+
+    const newGap = gap > 0 ? gap - 1 : 0;
+
+    const coordUp = { x, y: y - 1 };
+    const coordDown = { x, y: y + 1 };
+    const coordLeft = { x: x - 1, y };
+    const coordRight = { x: x + 1, y };
+
+    this.recursiveFindAtkRange({ coord: coordUp, remainingMove: newRemainingMove, gap: newGap });
+    this.recursiveFindAtkRange({ coord: coordDown, remainingMove: newRemainingMove, gap: newGap });
+    this.recursiveFindAtkRange({ coord: coordLeft, remainingMove: newRemainingMove, gap: newGap });
+    this.recursiveFindAtkRange({ coord: coordRight, remainingMove: newRemainingMove, gap: newGap });
+  }
+
+  /**
+   * Recursively mark tiles which should be considered as gap.
+   */
+  private recursiveFindGap(param: findTilesParams) {
+    const { coord: { x, y }, remainingMove } = param;
+
+    if (remainingMove === 0) { return; }
+
+    const { layers } = Game.gameMap;
+    const layerAtkRange = layers.attackRange;
+
+    // 1.Bounds check
+    if (x >= layerAtkRange.tilemap.width ||
+      y >= layerAtkRange.tilemap.height ||
+      x < 0 || y < 0) {
+      return;
+    }
+
+    // 2.Collision Environment check
+    if (layers.collision.hasTileAt(x, y)) { return; }
+
+    // 3.Avoid tile duplication
+    if (!this.coordGap[`${x},${y}`]) {
+      this.coordGap[`${x},${y}`] = { x, y };
+    }
+
+    const newRemainingMove = remainingMove - 1;
+
+    const coordUp = { x, y: y - 1 };
+    const coordDown = { x, y: y + 1 };
+    const coordLeft = { x: x - 1, y };
+    const coordRight = { x: x + 1, y };
+
+    this.recursiveFindGap({ coord: coordUp, remainingMove: newRemainingMove });
+    this.recursiveFindGap({ coord: coordDown, remainingMove: newRemainingMove });
+    this.recursiveFindGap({ coord: coordLeft, remainingMove: newRemainingMove });
+    this.recursiveFindGap({ coord: coordRight, remainingMove: newRemainingMove });
+  }
+
+  /**
+   * Find the adjacent allowed movement
+   * and add the tiles found to a layer and an array.
+   */
+  private recursiveFindMovement(params: findTilesParams) {
     const { coord: { x, y }, remainingMove } = params;
 
     if (remainingMove === 0) { return; }
@@ -124,135 +510,76 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       // Alpha will be animate later to show movement
       tileMovement.setAlpha(0);
 
-      this.tilesMovement.push(tileMovement);
+      this.tilesMove.push(tileMovement);
     }
 
     const newRemainingMove = remainingMove - 1;
 
-    const coordUp     = { x, y: y - 1 };
-    const coordDown   = { x, y: y + 1 };
-    const coordLeft   = { x: x - 1, y };
-    const coordRight  = { x: x + 1, y };
+    const coordUp = { x, y: y - 1 };
+    const coordDown = { x, y: y + 1 };
+    const coordLeft = { x: x - 1, y };
+    const coordRight = { x: x + 1, y };
 
-    this.findValidNeighbours({ coord: coordUp, remainingMove: newRemainingMove });
-    this.findValidNeighbours({ coord: coordDown, remainingMove: newRemainingMove });
-    this.findValidNeighbours({ coord: coordLeft, remainingMove: newRemainingMove });
-    this.findValidNeighbours({ coord: coordRight, remainingMove: newRemainingMove });
-  }
-
-  public getCharacterPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
-    const { mapMatrix } = Game.gameMap;
-
-    const grid = new PF.Grid(mapMatrix);
-    const finder = new PF.BestFirstFinder();
-
-    return finder.findPath(startX, startY, endX, endY, grid);
+    this.recursiveFindMovement({ coord: coordUp, remainingMove: newRemainingMove });
+    this.recursiveFindMovement({ coord: coordDown, remainingMove: newRemainingMove });
+    this.recursiveFindMovement({ coord: coordLeft, remainingMove: newRemainingMove });
+    this.recursiveFindMovement({ coord: coordRight, remainingMove: newRemainingMove });
   }
 
   /**
-   * Move the selected character to the coordinates.
-   * @param {Number} endX x coordinate to move the selected character to.
-   * @param {Number} endY y coordinate to move the selected character to.
+   * Show unit's attack range.
+   * (Consider all current weapons in inventory).
    */
-  public moveCharacterTo(endX: number, endY: number) {
-    return new Promise((resolve) => {
-      const { layers } = Game.gameMap;
+  private showAllAtkRange() {
+    const range = this.unit.getAllWeaponsRange();
 
-      if (!layers.movement.hasTileAt(endX, endY)) {
-        return resolve({ tileUnit: this, moved: false });
-      }
+    const { move } = this.unit;
 
-      const { layer: { tilemapLayer },
-        x: startX, y: startY } = this.tile;
-
-      const deltaToCenter = this.tile.height / 1.4;
-      const path = this.getCharacterPath({ startX, startY }, { endX, endY });
-
-      if (path.length === 1) { // start === end
-        return resolve({ tileUnit: this, moved: false });
-      }
-
-      this.isAnimating = true;
-
-      this.scene.tweens.timeline({
-        onComplete: () => {
-          this.isAnimating = false;
-          resolve({ tileUnit: this, moved: true });
-        },
-        targets: this.sprite,
-        tweens: path.map(([x, y]) => {
-          return {
-            x: tilemapLayer.tileToWorldX(x) + deltaToCenter,
-            y: tilemapLayer.tileToWorldY(y) + deltaToCenter,
-            duration: 100,
-          };
-        }),
-      });
-    });
-  }
-
-  /**
-   * Fired when this current unit is selected
-   * and pointer has moved.
-   */
-  public onCursorMoved(cursor: Phaser.Input.Pointer) {
-    const movement = Game.gameMap.layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
-    const { selectedCharacter } = Game.gameMap;
-
-    if (!selectedCharacter ||
-        !selectedCharacter.properties ||
-        !selectedCharacter.properties.tileUnit) {
-          return;
+    if (range.min === 0 && range.max === 0) {
+      return this;
     }
 
-    const tileUnit = selectedCharacter.properties.tileUnit as TileUnit;
+    let gap = (range.min - 1) - move;
+    gap = Math.max(0, gap);
 
-    const { x: startX, y: startY } = tileUnit.tile;
-    const { x: endX, y: endY } = cursor;
+    let remainingRange = (range.max + 1) - range.min;
 
-    const inRange = tileUnit.tilesMovement
-      .some((tile) => tile.x === endX && tile.y === endY );
+    // NOTE: may be a simpler way to handle this case.
+    if (gap === 0) {
+      remainingRange = range.max + 1;
 
-    if (!inRange) { return; }
+    } else {
+      // Adding +1 because it starts from the (self) unit's tile.
+      // A gap of 1 tile would only allow to mark the unit's tile.
+      gap += 1;
+    }
 
-    const {
-      tileMovementActive: activeColor,
-      tileMovementPassive: passiveColor,
-    } = gameConst.colors;
+    // Take other possibilities w/ move
+    if (remainingRange === 1) {
+      remainingRange += move;
+    }
 
-    // Revert back past movement tiles to their original tint
-    tileUnit.tilesPath.map((tile) => tile.tint = passiveColor);
+    this.recursiveFindGap({
+      coord: { x: this.tile.x, y: this.tile.y },
+      remainingMove: gap,
+    });
 
-    tileUnit.tilesPath = tileUnit
-      .getCharacterPath({ startX, startY }, { endX, endY })
-      .map(([x, y]) => movement.getTileAt(x, y))
-      .map((tile) => { tile.tint = activeColor; return tile; });
-  }
+    this.tilesMove
+      .filter((tileMovement) => {
+        return this.isEdgeTile(tileMovement);
+      })
+      .map((edgeTile, index, arr) => {
+        this.recursiveFindAtkRange({
+          coord: { x: edgeTile.x, y: edgeTile.y },
+          gap,
+          remainingMove: remainingRange,
+        });
+      });
 
-  /**
-   * Remove sprite animation from tile.
-   */
-  public sendToBack() {
-    // Prevent cancelling movement animation
-    if (this.isAnimating) { return; }
-
-    this.tile.setAlpha(1);
-    this.sprite.setAlpha(0);
-
-    this.scene.tweens.killTweensOf(this.sprite);
-
-    this
-      .hideAllowedMovement()
-      .hideAttackRange();
-  }
-
-  /**
-   * Select this unit.
-   */
-  public select() {
-    this.tintAllowedMovement();
-
-    this.scene.events.on('cursorMoved', this.onCursorMoved);
+    this.fadeInTiles({
+      tiles: this.tilesAtkRange,
+      options: { alpha: .3 },
+    });
 
     return this;
   }
@@ -261,241 +588,58 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
    * Show the allowed movement for the target character tile.
    * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
    */
-  public showAllowedMovement() {
+  private showMovement() {
     const { tile } = this;
     const move = this.unit.move;
 
-    if (!move) { return this; }
-    if (this.tilesMovement.length > 0) { return this; }
+    if (this.tilesMove.length > 0) { return this; }
 
     const coord = {
       x: tile.x,
       y: tile.y,
     };
 
+    if (!move) {
+      return this.addSelfTileIfNoMove(coord);
+    }
+
     const remainingMove = move + 1;
 
-    this.findValidNeighbours({ coord, remainingMove });
-    this.fadeInTiles({ tiles: this.tilesMovement });
+    this.recursiveFindMovement({ coord, remainingMove });
+    this.fadeInTiles({ tiles: this.tilesMove });
 
     return this;
   }
 
   /**
-   * Show character's weapon range.
-   * (Consider all current weapons in inventory).
+   * Animate tiles attack range opacity to 1.
    */
-  public showWeaponRange() {
-    const range = this.unit.getRange();
-
-    const { tile } = this;
-
-    const unitCoord = {
-      x: tile.x,
-      y: tile.y,
-    };
-
-    const { move } = this.unit;
-
-    if (range.min === 0 && range.max === 0) { return this; }
-
-    const remainingRange = range.max + 1;
-
-    let gap = (range.min - 1) - move;
-    gap = Math.max(0, gap);
-
-    // TODO:
-    // If unit has no movement
-    // Put atk range tiles from unit tile
-    // if (this.tilesMovement.length === 0) {
-    // }
-
-    const edgeTiles = this.tilesMovement
-      .filter((tileMovement) => {
-        return this.isEdgeTile(tileMovement);
-      })
-      .map((edgeTile) => {
-        this.findAttackRangeNeighbours({
-          coord: { x: edgeTile.x, y: edgeTile.y },
-          remainingMove: remainingRange,
-        });
-      });
-
-    this.fadeInTiles({ tiles: this.tilesAttackRange, options: { alpha: .7 } });
-
-    return this;
+  private focusAllAtkRange() {
+    this.fadeInTiles({
+      tiles: this.tilesAtkRange,
+      options: { alpha: .7 },
+    });
   }
 
-  public findAttackRangeNeighbours(params: ParamsFindNeighbours) {
-    const { coord: { x, y }, remainingMove } = params;
-
-    if (remainingMove === 0) { return; }
-
-    const { layers } = Game.gameMap;
-
-    const layerAtkRange = layers.attackRange;
-
-    // 1.Bounds check
-    if (x >= layerAtkRange.tilemap.width ||
-      y >= layerAtkRange.tilemap.height ||
-      x < 0 || y < 0) {
-      return;
-    }
-
-    // 2.Collision Environment check
-    if (layers.collision.hasTileAt(x, y)) { return; }
-
-    // 4.Avoid tile duplication
-    if (!layerAtkRange.hasTileAt(x, y) &&
-        !layers.movement.hasTileAt(x, y)) {
-
-      const tileAtkRange = layerAtkRange.putTileAt(2525, x, y);
-
-      // Alpha will be animate later to show atk range
-      tileAtkRange.setAlpha(0);
-
-      this.tilesAttackRange.push(tileAtkRange);
-    }
-
-    const newRemainingMove = remainingMove - 1;
-
-    const coordUp     = { x, y: y - 1 };
-    const coordDown   = { x, y: y + 1 };
-    const coordLeft   = { x: x - 1, y };
-    const coordRight  = { x: x + 1, y };
-
-    this.findAttackRangeNeighbours({ coord: coordUp, remainingMove: newRemainingMove});
-    this.findAttackRangeNeighbours({ coord: coordDown, remainingMove: newRemainingMove});
-    this.findAttackRangeNeighbours({ coord: coordLeft, remainingMove: newRemainingMove});
-    this.findAttackRangeNeighbours({ coord: coordRight, remainingMove: newRemainingMove});
-  }
-
-  public isEdgeTile(tile: Phaser.Tilemaps.Tile) {
-    const coordArray = [
-      { x: tile.x, y: tile.y + 1 }, // bottom
-      { x: tile.x - 1, y: tile.y }, // left
-      { x: tile.x + 1, y: tile.y }, // right
-      { x: tile.x, y: tile.y - 1 }, // top
-    ];
-
-    const isEdge = coordArray
-      .some((coord) => {
-        const { tilemap, tilemapLayer } = tile;
-
-        // boundaries check
-        if (coord.x > tilemap.width ||
-            coord.y > tilemap.height ||
-            coord.x < 0 || coord.y < 0) {
-          return false;
-        }
-
-        if (!tilemapLayer.hasTileAt(coord.x, coord.y)) {
-          return true;
-        }
-
-        return false;
-      });
-
-    return isEdge;
-  }
-
-  public tintAllowedMovement() {
+  /**
+   * Animate tiles movement opacity to 1.
+   */
+  private focusMovement() {
     let delay = 0;
 
     // Double check tile's movement.
     // Can happens if the cursor didn't move on unit before click.
-    if (this.tilesMovement.length === 0) {
+    if (this.tilesMove.length === 0) {
       this.bringToFront();
       delay = 500;
     }
 
-    this.tilesMovement
-      .map((tile) => {
-        this.scene.tweens.add({
-          alpha     : 1,
-          delay,
-          duration  : 25,
-          targets   : tile,
-        });
-
-        delay += 10;
-      });
-
-    return this;
-  }
-
-  /**
-   * Unselect this unit.
-   */
-  public unselect() {
-    this
-      .hideAllowedMovement()
-      .hideAttackRange();
-
-    this.scene.events.off('cursorMoved', this.onCursorMoved, undefined, false);
-
-    return this;
-  }
-
-  /**
-   * Reveal the passed array tiles (with animation).
-   */
-  private fadeInTiles(params: ParamsFadeInTiles) {
-    const { options, tiles} = params;
-
-    let alpha = .5;
-    let duration = 250;
-
-    if (options) {
-      alpha = options.alpha ? options.alpha : alpha;
-      duration = options.duration ? options.duration : duration;
-    }
-
-    let delay = 0;
-
-    tiles.map((tile) => {
-      this.scene.tweens.add({
-        alpha,
-        delay,
-        duration,
-        targets: tile,
-      });
-
-      delay += 10;
+    this.fadeInTiles({
+      tiles: this.tilesMove,
+      options: { alpha: 1, duration: 25, delay },
     });
 
     return this;
   }
 
-  /**
-   * Hide the allowed movement of the last selected character.
-   */
-  private hideAllowedMovement() {
-    const layerMovement = Game.gameMap.layers.movement;
-
-    this.tilesMovement.map((tile) => {
-      this.scene.tweens.killTweensOf(tile);
-      layerMovement.removeTileAt(tile.x, tile.y);
-    });
-
-    this.tilesMovement = [];
-
-    return this;
-  }
-
-/**
- * Hide the attack range of the last selected character.
- */
-  private hideAttackRange() {
-    const layerAtkRange = Game.gameMap.layers.attackRange;
-
-    this.tilesAttackRange.map((tile) => {
-      this.scene.tweens.killTweensOf(tile);
-      layerAtkRange.removeTileAt(tile.x, tile.y);
-    });
-
-    this.tilesAttackRange = [];
-
-    return this;
-  }
 }

@@ -6,7 +6,7 @@ import { Unit } from './Unit';
  * The initial stats will help to determine which character class to choose.
  * @param {Object} stats Initial or previous character's stats.
  */
-export const unitsFactory = (data: UnitsFactoryParameters) => {
+export const unitsFactory = (data: UnitsFactoryParam) => {
   const {
     dataHeroes        = {},
     dataUnits         = {},

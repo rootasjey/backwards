@@ -11,7 +11,7 @@ export class Unit {
   /**
    * Unit class which has a state.
    */
-  constructor(data: UnitDataConstructor) {
+  constructor(data: UnitDataConstructorParam) {
     this.state = data.unitData.stats.base;
 
     const rawItems = data.unitData.inventory as InventoryRawItem[];
@@ -202,11 +202,11 @@ export class Unit {
   /**
    * Return unit's attack range.
    */
-  public getRange() {
+  public getAllWeaponsRange() {
     const { inventory } = this.state;
 
-    let min: number = 0;
-    let max: number = 0;
+    let min = Infinity;
+    let max = 0;
 
     inventory.getItems()
       .filter((item) => item.itemType === ItemType.weapon)
