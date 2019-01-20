@@ -58,6 +58,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.init();
   }
 
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
   public addTilesetImages() {
     const { map } = this;
 
@@ -356,7 +360,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     const previousX = x - 1;
 
-    if (previousX <= gameMap.layers.cursor.layer.x) { return; }
+    if (previousX < gameMap.layers.cursor.layer.x) { return; }
 
     gameMap.moveCursorTo(previousX, y);
   }
@@ -378,7 +382,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     const previousY = y - 1;
 
-    if (previousY <= gameMap.layers.cursor.layer.y) { return; }
+    if (previousY < gameMap.layers.cursor.layer.y) { return; }
 
     gameMap.moveCursorTo(x, previousY);
   }
@@ -517,6 +521,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     return this;
   }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
 
   /**
    * Initialize map, layers, units and events.
