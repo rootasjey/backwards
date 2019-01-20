@@ -332,6 +332,11 @@ interface UnitState {
   weapon?: Weapon;
 }
 
+interface updateMapMatrixParam {
+  added: Phaser.Tilemaps.Tile;
+  removed: Phaser.Tilemaps.Tile;
+}
+
 interface Weapon {
   atk: number;
 

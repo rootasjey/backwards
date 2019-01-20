@@ -59,10 +59,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   // ~~~~~~~~~~~~~~~~~
-  // PUBLIC FUNCTIONS
+  // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  public addTilesetImages() {
+  private addTilesetImages() {
     const { map } = this;
 
     this.tileset = {
@@ -74,7 +74,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public animateCursor() {
+  private animateCursor() {
     this.scene.tweens.timeline({
       targets: this.cursor,
       duration: 1000,
@@ -93,14 +93,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public createMapCursor() {
+  private createMapCursor() {
     this.cursor = this.layers.cursor.getTileAt(0, 0);
     this.animateCursor();
 
     return this;
   }
 
-  public createDynamicLayer() {
+  private createDynamicLayer() {
     const { layers, map, tileset } = this;
 
     layers.collision    = map.createDynamicLayer('Collision', tileset.map, 0, 0);
@@ -114,13 +114,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public createMap() {
+  private createMap() {
     this.map = this.scene.make.tilemap({ key: 'level0' });
 
     return this;
   }
 
-  public createMapMatrix() {
+  private createMapMatrix() {
     const { height, width } = this.map;
     const matrix = [];
 
@@ -138,7 +138,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public createStaticLayers() {
+  private createStaticLayers() {
     const { layers, map, tileset } = this;
 
     layers.floor        = map.createStaticLayer('Floor', tileset.map, 0, 0);
@@ -154,7 +154,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public createUnits() {
+  private createUnits() {
     const { json } = this.scene.cache;
     const layer = this.layers.characters as Phaser.Tilemaps.DynamicTilemapLayer;
 
@@ -177,7 +177,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public disableEvents() {
+  private disableEvents() {
     const { input } = this.scene;
 
     input.off('pointerup', this.onPointerUp, undefined, false);
@@ -196,7 +196,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * Drag the camera with pointer down.
    * @param {Object} pointer Phaser pointer.
    */
-  public dragCamera(pointer: Phaser.Input.Pointer) {
+  private dragCamera(pointer: Phaser.Input.Pointer) {
     if (!this.canDrag) { return; }
 
     const { x, y } = pointer.position;
@@ -213,7 +213,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public enableEvents() {
+  private enableEvents() {
     const { input } = this.scene;
 
     input.on('pointerup', this.onPointerUp);
@@ -231,7 +231,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   /**
    * Fix some layers so they won't scroll with the camera.
    */
-  public fixLayers() {
+  private fixLayers() {
     const { layers } = this;
 
     layers.tilePanel.setScrollFactor(0);
@@ -240,7 +240,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public getBinaryCellType(x: number, y: number) {
+  private getBinaryCellType(x: number, y: number) {
     const { layers } = this;
 
     if (layers.collision.hasTileAt(x, y) ||
@@ -257,7 +257,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * @param {Number} x x coordinate in tile units.
    * @param {Number} y y coordinate in tile units.
    */
-  public highlightChar(x: number = 0, y: number = 0) {
+  private highlightChar(x: number = 0, y: number = 0) {
     if (this.layers.characters.hasTileAt(x, y)) {
       this.lastPointedChar = this.layers.characters.getTileAt(x, y);
 
@@ -284,9 +284,25 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   /**
+   * Initialize map, layers, units and events.
+   */
+  private init() {
+    this.createMap()
+      .addTilesetImages()
+      .createStaticLayers()
+      .createDynamicLayer()
+      .scaleToGameSize()
+      .fixLayers()
+      .createMapCursor()
+      .createUnits()
+      .createMapMatrix()
+      .listenToEvents();
+  }
+
+  /**
    * Fired when a character receives a pointer event.
    */
-  public interactWithCharacter() {
+  private interactWithCharacter() {
     const { x, y } = this.cursor;
 
     if (this.selectedCharacter) {
@@ -312,12 +328,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * Kill previous cursor animation.
    * => cursor blink
    */
-  public killCursorAnimation() {
+  private killCursorAnimation() {
     this.scene.tweens.killTweensOf(this.cursor);
     return this;
   }
 
-  public listenToEvents() {
+  private listenToEvents() {
     const { events } = this.scene;
 
     events.on('subscribeMapEvents', this.enableEvents);
@@ -331,7 +347,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * @param {Number} x The x coordinate.
    * @param {Number} y The y coordinate.
    */
-  public moveCamera(x: number = 0, y: number = 0) {
+  private moveCamera(x: number = 0, y: number = 0) {
     const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
 
     if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
@@ -343,7 +359,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public onMoveCursorDown() {
+  private onMoveCursorDown() {
     const { gameMap } = Game;
     const { x, y } = gameMap.cursor;
 
@@ -354,7 +370,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     gameMap.moveCursorTo(x, nextY);
   }
 
-  public onMoveCursorLeft() {
+  private onMoveCursorLeft() {
     const { gameMap } = Game;
     const { x, y } = gameMap.cursor;
 
@@ -365,7 +381,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     gameMap.moveCursorTo(previousX, y);
   }
 
-  public onMoveCursorRight() {
+  private onMoveCursorRight() {
     const { gameMap } = Game;
     const { x, y } = gameMap.cursor;
 
@@ -376,29 +392,31 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     gameMap.moveCursorTo(nextX, y);
   }
 
-  public onMoveCursorUp() {
+  private onMoveCursorUp() {
     const { gameMap } = Game;
     const { x, y } = gameMap.cursor;
 
     const previousY = y - 1;
 
-    if (previousY < gameMap.layers.cursor.layer.y) { return; }
+    if (previousY < gameMap.layers.cursor.layer.y) {
+      return;
+    }
 
     gameMap.moveCursorTo(x, previousY);
   }
 
-  public onPointerDown() {
+  private onPointerDown() {
     Game.gameMap.canDrag = true;
   }
 
-  public onPointerUp() {
+  private onPointerUp() {
     const { gameMap } = Game;
 
     gameMap.canDrag = false;
     gameMap.interactWithCharacter();
   }
 
-  public onPointerMove(pointer: Phaser.Input.Pointer) {
+  private onPointerMove(pointer: Phaser.Input.Pointer) {
     const { gameMap } = Game;
     const cursorLayer = gameMap.layers.cursor;
 
@@ -420,7 +438,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     gameMap.dragCamera(pointer);
   }
 
-  public moveCursorTo(x = 0, y = 0) {
+  private moveCursorTo(x = 0, y = 0) {
     const cursorLayer = this.layers.cursor as Phaser.Tilemaps.DynamicTilemapLayer;
 
     this.killCursorAnimation();
@@ -436,7 +454,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
   }
 
-  public scaleToGameSize() {
+  private scaleToGameSize() {
     const { height, width } = Game.instance.config;
 
     const h = parseInt(height as string, 10);
@@ -454,7 +472,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * @param {Number} x The x coordinate to move char to.
    * @param {Number} y The y coordinate to move char to.
    */
-  public updateCharacterPosition(x: number = 0, y: number = 0) {
+  private updateCharacterPosition(x: number = 0, y: number = 0) {
     const { createUnit } = this;
     const characters = this.layers.characters as Phaser.Tilemaps.DynamicTilemapLayer;
 
@@ -504,9 +522,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * Update matrix cells (which one is (un-)reachable).
    * @param {Object} collisions Added & removed collisions.
    */
-  public updateMapMatrix(collisions:
-    { added: Phaser.Tilemaps.Tile, removed: Phaser.Tilemaps.Tile }) {
-
+  private updateMapMatrix(collisions: updateMapMatrixParam) {
     const { added, removed } = collisions;
 
     if (added) {
@@ -520,25 +536,5 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     return this;
-  }
-
-  // ~~~~~~~~~~~~~~~~~
-  // PRIVATE FUNCTIONS
-  // ~~~~~~~~~~~~~~~~~
-
-  /**
-   * Initialize map, layers, units and events.
-   */
-  private init() {
-    this.createMap()
-      .addTilesetImages()
-      .createStaticLayers()
-      .createDynamicLayer()
-      .scaleToGameSize()
-      .fixLayers()
-      .createMapCursor()
-      .createUnits()
-      .createMapMatrix()
-      .listenToEvents();
   }
 }
