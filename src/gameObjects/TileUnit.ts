@@ -13,39 +13,25 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
    */
   private coordGap: CoordHash = {};
 
-  /**
-   * True if the tile is being animated (sprite movement).
-   */
+  /** True if the tile is being animated (sprite movement). */
   private isAnimating: boolean = false;
 
-  /**
-   * Tile's sprite.
-   */
+  /** Tile's sprite. */
   private sprite: any;
 
-  /**
-   * Unit's tile (where the unit is localized on the map).
-   */
+  /** Unit's tile (where the unit is localized on the map). */
   private tile: Phaser.Tilemaps.Tile;
 
-  /**
-   * Tiles showing this unit's attack range.
-   */
+  /** Tiles showing this unit's attack range. */
   private tilesAtkRange: Phaser.Tilemaps.Tile[] = [];
 
-  /**
-   * Tiles showing this unit's movement range.
-   */
+  /** Tiles showing this unit's movement range. */
   private tilesMove: Phaser.Tilemaps.Tile[] = [];
 
-  /**
-   * Tiles representing this unit's path toward its destination.
-   */
+  /** * Tiles representing this unit's path toward its destination. */
   private tilesPath: Phaser.Tilemaps.Tile[] = [];
 
-  /**
-   * The unit associated.
-   */
+  /** The unit associated. */
   private unit: Unit;
 
   /**
@@ -70,9 +56,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   // PUBLIC FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  /**
-   * Add sprite animation to tile.
-   */
+  /** Add sprite animation to tile. */
   public bringToFront() {
     this.tile.setAlpha(0);
     this.sprite.setAlpha(1);
@@ -102,11 +86,18 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .showAllAtkRange();
   }
 
-  /**
-   * Move the selected character to the coordinates.
-   * @param {Number} endX x coordinate to move the selected character to.
-   * @param {Number} endY y coordinate to move the selected character to.
-   */
+  public canMoveTo(coord: Coord) {
+    const { movement } = Game.gameMap.layers;
+    const { x, y } = coord;
+
+    if (movement.hasTileAt(x, y)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /** Move the selected character to the coordinates (in tiles). */
   public moveCharacterTo(endX: number, endY: number) {
     return new Promise((resolve) => {
       const { layers } = Game.gameMap;
@@ -144,9 +135,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     });
   }
 
-  /**
-   * Remove sprite animation from tile.
-   */
+  /** Remove sprite animation from tile. */
   public sendToBack() {
     // Prevent cancelling movement animation
     if (this.isAnimating) { return; }
@@ -161,9 +150,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .hideAttackRange();
   }
 
-  /**
-   * Select this unit.
-   */
+  /** Select this unit. */
   public select() {
     this
       .focusMovement()
@@ -174,9 +161,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Unselect this unit.
-   */
+  /** Unselect this unit. */
   public unselect() {
     this
       .hideMovement()
@@ -191,10 +176,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  /**
-   * Add a single tile under the unit
-   * if the unit cannot move.
-   */
+  /** Add a single tile under the unit if the unit cannot move. */
   private addSelfTileIfNoMove(coord: Coord) {
     const { x, y } = coord;
     const { layers } = Game.gameMap;
@@ -212,9 +194,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Create the associated sprite to this unit.
-   */
+  /** Create the associated sprite to this unit. */
   private createUnitSprite(tile: Phaser.Tilemaps.Tile) {
     // const { scene } = tile.layer.tilemapLayer;
     const { scene } = this;
@@ -230,9 +210,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .setAlpha(0);
   }
 
-  /**
-   * Return a unit's tiles path from a start to an end.
-   */
+  /** Return a unit's tiles path from a start to an end. */
   private getUnitPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
     const { mapMatrix } = Game.gameMap;
 
@@ -242,9 +220,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return finder.findPath(startX, startY, endX, endY, grid);
   }
 
-  /**
-   * Reveal the passed array tiles (with animation).
-   */
+  /** Reveal the passed array tiles (with animation). */
   private fadeInTiles(params: fadeInTilesParams) {
     const { options, tiles } = params;
 
@@ -274,9 +250,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Hide the allowed movement of the last selected character.
-   */
+  /** Hide the allowed movement of the last selected character. */
   private hideMovement() {
     const layerMovement = Game.gameMap.layers.movement;
 
@@ -290,9 +264,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Hide the attack range of the last selected character.
-   */
+  /** Hide the attack range of the last selected character. */
   private hideAttackRange() {
     const layerAtkRange = Game.gameMap.layers.attackRange;
 
@@ -307,9 +279,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Return true if the passed tile is on any edge.
-   */
+  /** Return true if the passed tile is on any edge. */
   private isEdgeTile(tile: Phaser.Tilemaps.Tile) {
     const coordArray = [
       { x: tile.x, y: tile.y + 1 }, // bottom
@@ -339,10 +309,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return isEdge;
   }
 
-  /**
-   * Fired when this current unit is selected
-   * and pointer has moved.
-   */
+  /** Fired when this current unit is selected and pointer has moved. */
   private onCursorMoved(cursor: Phaser.Input.Pointer) {
     const movement = Game.gameMap.layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
     const { selectedCharacter } = Game.gameMap;
@@ -377,9 +344,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .map((tile) => { tile.tint = activeColor; return tile; });
   }
 
-  /**
-   * Recursively add tiles which show attack range.
-   */
+  /** Recursively add tiles which show attack range. */
   private recursiveFindAtkRange(params: findTilesParams) {
     const { coord: { x, y }, remainingMove } = params;
 
@@ -432,9 +397,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.recursiveFindAtkRange({ coord: coordRight, remainingMove: newRemainingMove, gap: newGap });
   }
 
-  /**
-   * Recursively mark tiles which should be considered as gap.
-   */
+  /** Recursively mark tiles which should be considered as gap. */
   private recursiveFindGap(param: findTilesParams) {
     const { coord: { x, y }, remainingMove } = param;
 
@@ -471,10 +434,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.recursiveFindGap({ coord: coordRight, remainingMove: newRemainingMove });
   }
 
-  /**
-   * Find the adjacent allowed movement
-   * and add the tiles found to a layer and an array.
-   */
+  /** Find the adjacent allowed movement and add the tiles found to a layer and an array. */
   private recursiveFindMovement(params: findTilesParams) {
     const { coord: { x, y }, remainingMove } = params;
 
@@ -526,10 +486,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.recursiveFindMovement({ coord: coordRight, remainingMove: newRemainingMove });
   }
 
-  /**
-   * Show unit's attack range.
-   * (Consider all current weapons in inventory).
-   */
+  /** Show unit's attack range. (Consider all current weapons in inventory). */
   private showAllAtkRange() {
     const range = this.unit.getAllWeaponsRange();
 
@@ -584,10 +541,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Show the allowed movement for the target character tile.
-   * @param {Phaser.Tilemaps.Tile} tileCharacter Tile character to move.
-   */
+  /** Show the allowed movement for the target character tile. */
   private showMovement() {
     const { tile } = this;
     const move = this.unit.move;
@@ -611,9 +565,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Animate tiles attack range opacity to 1.
-   */
+  /** Animate tiles attack range opacity to 1. */
   private focusAllAtkRange() {
     this.fadeInTiles({
       tiles: this.tilesAtkRange,
@@ -621,9 +573,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     });
   }
 
-  /**
-   * Animate tiles movement opacity to 1.
-   */
+  /** Animate tiles movement opacity to 1. */
   private focusMovement() {
     let delay = 0;
 

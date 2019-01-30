@@ -1,3 +1,8 @@
+interface ActionButtonConstrParam {
+  coord?: Coord;
+  onClick?: () => void;
+  text?: string;
+}
 interface CharPanelStats {
   hp: number;
   name: string;
@@ -31,6 +36,11 @@ interface Coord {
 
 interface CoordHash {
   [key: string] : Coord;
+}
+
+interface CreateContainerParam {
+  itemsCount: number;
+  coord: Coord;
 }
 
 interface DataConsummables {
@@ -69,18 +79,19 @@ interface fadeInTilesParamsOptions {
 
 interface GameMapLayers {
   [index: string]: Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
-  attackRange: Phaser.Tilemaps.DynamicTilemapLayer,
-  carpet: Phaser.Tilemaps.StaticTilemapLayer,
-  characters: Phaser.Tilemaps.DynamicTilemapLayer,
-  charPanel: Phaser.Tilemaps.DynamicTilemapLayer,
-  collision: Phaser.Tilemaps.DynamicTilemapLayer,
-  cursor: Phaser.Tilemaps.DynamicTilemapLayer,
-  details: Phaser.Tilemaps.StaticTilemapLayer,
-  floor: Phaser.Tilemaps.StaticTilemapLayer,
-  hiddenFloor: Phaser.Tilemaps.StaticTilemapLayer,
-  movement: Phaser.Tilemaps.DynamicTilemapLayer,
-  objects: Phaser.Tilemaps.StaticTilemapLayer,
-  tilePanel: Phaser.Tilemaps.DynamicTilemapLayer,
+  actionsPanel: Phaser.Tilemaps.DynamicTilemapLayer;
+  attackRange: Phaser.Tilemaps.DynamicTilemapLayer;
+  carpet: Phaser.Tilemaps.StaticTilemapLayer;
+  characters: Phaser.Tilemaps.DynamicTilemapLayer;
+  charPanel: Phaser.Tilemaps.DynamicTilemapLayer;
+  collision: Phaser.Tilemaps.DynamicTilemapLayer;
+  cursor: Phaser.Tilemaps.DynamicTilemapLayer;
+  details: Phaser.Tilemaps.StaticTilemapLayer;
+  floor: Phaser.Tilemaps.StaticTilemapLayer;
+  hiddenFloor: Phaser.Tilemaps.StaticTilemapLayer;
+  movement: Phaser.Tilemaps.DynamicTilemapLayer;
+  objects: Phaser.Tilemaps.StaticTilemapLayer;
+  tilePanel: Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
 interface IInventory {
@@ -149,6 +160,24 @@ interface MapUIPanel {
   }
   texts: any;
   textsContainer?: Phaser.GameObjects.Container;
+}
+
+interface Bounds {
+  bottom: number;
+  left: number;
+  right: number;
+  top: number;
+}
+
+interface moveTilesGroupParam {
+  /** The grouped tiles bounds. */
+  bounds?: Bounds;
+
+  /** x, y destination coordinates in tiles. */
+  dest: Coord;
+
+  /** Layer on which to move the tiles. */
+  layer: Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
 declare enum PhysicalWeapons {

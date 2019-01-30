@@ -1,6 +1,8 @@
+import ActionsMenu from '../../gameObjects/ActionsMenu';
 import { Game } from '../Game';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
+  private actionsMenu: ActionsMenu;
 
   private config: any = {
     textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 },
@@ -31,7 +33,13 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     scene.add.existing(this);
     this.init();
+
+    this.actionsMenu = new ActionsMenu(scene, Game.gameMap.layers.actionsPanel);
   }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
 
   /**
    * Check if the user cursor overlay a panel UI
@@ -72,12 +80,20 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
+  private characterTempMoved(cursor: Phaser.Tilemaps.Tile, character: Phaser.Tilemaps.Tile) {
+    this.actionsMenu.show(cursor, character);
+  }
+
   private createCharPanelText() {
-    const { add }  = this.scene;
-    const { charPanel }     = this.panels;
-    const { texts }         = charPanel;
-    const { left, top }     = charPanel.bounds;
-    const { textStyle }     = this.config;
+    const { add }       = this.scene;
+    const { charPanel } = this.panels;
+    const { texts }     = charPanel;
+    const { left, top } = charPanel.bounds;
+    const { textStyle } = this.config;
 
     let { x, y } = Game.gameMap.layers.charPanel.tileToWorldXY(left, top);
 
@@ -95,18 +111,18 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   private createTilePanelText() {
-    const { add }  = this.scene;
-    const { tilePanel }     = this.panels;
-    const { texts }         = tilePanel;
-    const { left, top }     = tilePanel.bounds;
-    const { textStyle }     = this.config;
+    const { add }       = this.scene;
+    const { tilePanel } = this.panels;
+    const { texts }     = tilePanel;
+    const { left, top } = tilePanel.bounds;
+    const { textStyle } = this.config;
 
     let { x, y } = Game.gameMap.layers.tilePanel.tileToWorldXY(left, top);
 
     x += 20;
     y += 10;
 
-    texts.name  = add.text(0, 0, ' - ', Object.assign({}, textStyle, { fontSize: 40 }));
+    texts.name = add.text(0, 0, ' - ', { ...textStyle, ...{ fontSize: 40 }});
     texts.def   = add.text(0, 50, 'DEF. ', textStyle);
     texts.avo   = add.text(0, 70, 'AVO. ', textStyle);
 
@@ -119,21 +135,36 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   private disableEvents() {
     this.scene.events.off('cursorMoved', this.updatePanels, undefined, false);
+    this.scene.events.off('characterTempMoved', this.characterTempMoved, this, false);
 
     return this;
   }
 
   private enableEvents() {
     this.scene.events.on('cursorMoved', this.updatePanels);
+    this.scene.events.on('characterTempMoved', this.characterTempMoved, this);
 
     return this;
   }
 
-  /**
-   * Find and set a panel top/left/right/bottom boundaries.
-   */
+  /** Find and set a panel top/left/right/bottom boundaries. */
   private findPanelBounds(name: string = '') {
-    // const { [name]: layer } = Game.gameMap.layers;
+    const bounds = this.getPanelBounds(name);
+
+    const panel = this.panels[name];
+    panel.bounds = bounds;
+
+    return this;
+  }
+
+  private getPanelBounds(name: string) {
+    const bounds = {
+      bottom: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+    };
+
     const layer = Game.gameMap.layers[name];
 
     let tileToFind: Phaser.Tilemaps.Tile;
@@ -151,13 +182,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
         undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
     }
 
-    const { bounds } = this.panels[name];
-
-    if (!tileToFind) { return this; }
+    if (!tileToFind) { return bounds; }
 
     const { x, y } = tileToFind;
 
-    bounds.top  = y;
+    bounds.top = y;
     bounds.left = x;
 
     for (let coordX = x; layer.hasTileAt(coordX, y); coordX++) {
@@ -168,7 +197,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       bounds.bottom = coordY;
     }
 
-    return this;
+    return bounds;
   }
 
   /**
@@ -199,18 +228,12 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return values;
   }
 
-  /**
-   * Return the panels' name to create.
-   * @returns {Array<String>} Array of panels' name.
-   */
+  /** Return the panels' name to create. */
   private getPanelsNames(): string[] {
     return ['tilePanel', 'charPanel'];
   }
 
-  /**
-   * Return the next empty corner name.
-   * @returns {String} Next empty corner's name.
-   */
+  /** Return the next empty corner name. */
   private getNextEmptyCornerName(): string {
     let nextCorner: string = '';
 
@@ -227,17 +250,12 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return nextCorner;
   }
 
-  /**
-   * Get the next empty corner coordinates.
-   */
+  /** Get the next empty corner coordinates. */
   private getNextEmptyCornerXY(nextCorner: string = ''): Coord {
     return this.cornersXY[nextCorner];
   }
 
-  /**
-   * Return the current highlighted tile information.
-   * @return {Object} tile information.
-   */
+  /** Return the current highlighted tile information. */
   private getTilePanelValues(tileCursor: Phaser.Tilemaps.Tile) {
     const { layers } = Game.gameMap;
     const { x, y } = tileCursor;
@@ -274,9 +292,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     });
   }
 
-  /**
-   * Create UI panels.
-   */
+  /** Create UI panels. */
   private init() {
     this
       .getPanelsNames()
@@ -298,12 +314,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Create panel's properties.
-   * @param {String} name Panel's name.
-   */
-  private initProperties(name: string) {
-    this.panels[name] = {
+  /** Create panel's properties. */
+  private initProperties(panelName: string) {
+    this.panels[panelName] = {
       bounds: {
         top     : 0,
         bottom  : 0,
@@ -372,9 +385,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Set predefined corners according to window dimentions.
-   */
+  /** Set predefined corners according to window dimentions. */
   private setAutoCorners() {
     const { cornersXY } = this;
     const { innerHeight: height, innerWidth: width } = window;

@@ -7,6 +7,7 @@ import gameConst from '../../const/GameConst';
 export default class GameMap extends Phaser.GameObjects.GameObject {
 
   public layers: GameMapLayers = {
+    actionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     attackRange : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     carpet      : Phaser.Tilemaps.StaticTilemapLayer.prototype,
     characters  : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
@@ -110,6 +111,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     layers.cursor       = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
     layers.tilePanel    = map.createDynamicLayer('TilePanel', tileset.ui, 0, 0);
     layers.charPanel    = map.createDynamicLayer('CharPanel', tileset.ui, 0, 0);
+    layers.actionsPanel = map.createDynamicLayer('actionsPanel', tileset.ui, 0, 0);
 
     return this;
   }
@@ -146,10 +148,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     layers.carpet       = map.createStaticLayer('Carpet', tileset.map, 0, 0);
     layers.objects      = map.createStaticLayer('Objects', tileset.map, 0, 0);
     layers.details      = map.createStaticLayer('Details', tileset.map, 0, 0);
-
-    // layers.details.findTile(
-    //   (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',
-    //   undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
 
     return this;
   }
@@ -216,14 +214,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private enableEvents() {
     const { input } = this.scene;
 
-    input.on('pointerup', this.onPointerUp);
-    input.on('pointerdown', this.onPointerDown);
-    input.on('pointermove', this.onPointerMove);
+    input.on('pointerup', this.onPointerUp, this);
+    input.on('pointerdown', this.onPointerDown, this);
+    input.on('pointermove', this.onPointerMove, this);
 
-    input.keyboard.on('keydown_UP', this.onMoveCursorUp);
-    input.keyboard.on('keydown_DOWN', this.onMoveCursorDown);
-    input.keyboard.on('keydown_LEFT', this.onMoveCursorLeft);
-    input.keyboard.on('keydown_RIGHT', this.onMoveCursorRight);
+    input.keyboard.on('keydown_UP', this.onMoveCursorUp, this);
+    input.keyboard.on('keydown_DOWN', this.onMoveCursorDown, this);
+    input.keyboard.on('keydown_LEFT', this.onMoveCursorLeft, this);
+    input.keyboard.on('keydown_RIGHT', this.onMoveCursorRight, this);
 
     return this;
   }
@@ -336,8 +334,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private listenToEvents() {
     const { events } = this.scene;
 
-    events.on('subscribeMapEvents', this.enableEvents);
-    events.on('unsubscribeMapEvents', this.disableEvents);
+    events.on('subscribeMapEvents', this.enableEvents, this);
+    events.on('unsubscribeMapEvents', this.disableEvents, this);
 
     this.enableEvents();
   }
@@ -360,65 +358,58 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private onMoveCursorDown() {
-    const { gameMap } = Game;
-    const { x, y } = gameMap.cursor;
+    const { x, y } = this.cursor;
 
     const nextY = y + 1;
 
-    if (nextY >= gameMap.layers.cursor.layer.height) { return; }
+    if (nextY >= this.layers.cursor.layer.height) { return; }
 
-    gameMap.moveCursorTo(x, nextY);
+    this.moveCursorTo(x, nextY);
   }
 
   private onMoveCursorLeft() {
-    const { gameMap } = Game;
-    const { x, y } = gameMap.cursor;
+    const { x, y } = this.cursor;
 
     const previousX = x - 1;
 
-    if (previousX < gameMap.layers.cursor.layer.x) { return; }
+    if (previousX < this.layers.cursor.layer.x) { return; }
 
-    gameMap.moveCursorTo(previousX, y);
+    this.moveCursorTo(previousX, y);
   }
 
   private onMoveCursorRight() {
-    const { gameMap } = Game;
-    const { x, y } = gameMap.cursor;
+    const { x, y } = this.cursor;
 
     const nextX = x + 1;
 
-    if (nextX >= gameMap.layers.cursor.layer.width) { return; }
+    if (nextX >= this.layers.cursor.layer.width) { return; }
 
-    gameMap.moveCursorTo(nextX, y);
+    this.moveCursorTo(nextX, y);
   }
 
   private onMoveCursorUp() {
-    const { gameMap } = Game;
-    const { x, y } = gameMap.cursor;
+    const { x, y } = this.cursor;
 
     const previousY = y - 1;
 
-    if (previousY < gameMap.layers.cursor.layer.y) {
+    if (previousY < this.layers.cursor.layer.y) {
       return;
     }
 
-    gameMap.moveCursorTo(x, previousY);
+    this.moveCursorTo(x, previousY);
   }
 
   private onPointerDown() {
-    Game.gameMap.canDrag = true;
+    this.canDrag = true;
   }
 
   private onPointerUp() {
-    const { gameMap } = Game;
-
-    gameMap.canDrag = false;
-    gameMap.interactWithCharacter();
+    this.canDrag = false;
+    this.interactWithCharacter();
   }
 
   private onPointerMove(pointer: Phaser.Input.Pointer) {
-    const { gameMap } = Game;
-    const cursorLayer = gameMap.layers.cursor;
+    const cursorLayer = this.layers.cursor;
 
     const x = pointer.x + this.scene.cameras.main.scrollX;
     const y = pointer.y + this.scene.cameras.main.scrollY;
@@ -432,10 +423,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x: tileX, y: tileY } = cursorLayer.worldToTileXY(x, y);
 
     if (!cursorLayer.hasTileAt(tileX, tileY)) {
-      gameMap.moveCursorTo(tileX, tileY);
+      this.moveCursorTo(tileX, tileY);
     }
 
-    gameMap.dragCamera(pointer);
+    this.dragCamera(pointer);
   }
 
   private moveCursorTo(x = 0, y = 0) {
@@ -477,15 +468,26 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const characters = this.layers.characters as Phaser.Tilemaps.DynamicTilemapLayer;
 
     if (!this.selectedCharacter) {
-      return;
+      return this;
     }
 
     const tileUnit = this.selectedCharacter.properties.tileUnit as TileUnit;
     const { x: charX, y: charY } = this.selectedCharacter;
 
+    if (!tileUnit.canMoveTo({x, y})) {
+      tileUnit.unselect();
+
+      this.selectedCharacter = undefined;
+      this.lastPointedChar = undefined;
+
+      return this;
+    }
+
     tileUnit
       .moveCharacterTo(x, y)
       .then((result: any) => {
+        this.scene.events.emit('characterTempMoved', this.cursor, this.selectedCharacter);
+
         const unit = result.tileUnit as TileUnit;
         unit.unselect();
         return result;
