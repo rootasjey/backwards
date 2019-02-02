@@ -3,10 +3,6 @@ interface ActionButtonConstrParam {
   onClick?: () => void;
   text?: string;
 }
-interface CharPanelStats {
-  hp: number;
-  name: string;
-}
 
 interface Consumable {
   /**
@@ -78,24 +74,23 @@ interface fadeInTilesParamsOptions {
 }
 
 interface GameMapLayers {
-  [index: string]: Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
-  actionsPanel: Phaser.Tilemaps.DynamicTilemapLayer;
-  attackRange: Phaser.Tilemaps.DynamicTilemapLayer;
-  carpet: Phaser.Tilemaps.StaticTilemapLayer;
-  characters: Phaser.Tilemaps.DynamicTilemapLayer;
-  charPanel: Phaser.Tilemaps.DynamicTilemapLayer;
-  collision: Phaser.Tilemaps.DynamicTilemapLayer;
-  cursor: Phaser.Tilemaps.DynamicTilemapLayer;
-  details: Phaser.Tilemaps.StaticTilemapLayer;
-  floor: Phaser.Tilemaps.StaticTilemapLayer;
-  hiddenFloor: Phaser.Tilemaps.StaticTilemapLayer;
-  movement: Phaser.Tilemaps.DynamicTilemapLayer;
-  objects: Phaser.Tilemaps.StaticTilemapLayer;
-  tilePanel: Phaser.Tilemaps.DynamicTilemapLayer;
+  [index: string] : Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
+  attackRange     : Phaser.Tilemaps.DynamicTilemapLayer;
+  carpet          : Phaser.Tilemaps.StaticTilemapLayer;
+  collision       : Phaser.Tilemaps.DynamicTilemapLayer;
+  cursor          : Phaser.Tilemaps.DynamicTilemapLayer;
+  details         : Phaser.Tilemaps.StaticTilemapLayer;
+  floor           : Phaser.Tilemaps.StaticTilemapLayer;
+  hiddenFloor     : Phaser.Tilemaps.StaticTilemapLayer;
+  movement        : Phaser.Tilemaps.DynamicTilemapLayer;
+  objects         : Phaser.Tilemaps.StaticTilemapLayer;
+  tileInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer;
+  units           : Phaser.Tilemaps.DynamicTilemapLayer;
+  unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer;
+  unitInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
 interface IInventory {
-  // items: number;
   maxItems: number;
   getItems: InventoryGetItemsFun;
 }
@@ -238,13 +233,17 @@ interface UnitCreateInventoryFun {
   (items: InventoryRawItem[]): IInventory;
 }
 
+interface UnitInfoPanelStats {
+  hp: number;
+  name: string;
+}
+
 interface UnitsFactoryParam {
   dataConsummables: any;
   dataHeroes: any;
   dataUnits: any;
   dataWeapons: any;
 }
-
 
 interface UnitState {
   // ~~~~~~~~~~~~~~~
@@ -361,7 +360,15 @@ interface UnitState {
   weapon?: Weapon;
 }
 
-interface updateMapMatrixParam {
+interface UpdateUnitPositionParam {
+  /** Coordinates where to move unit. */
+  coord: Coord;
+
+  /** Do not show actions menu if true. */
+  dontShowMenu?: boolean;
+}
+
+interface UpdateMapMatrixParam {
   added: Phaser.Tilemaps.Tile;
   removed: Phaser.Tilemaps.Tile;
 }

@@ -1,25 +1,25 @@
-import TileUnit from '../../gameObjects/TileUnit';
+import TileUnit         from '../../gameObjects/TileUnit';
 import { unitsFactory } from '../../logic/unitsFactory';
-import { Game } from '../Game';
+import { Game }         from '../Game';
 
 import gameConst from '../../const/GameConst';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
 
   public layers: GameMapLayers = {
-    actionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    attackRange : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    carpet      : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    characters  : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    charPanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    collision   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    cursor      : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    details     : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    floor       : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    hiddenFloor : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    movement    : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    objects     : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    tilePanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    attackRange   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    carpet        : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    units         : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    unitInfoPanel : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    collision     : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    cursor        : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    details       : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    floor         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    hiddenFloor   : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    movement      : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    objects       : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    tileInfoPanel : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
   };
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
@@ -28,7 +28,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
   public mapMatrix: number[][];
 
-  public selectedCharacter?: Phaser.Tilemaps.Tile;
+  public selectedUnit?: Phaser.Tilemaps.Tile;
 
   private canDrag: boolean = false;
 
@@ -42,9 +42,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
   private tileset: {
-    characters: Phaser.Tilemaps.Tileset,
     map: Phaser.Tilemaps.Tileset,
     ui: Phaser.Tilemaps.Tileset,
+    units: Phaser.Tilemaps.Tileset,
   };
 
   /**
@@ -67,9 +67,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { map } = this;
 
     this.tileset = {
-      characters: map.addTilesetImage('characters', 'charactersTileset'),
-      map:        map.addTilesetImage('terrain', 'mapTileset'),
-      ui:         map.addTilesetImage('ui', 'uiTileset'),
+      map   : map.addTilesetImage('terrain', 'mapTileset'),
+      ui    : map.addTilesetImage('ui', 'uiTileset'),
+      units : map.addTilesetImage('units', 'unitsTileset'),
     };
 
     return this;
@@ -104,14 +104,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private createDynamicLayer() {
     const { layers, map, tileset } = this;
 
-    layers.collision    = map.createDynamicLayer('Collision', tileset.map, 0, 0);
-    layers.attackRange  = map.createDynamicLayer('AttackRange', tileset.ui, 0, 0);
-    layers.movement     = map.createDynamicLayer('Movement', tileset.ui, 0, 0);
-    layers.characters   = map.createDynamicLayer('Characters', tileset.characters, 0, 0);
-    layers.cursor       = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
-    layers.tilePanel    = map.createDynamicLayer('TilePanel', tileset.ui, 0, 0);
-    layers.charPanel    = map.createDynamicLayer('CharPanel', tileset.ui, 0, 0);
-    layers.actionsPanel = map.createDynamicLayer('actionsPanel', tileset.ui, 0, 0);
+    layers.collision        = map.createDynamicLayer('Collision', tileset.map, 0, 0);
+    layers.attackRange      = map.createDynamicLayer('AttackRange', tileset.ui, 0, 0);
+    layers.movement         = map.createDynamicLayer('Movement', tileset.ui, 0, 0);
+    layers.units            = map.createDynamicLayer('Units', tileset.units, 0, 0);
+    layers.cursor           = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
+    layers.tileInfoPanel    = map.createDynamicLayer('TileInfoPanel', tileset.ui, 0, 0);
+    layers.unitInfoPanel    = map.createDynamicLayer('UnitInfoPanel', tileset.ui, 0, 0);
+    layers.unitActionsPanel = map.createDynamicLayer('UnitActionsPanel', tileset.ui, 0, 0);
 
     return this;
   }
@@ -154,7 +154,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private createUnits() {
     const { json } = this.scene.cache;
-    const layer = this.layers.characters as Phaser.Tilemaps.DynamicTilemapLayer;
+    const layer = this.layers.units as Phaser.Tilemaps.DynamicTilemapLayer;
 
     this.createUnit = unitsFactory({
       dataConsummables  : json.get('consummables'),
@@ -232,8 +232,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private fixLayers() {
     const { layers } = this;
 
-    layers.tilePanel.setScrollFactor(0);
-    layers.charPanel.setScrollFactor(0);
+    layers.tileInfoPanel.setScrollFactor(0);
+    layers.unitInfoPanel.setScrollFactor(0);
 
     return this;
   }
@@ -242,7 +242,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { layers } = this;
 
     if (layers.collision.hasTileAt(x, y) ||
-      layers.characters.hasTileAt(x, y)) {
+      layers.units.hasTileAt(x, y)) {
 
       return 1;
     }
@@ -251,13 +251,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   /**
-   * Highlight and animate current pointed character.
+   * Highlight and animate current pointed unit.
    * @param {Number} x x coordinate in tile units.
    * @param {Number} y y coordinate in tile units.
    */
-  private highlightChar(x: number = 0, y: number = 0) {
-    if (this.layers.characters.hasTileAt(x, y)) {
-      this.lastPointedChar = this.layers.characters.getTileAt(x, y);
+  private highlightUnit(x: number = 0, y: number = 0) {
+    if (this.layers.units.hasTileAt(x, y)) {
+      this.lastPointedChar = this.layers.units.getTileAt(x, y);
 
       const tileUnit = this.lastPointedChar
         .properties.tileUnit as TileUnit;
@@ -268,7 +268,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     if (this.lastPointedChar &&
-        this.lastPointedChar !== this.selectedCharacter) {
+        this.lastPointedChar !== this.selectedUnit) {
 
       const tileUnit = this.lastPointedChar
         .properties.tileUnit as TileUnit;
@@ -297,26 +297,24 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .listenToEvents();
   }
 
-  /**
-   * Fired when a character receives a pointer event.
-   */
-  private interactWithCharacter() {
+  /** Fired when a unit receives a pointer event. */
+  private interactWithUnit() {
     const { x, y } = this.cursor;
 
-    if (this.selectedCharacter) {
-      this.updateCharacterPosition(x, y);
+    if (this.selectedUnit) {
+      this.updateUnitPosition({ coord: {x, y} });
       this.cursor.tint = gameConst.colors.tileMovementPassive;
       return;
     }
 
-    if (!this.layers.characters.hasTileAt(x, y)) {
+    if (!this.layers.units.hasTileAt(x, y)) {
       return;
     }
 
-    this.selectedCharacter = this.layers
-      .characters.getTileAt(x, y);
+    this.selectedUnit = this.layers
+      .units.getTileAt(x, y);
 
-    const tileUnit = this.selectedCharacter.properties.tileUnit as TileUnit;
+    const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
     tileUnit.select();
 
     this.cursor.tint = gameConst.colors.tileMovementActive;
@@ -405,7 +403,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private onPointerUp() {
     this.canDrag = false;
-    this.interactWithCharacter();
+    this.interactWithUnit();
   }
 
   private onPointerMove(pointer: Phaser.Input.Pointer) {
@@ -439,7 +437,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     this
       .animateCursor()
-      .highlightChar(x, y)
+      .highlightUnit(x, y)
       .moveCamera(x, y);
 
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
@@ -458,35 +456,35 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Handle character's movement on layer.
-   * @param {Number} x The x coordinate to move char to.
-   * @param {Number} y The y coordinate to move char to.
+  /** Move a unit to a {x,y} coordinates in tiles.
+   *  When the silent options is true, no actions menu will open after the unit moves.
    */
-  private updateCharacterPosition(x: number = 0, y: number = 0) {
-    const { createUnit } = this;
-    const characters = this.layers.characters as Phaser.Tilemaps.DynamicTilemapLayer;
+  private updateUnitPosition(param: UpdateUnitPositionParam) {
+    const { coord: { x, y }, dontShowMenu } = param;
 
-    if (!this.selectedCharacter) {
+    const { createUnit } = this;
+    const unitsLayer = this.layers.units as Phaser.Tilemaps.DynamicTilemapLayer;
+
+    if (!this.selectedUnit) {
       return this;
     }
 
-    const tileUnit = this.selectedCharacter.properties.tileUnit as TileUnit;
-    const { x: charX, y: charY } = this.selectedCharacter;
+    const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
+    const { x: charX, y: charY } = this.selectedUnit;
 
     if (!tileUnit.canMoveTo({x, y})) {
       tileUnit.unselect();
 
-      this.selectedCharacter = undefined;
+      this.selectedUnit = undefined;
       this.lastPointedChar = undefined;
 
       return this;
     }
 
     tileUnit
-      .moveCharacterTo(x, y)
+      .moveTo(x, y)
       .then((result: any) => {
-        this.scene.events.emit('characterTempMoved', this.cursor, this.selectedCharacter);
+        this.scene.events.emit('openUnitActions', this.cursor, this.selectedUnit);
 
         const unit = result.tileUnit as TileUnit;
         unit.unselect();
@@ -494,26 +492,26 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       })
       .then((result) => {
         if (!result.moved) { return; }
-        if (!this.selectedCharacter) { return; }
+        if (!this.selectedUnit) { return; }
 
-        const tile = characters
-          .putTileAt(this.selectedCharacter, x, y)
+        const tile = unitsLayer
+          .putTileAt(this.selectedUnit, x, y)
           .setAlpha(1);
 
         const { scene } = this;
 
         tile.properties.tileUnit = new TileUnit({ scene, tile, createUnit });
 
-        this.updateMapMatrix({ added: tile, removed: this.selectedCharacter });
+        this.updateMapMatrix({ added: tile, removed: this.selectedUnit });
 
-        characters.removeTileAt(charX, charY);
+        unitsLayer.removeTileAt(charX, charY);
 
         tileUnit.destroy();
-        this.selectedCharacter.destroy();
+        this.selectedUnit.destroy();
 
       })
       .finally(() => {
-        this.selectedCharacter = undefined;
+        this.selectedUnit = undefined;
         this.lastPointedChar = undefined;
       });
 
@@ -524,7 +522,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * Update matrix cells (which one is (un-)reachable).
    * @param {Object} collisions Added & removed collisions.
    */
-  private updateMapMatrix(collisions: updateMapMatrixParam) {
+  private updateMapMatrix(collisions: UpdateMapMatrixParam) {
     const { added, removed } = collisions;
 
     if (added) {

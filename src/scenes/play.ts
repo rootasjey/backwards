@@ -34,9 +34,9 @@ export default class Play extends Phaser.Scene {
 
     this.load.image('mapTileset', './level0/terrain.png');
     this.load.image('uiTileset', './level0/ui.png');
-    this.load.image('charactersTileset', './level0/characters.png');
+    this.load.image('unitsTileset', './level0/units.png');
 
-    this.load.spritesheet('charactersSheet', './level0/characters.png',
+    this.load.spritesheet('unitsSpriteSheet', './level0/units.png',
       {
         frameWidth: 16,
         frameHeight: 16,

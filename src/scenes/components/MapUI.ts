@@ -1,5 +1,5 @@
-import ActionsMenu from '../../gameObjects/ActionsMenu';
-import { Game } from '../Game';
+import ActionsMenu  from '../../gameObjects/ActionsMenu';
+import { Game }     from '../Game';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
   private actionsMenu: ActionsMenu;
@@ -24,17 +24,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   private panels: MapUIPanels = {};
 
-  /**
-   * Manage UI overlay on in-game maps.
-   * @param {Object} scene Phaser's scene
-   */
+  /** Manage UI overlay on in-game maps. */
   constructor(scene: Phaser.Scene) {
     super(scene, 'MapUI');
 
     scene.add.existing(this);
     this.init();
 
-    this.actionsMenu = new ActionsMenu(scene, Game.gameMap.layers.actionsPanel);
+    this.actionsMenu = new ActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -44,8 +41,6 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /**
    * Check if the user cursor overlay a panel UI
    * with a min tile distance allowed between cursor & panel.
-   * @param {Object} param0 TileCursor object
-   * @param {String} panelName Panel's name to check its position.
    */
   public checkPanelPosition(tile: Phaser.Tilemaps.Tile, panelName: string) {
     const { x, y } = tile;
@@ -84,18 +79,18 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  private characterTempMoved(cursor: Phaser.Tilemaps.Tile, character: Phaser.Tilemaps.Tile) {
+  private openUnitActions(cursor: Phaser.Tilemaps.Tile, character: Phaser.Tilemaps.Tile) {
     this.actionsMenu.show(cursor, character);
   }
 
-  private createCharPanelText() {
-    const { add }       = this.scene;
-    const { charPanel } = this.panels;
-    const { texts }     = charPanel;
-    const { left, top } = charPanel.bounds;
-    const { textStyle } = this.config;
+  private createUnitInfoPanelText() {
+    const { add }           = this.scene;
+    const { unitInfoPanel } = this.panels;
+    const { texts }         = unitInfoPanel;
+    const { left, top }     = unitInfoPanel.bounds;
+    const { textStyle }     = this.config;
 
-    let { x, y } = Game.gameMap.layers.charPanel.tileToWorldXY(left, top);
+    let { x, y } = Game.gameMap.layers.unitInfoPanel.tileToWorldXY(left, top);
 
     x += 20;
     y += 10;
@@ -103,21 +98,21 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     texts.name  = add.text(0, 0, ' hero name ', Object.assign({}, textStyle, { fontSize: 40 }));
     texts.hp    = add.text(0, 50, 'HP ', textStyle);
 
-    charPanel.textsContainer = add
+    unitInfoPanel.textsContainer = add
       .container(x, y, [texts.name, texts.hp])
       .setScrollFactor(0);
 
     return this;
   }
 
-  private createTilePanelText() {
-    const { add }       = this.scene;
-    const { tilePanel } = this.panels;
-    const { texts }     = tilePanel;
-    const { left, top } = tilePanel.bounds;
-    const { textStyle } = this.config;
+  private createTileInfoPanelText() {
+    const { add }           = this.scene;
+    const { tileInfoPanel } = this.panels;
+    const { texts }         = tileInfoPanel;
+    const { left, top }     = tileInfoPanel.bounds;
+    const { textStyle }     = this.config;
 
-    let { x, y } = Game.gameMap.layers.tilePanel.tileToWorldXY(left, top);
+    let { x, y } = Game.gameMap.layers.tileInfoPanel.tileToWorldXY(left, top);
 
     x += 20;
     y += 10;
@@ -126,7 +121,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     texts.def   = add.text(0, 50, 'DEF. ', textStyle);
     texts.avo   = add.text(0, 70, 'AVO. ', textStyle);
 
-    tilePanel.textsContainer = add
+    tileInfoPanel.textsContainer = add
       .container(x, y, [texts.name, texts.def, texts.avo])
       .setScrollFactor(0);
 
@@ -135,14 +130,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   private disableEvents() {
     this.scene.events.off('cursorMoved', this.updatePanels, undefined, false);
-    this.scene.events.off('characterTempMoved', this.characterTempMoved, this, false);
+    this.scene.events.off('openUnitActions', this.openUnitActions, this, false);
 
     return this;
   }
 
   private enableEvents() {
     this.scene.events.on('cursorMoved', this.updatePanels);
-    this.scene.events.on('characterTempMoved', this.characterTempMoved, this);
+    this.scene.events.on('openUnitActions', this.openUnitActions, this);
 
     return this;
   }
@@ -167,20 +162,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     const layer = Game.gameMap.layers[name];
 
-    let tileToFind: Phaser.Tilemaps.Tile;
-
-    // TODO: remove repetition (due to T.S.)
-    if (layer === Phaser.Tilemaps.DynamicTilemapLayer.prototype) {
-      tileToFind = layer.findTile(
-        (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',
-        undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
-
-    } else {
-      const staticLayer = layer as Phaser.Tilemaps.StaticTilemapLayer;
-      tileToFind = staticLayer.findTile(
-        (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',
-        undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
-    }
+    const tileToFind = layer.findTile(
+      (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',
+      undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
 
     if (!tileToFind) { return bounds; }
 
@@ -203,11 +187,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /**
    * Return the current pointed characters information.
    */
-  private getCharPanelValues(tileCursor: Phaser.Tilemaps.Tile): CharPanelStats {
+  private getUnitInfoPanelValues(tileCursor: Phaser.Tilemaps.Tile): UnitInfoPanelStats {
     const { x, y } = tileCursor;
-    const layerCharacters = Game.gameMap.layers.characters;
+    const layerCharacters = Game.gameMap.layers.units;
 
-    const defaultValues: CharPanelStats = {
+    const defaultValues: UnitInfoPanelStats = {
       hp: 0,
       name: '',
     };
@@ -230,7 +214,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   /** Return the panels' name to create. */
   private getPanelsNames(): string[] {
-    return ['tilePanel', 'charPanel'];
+    return ['tileInfoPanel', 'unitInfoPanel'];
   }
 
   /** Return the next empty corner name. */
@@ -256,7 +240,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   /** Return the current highlighted tile information. */
-  private getTilePanelValues(tileCursor: Phaser.Tilemaps.Tile) {
+  private getTileInfoPanelValues(tileCursor: Phaser.Tilemaps.Tile) {
     const { layers } = Game.gameMap;
     const { x, y } = tileCursor;
 
@@ -303,11 +287,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       });
 
     this
-      .createCharPanelText()
-      .createTilePanelText()
+      .createUnitInfoPanelText()
+      .createTileInfoPanelText()
       .listenToEvents()
       .setAutoCorners()
-      .toggleCharPanel()
+      .toggleUnitInfoPanel()
       .getPanelsNames()
       .map((name) => this.movePanel(name));
 
@@ -343,9 +327,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /**
    * Move a panel from its current position to an empty one.
    * This happens when user cursor (almost) overlay panel UI.
-   * @param {String} name Panel's name to move.
    */
-  private movePanel(name: string = '') {
+  private movePanel(name: string) {
     const panel = this.panels[name];
     const panelLayer = Game.gameMap.layers[name] as Phaser.Tilemaps.DynamicTilemapLayer;
 
@@ -423,68 +406,60 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /**
    * Show a chararacter's stats if the cursor is on a char.
    * If not, hide the panel.
-   * @param {CharPanelStats} charStats Character's stats.
    */
-  private toggleCharPanel(charStats?: CharPanelStats) {
-    const { charPanel } = Game.gameMap.layers;
-    const { textsContainer } = this.panels.charPanel;
+  private toggleUnitInfoPanel(charStats?: UnitInfoPanelStats) {
+    const { unitInfoPanel } = Game.gameMap.layers;
+    const { textsContainer } = this.panels.unitInfoPanel;
 
     if (!textsContainer) { return this; }
 
     if (!charStats || charStats.name.length === 0) {
-      if (charPanel.visible) { charPanel.setVisible(false); }
+      if (unitInfoPanel.visible) { unitInfoPanel.setVisible(false); }
       if (textsContainer.visible) { textsContainer.setVisible(false); }
 
       return this;
     }
 
-    if (!charPanel.visible || !textsContainer.visible) {
-      charPanel.setVisible(true);
+    if (!unitInfoPanel.visible || !textsContainer.visible) {
+      unitInfoPanel.setVisible(true);
       textsContainer.setVisible(true);
 
       return this;
     }
 
-    if (charPanel.visible || textsContainer.visible) {
-      charPanel.setVisible(false);
+    if (unitInfoPanel.visible || textsContainer.visible) {
+      unitInfoPanel.setVisible(false);
       textsContainer.setVisible(false);
     }
 
     return this;
   }
 
-  /**
-   * Update char panel with refreshed texts values.
-   * @param {Object} tileCursor Phaser tile object representing user cursor.
-   */
-  private updateCharPanel(tileCursor: Phaser.Tilemaps.Tile) {
-    const charPanel = 'charPanel';
-    const charValues = this.getCharPanelValues(tileCursor);
+  /** Update char panel with refreshed texts values. */
+  private updateUnitInfoPanel(tileCursor: Phaser.Tilemaps.Tile) {
+    const panelName = 'unitInfoPanel';
+    const panelValues = this.getUnitInfoPanelValues(tileCursor);
 
-    if (charValues.name.length === 0) {
-      this.toggleCharPanel(charValues);
+    if (panelValues.name.length === 0) {
+      this.toggleUnitInfoPanel(panelValues);
       return this;
     }
 
     this
-      .setTextPanel(charPanel, charValues)
-      .checkPanelPosition(tileCursor, charPanel)
-      .toggleCharPanel(charValues);
+      .setTextPanel(panelName, panelValues)
+      .checkPanelPosition(tileCursor, panelName)
+      .toggleUnitInfoPanel(panelValues);
 
     return this;
   }
 
-  /**
-   * Set a new corner to the targeted panel.
-   * @param {String} name Panel's name to update the corner.
-   * @param {String} newCorner New corner's name.
-   */
-  private updateCorner(name: string = '', newCorner: string = '') {
+  /** Set a new corner to the targeted panel. */
+  private updateCorner(panelName: string, newCorner: string) {
     // Empty last corner
     Object
       .entries(this.corners)
       .some(([key, value]) => {
-        if (value === name) {
+        if (value === panelName) {
           this.corners[key] = '';
           return true;
         }
@@ -492,34 +467,28 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
         return false;
       });
 
-    // Update new corner
-    this.corners[newCorner] = name;
+    this.corners[newCorner] = panelName;
 
     return this;
   }
 
-  /**
-   * React to user inputs -> cursor moved.
-   * @param {Phaser.Tilemaps.Tile} tileCursor Phaser tile object representing user cursor.
-   */
+  /** React to user inputs -> cursor moved. */
   private updatePanels(tileCursor: Phaser.Tilemaps.Tile) {
-    Game.mapUI.updateTilePanel(tileCursor);
-    Game.mapUI.updateCharPanel(tileCursor);
+    Game.mapUI.updateTileInfoPanel(tileCursor);
+    Game.mapUI.updateUnitInfoPanel(tileCursor);
 
     return this;
   }
 
   /**
    * Move text's panel when the panel has moved.
-   * Take camera scroll into account.
-   * @param {Object} param0 X/Y coordinates
-   * @param {String} name Panel's name.
+   * Takes camera scroll into account.
    */
-  private updatePanelTextPosition({ x = 0, y = 0 }, name = '') {
+  private updatePanelTextPosition({ x = 0, y = 0 }, panelName = '') {
     x = x + 20 - this.scene.cameras.main.scrollX;
     y = y + 10 - this.scene.cameras.main.scrollY;
 
-    const { textsContainer } = this.panels[name];
+    const { textsContainer } = this.panels[panelName];
 
     if (!textsContainer) { return this; }
 
@@ -528,17 +497,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Update tile panel with refreshed texts values.
-   * @param {Object} tileCursor Phaser tile object representing user cursor.
-   */
-  private updateTilePanel(tileCursor: Phaser.Tilemaps.Tile) {
-    const tilePanel = 'tilePanel';
-    const tileValues = this.getTilePanelValues(tileCursor);
+  /** Update tile panel with refreshed texts values. */
+  private updateTileInfoPanel(tileCursor: Phaser.Tilemaps.Tile) {
+    const panelName = 'tileInfoPanel';
+    const panelValues = this.getTileInfoPanelValues(tileCursor);
 
     this
-      .setTextPanel(tilePanel, tileValues)
-      .checkPanelPosition(tileCursor, tilePanel);
+      .setTextPanel(panelName, panelValues)
+      .checkPanelPosition(tileCursor, panelName);
 
     return this;
   }

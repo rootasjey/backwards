@@ -97,8 +97,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return false;
   }
 
-  /** Move the selected character to the coordinates (in tiles). */
-  public moveCharacterTo(endX: number, endY: number) {
+  /** Move the unit to the coordinates (in tiles). */
+  public moveTo(endX: number, endY: number) {
     return new Promise((resolve) => {
       const { layers } = Game.gameMap;
 
@@ -205,7 +205,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const deltaToCenter = tile.height / 1.4;
 
     return scene.add
-      .sprite(x + deltaToCenter, y + deltaToCenter, 'charactersSheet', id)
+      .sprite(x + deltaToCenter, y + deltaToCenter, 'unitsSpriteSheet', id)
       .setScale(1.4)
       .setAlpha(0);
   }
@@ -250,7 +250,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /** Hide the allowed movement of the last selected character. */
+  /** Hide the allowed movement of the last selected unit. */
   private hideMovement() {
     const layerMovement = Game.gameMap.layers.movement;
 
@@ -264,7 +264,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /** Hide the attack range of the last selected character. */
+  /** Hide the attack range of the last selected unit. */
   private hideAttackRange() {
     const layerAtkRange = Game.gameMap.layers.attackRange;
 
@@ -312,15 +312,15 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   /** Fired when this current unit is selected and pointer has moved. */
   private onCursorMoved(cursor: Phaser.Input.Pointer) {
     const movement = Game.gameMap.layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
-    const { selectedCharacter } = Game.gameMap;
+    const { selectedUnit } = Game.gameMap;
 
-    if (!selectedCharacter ||
-      !selectedCharacter.properties ||
-      !selectedCharacter.properties.tileUnit) {
+    if (!selectedUnit ||
+      !selectedUnit.properties ||
+      !selectedUnit.properties.tileUnit) {
       return;
     }
 
-    const tileUnit = selectedCharacter.properties.tileUnit as TileUnit;
+    const tileUnit = selectedUnit.properties.tileUnit as TileUnit;
 
     const { x: startX, y: startY } = tileUnit.tile;
     const { x: endX, y: endY } = cursor;
@@ -454,12 +454,12 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     // 2.Collision Environment check
     if (layers.collision.hasTileAt(x, y)) { return; }
 
-    // 3.Collision Character check
-    const character = layers.characters.getTileAt(x, y);
+    // 3.Collision unit check
+    const unit = layers.units.getTileAt(x, y);
 
-    if (character &&
-      character.x !== this.tile.x &&
-      character.y !== this.tile.y) {
+    if (unit &&
+      unit.x !== this.tile.x &&
+      unit.y !== this.tile.y) {
       return;
     }
 
@@ -541,7 +541,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /** Show the allowed movement for the target character tile. */
+  /** Show the allowed movement for the target unit tile. */
   private showMovement() {
     const { tile } = this;
     const move = this.unit.move;
