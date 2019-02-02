@@ -262,8 +262,6 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   private keydownENTER() {
     const buttonOver = this.allCurrentButtons[this.cursorIndex];
     buttonOver.emit('pointerup');
-
-    this.hide();
   }
 
   private keydownUP() {
