@@ -57,6 +57,7 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
     this
       .destroyContainer()
       .disableEvents()
+      .removeOverEventButtons()
       .enableMapEvents()
       .reinitializeProperties();
   }
@@ -87,6 +88,17 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
+
+  private addOverEventButtons() {
+    this.allCurrentButtons
+      .map((button, index) => {
+        const actionButton = button.getData('actionButton') as ActionButton;
+
+        actionButton.onPointerOver = () => { this.cursorIndexChanged(index); };
+      });
+
+    return this;
+  }
 
   private createContainer(param: CreateContainerParam) {
     const { coord: { x, y }, itemsCount } = param;
@@ -177,6 +189,22 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
     return button.getContainer();
   }
 
+  private cursorIndexChanged(newIndex: number) {
+    if (this.cursorIndex === newIndex) { return; }
+
+    const previousButtonOvered = this.allCurrentButtons[this.cursorIndex];
+
+    const prevActionButton = previousButtonOvered.getData('actionButton') as ActionButton;
+    prevActionButton.removeHighlight();
+
+    this.cursorIndex = newIndex;
+
+    const buttonOvered = this.allCurrentButtons[this.cursorIndex];
+
+    const actionButton = buttonOvered.getData('actionButton') as ActionButton;
+    actionButton.addHighlight();
+  }
+
   private destroyContainer() {
     this.layer.forEachTile((tile) => {
       this.layer.removeTileAt(tile.x, tile.y);
@@ -242,38 +270,33 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
   private highlightFirstButton() {
     const firstButton = this.allCurrentButtons[0];
-    firstButton.emit('pointerover');
+
+    const firstActionButton = firstButton.getData('actionButton') as ActionButton;
+    firstActionButton.addHighlight();
 
     return this;
   }
 
   private keydownDOWN() {
-    const previousButtonOvered = this.allCurrentButtons[this.cursorIndex];
-    previousButtonOvered.emit('pointerout');
+    const newIndex = (this.cursorIndex + 1) % this.buttonsCount;
 
-    const cursor = this.cursorIndex + 1;
-    this.cursorIndex = cursor % this.buttonsCount;
-
-    const buttonOvered = this.allCurrentButtons[this.cursorIndex];
-
-    buttonOvered.emit('pointerover');
+    this.cursorIndexChanged(newIndex);
   }
 
   private keydownENTER() {
     const buttonOver = this.allCurrentButtons[this.cursorIndex];
+
+    const actionButton = buttonOver.getData('actionButton') as ActionButton;
+    actionButton.removeHighlight();
+
     buttonOver.emit('pointerup');
   }
 
   private keydownUP() {
-    const previousButtonOvered = this.allCurrentButtons[this.cursorIndex];
-    previousButtonOvered.emit('pointerout');
+    const previousIndex = this.cursorIndex - 1;
+    const newIndex = previousIndex < 0 ? this.buttonsCount - 1 : previousIndex;
 
-    const cursor = this.cursorIndex - 1;
-    this.cursorIndex = cursor < 0 ? this.buttonsCount - 1 : cursor;
-
-    const buttonOvered = this.allCurrentButtons[this.cursorIndex];
-
-    buttonOvered.emit('pointerover');
+    this.cursorIndexChanged(newIndex);
   }
 
   private reinitializeProperties() {
@@ -295,6 +318,20 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
       .setPosition(x, y);
 
     this.allCurrentButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
+
+    this.addOverEventButtons();
+
+    return this;
+  }
+
+  private removeOverEventButtons() {
+    this.allCurrentButtons
+      .map((button) => {
+        const actionButton = button.getData('actionButton') as ActionButton;
+
+        actionButton.removeHighlight();
+        actionButton.onPointerOver = undefined;
+      });
 
     return this;
   }

@@ -1,6 +1,8 @@
 interface ActionButtonConstrParam {
   coord?: Coord;
   onClick?: () => void;
+  onPointerOver?: () => void;
+  onPointerOut?: () => void;
   text?: string;
 }
 

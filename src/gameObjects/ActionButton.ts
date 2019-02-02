@@ -1,4 +1,13 @@
 export default class ActionButton extends Phaser.GameObjects.GameObject {
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+  public onPointerOver?: () => void;
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+
   private config = {
     textStyle: { color: 'black', fontFamily: 'Kenney Pixel', fontSize: 30 },
   };
@@ -10,6 +19,8 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
 
   private onClick?: () => void;
 
+  private onPointerOut?: () => void;
+
   private text: string = '';
 
   constructor(scene: Phaser.Scene, param: ActionButtonConstrParam) {
@@ -17,7 +28,13 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
 
     if (!param) { return; }
 
-    const { coord, onClick, text } = param;
+    const {
+      coord,
+      onClick,
+      onPointerOut,
+      onPointerOver,
+      text,
+    } = param;
 
     if (coord) {
       this.coord.x = typeof coord.x === 'number' ? coord.x : this.coord.x;
@@ -28,13 +45,81 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
       this.onClick = onClick;
     }
 
+    if (onPointerOver) {
+      this.onPointerOver = onPointerOver;
+    }
+
+    if (onPointerOut) {
+      this.onPointerOut = onPointerOut;
+    }
+
     this.text = text ? text : '';
 
     this.container = this.init();
+
+    this.container.setData('actionButton', this);
+
+    this.once('destroy', () => {
+      this.freeMemory();
+    });
+
+    this.container.once('destroy', () => {
+      this.freeMemory();
+    });
   }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
 
   public getContainer() {
     return this.container;
+  }
+
+  public addHighlight() {
+    const rect = this.container.list[0] as Phaser.GameObjects.Rectangle;
+    rect.setFillStyle(0x000000, .2);
+
+    return this;
+  }
+
+  public removeHighlight() {
+    const rect = this.container.list[0] as Phaser.GameObjects.Rectangle;
+    rect.setFillStyle(0x000000, 0);
+
+    return this;
+  }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
+  private freeMemory() {
+    this.container.setData('actionButton', undefined);
+
+    const children = this.container.list;
+
+    const rect = children[0] as Phaser.GameObjects.Rectangle;
+
+    this.container
+      .off('pointerover', this.onPointerOverContainer, this, false)
+      .off('pointerout', this.onPointerOutContainer, this, false)
+      .off('pointerup', this.onPointerUpContainer, this, false);
+
+    rect
+      .off('pointerup', this.onClickRect, this, false)
+      .off('pointerover', this.onPointerOverRect, this, false)
+      .off('pointerout', this.onPointerOutRect, this, false);
+
+    const textValue = children[1] as Phaser.GameObjects.Text;
+
+    rect.destroy();
+    textValue.destroy();
+    this.container.destroy();
+
+    this.onClick = undefined;
+    this.onPointerOut = undefined;
+    this.onPointerOver = undefined;
   }
 
   private init() {
@@ -46,41 +131,56 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
     const rectX = textX + 35;
     const rectY = textY + 15;
 
-    const cancel = add.text(textX, textY, this.text, textStyle);
+    const text = add.text(textX, textY, this.text, textStyle);
 
     const rect = add
       .rectangle(rectX, rectY, 92, 30)
       .setFillStyle(0x000000, 0)
       .setInteractive();
 
+    const container = add.container(0, 0, [rect, text]);
+
     rect
-      .on('pointerup', () => {
-        if (this.onClick) {
-          this.onClick();
-        }
-      })
-      .on('pointerover', () => {
-        rect.setFillStyle(0x000000, .2);
-      })
-      .on('pointerout', () => {
-        rect.setFillStyle(0x000000, 0);
-      });
+      .on('pointerup', this.onClickRect, this)
+      .on('pointerover', this.onPointerOverRect, this)
+      .on('pointerout', this.onPointerOutRect, this);
 
-    const container = add.container(0, 0, [rect, cancel]);
-
-    container.on('pointerover', () => {
-      container.list.map((gameObject) => { gameObject.emit('pointerover'); });
-    });
-
-    container.on('pointerout', () => {
-      container.list.map((gameObject) => { gameObject.emit('pointerout'); });
-    });
-
-    container.on('pointerup', () => {
-      container.list.map((gameObject) => { gameObject.emit('pointerup'); });
-      container.list.map((gameObject) => { gameObject.emit('pointerout'); });
-    });
+    container
+      .on('pointerover', this.onPointerOverContainer, this)
+      .on('pointerout', this.onPointerOutContainer, this)
+      .on('pointerup', this.onPointerUpContainer, this);
 
     return container;
+  }
+
+  private onPointerOverContainer() {
+    this.container.list.map((gameObject) => { gameObject.emit('pointerover'); });
+  }
+
+  private onPointerOutContainer() {
+    this.container.list.map((gameObject) => { gameObject.emit('pointerout'); });
+  }
+
+  private onPointerUpContainer() {
+    this.container.list.map((gameObject) => { gameObject.emit('pointerup'); });
+    this.container.list.map((gameObject) => { gameObject.emit('pointerout'); });
+  }
+
+  private onClickRect() {
+    if (!this.onClick) { return; }
+
+    this.onClick();
+  }
+
+  private onPointerOverRect() {
+    if (!this.onPointerOver) { return; }
+
+    this.onPointerOver();
+  }
+
+  private onPointerOutRect() {
+    if (!this.onPointerOut) { return; }
+
+    this.onPointerOut();
   }
 }
