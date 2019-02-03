@@ -351,7 +351,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    * @param {Number} x The x coordinate.
    * @param {Number} y The y coordinate.
    */
-  private moveCamera(x: number = 0, y: number = 0) {
+  private moveCamera(x: number, y: number) {
     const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
 
     if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
@@ -363,8 +363,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private moveCursorTo(x = 0, y = 0) {
-    const cursorLayer = this.layers.cursor as Phaser.Tilemaps.DynamicTilemapLayer;
+  private moveCursorTo(x: number, y: number) {
+    const cursorLayer = this.layers.cursor;
 
     this.killCursorAnimation();
 
@@ -482,6 +482,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     unitsLayer.removeTileAt(addedX, addedY);
 
     this.previousUnitCoord = undefined;
+
+    this.moveCursorTo(prevX, prevY);
   }
 
   private removeUnitActionListeners() {
