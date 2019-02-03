@@ -1,10 +1,14 @@
+import gameConst        from '../../const/GameConst';
+import unitConst        from '../../const/UnitConst';
 import TileUnit         from '../../gameObjects/TileUnit';
 import { unitsFactory } from '../../logic/unitsFactory';
 import { Game }         from '../Game';
 
-import gameConst from '../../const/GameConst';
-
 export default class GameMap extends Phaser.GameObjects.GameObject {
+
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
 
   public layers: GameMapLayers = {
     unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
@@ -30,6 +34,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   public selectedUnit?: Phaser.Tilemaps.Tile;
 
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+
   private canDrag: boolean = false;
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
@@ -38,7 +46,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
   private cursor: Phaser.Tilemaps.Tile;
 
-  private lastPointedChar?: Phaser.Tilemaps.Tile;
+  private lastPointedUnit?: Phaser.Tilemaps.Tile;
+
+  private previousUnitCoord?: Coord;
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
   private tileset: {
@@ -71,6 +81,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       ui    : map.addTilesetImage('ui', 'uiTileset'),
       units : map.addTilesetImage('units', 'unitsTileset'),
     };
+
+    return this;
+  }
+
+  private addUnitActionListeners() {
+    this.scene.events.once(`unit:${unitConst.action.wait}`, this.onUnitActionWait, this);
+    this.scene.events.once(`unit:${unitConst.action.cancel}`, this.onUnitActionCancel, this);
 
     return this;
   }
@@ -154,12 +171,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private createUnits() {
     const { json } = this.scene.cache;
-    const layer = this.layers.units as Phaser.Tilemaps.DynamicTilemapLayer;
+    const layer = this.layers.units;
 
     this.createUnit = unitsFactory({
       dataConsummables  : json.get('consummables'),
       dataHeroes        : json.get('heroes'),
-      dataUnits          : json.get('units'),
+      dataUnits         : json.get('units'),
       dataWeapons       : json.get('weapons'),
     });
 
@@ -190,10 +207,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Drag the camera with pointer down.
-   * @param {Object} pointer Phaser pointer.
-   */
+  /** Drag the camera with pointer down. */
   private dragCamera(pointer: Phaser.Input.Pointer) {
     if (!this.canDrag) { return; }
 
@@ -250,16 +264,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return 0;
   }
 
-  /**
-   * Highlight and animate current pointed unit.
-   * @param {Number} x x coordinate in tile units.
-   * @param {Number} y y coordinate in tile units.
-   */
+  /** Highlight and animate current pointed unit (in tile unit). */
   private highlightUnit(x: number = 0, y: number = 0) {
     if (this.layers.units.hasTileAt(x, y)) {
-      this.lastPointedChar = this.layers.units.getTileAt(x, y);
+      this.lastPointedUnit = this.layers.units.getTileAt(x, y);
 
-      const tileUnit = this.lastPointedChar
+      const tileUnit = this.lastPointedUnit
         .properties.tileUnit as TileUnit;
 
       tileUnit.bringToFront();
@@ -267,23 +277,21 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       return this;
     }
 
-    if (this.lastPointedChar &&
-        this.lastPointedChar !== this.selectedUnit) {
+    if (this.lastPointedUnit &&
+        this.lastPointedUnit !== this.selectedUnit) {
 
-      const tileUnit = this.lastPointedChar
+      const tileUnit = this.lastPointedUnit
         .properties.tileUnit as TileUnit;
 
       tileUnit.sendToBack();
 
-      this.lastPointedChar = undefined;
+      this.lastPointedUnit = undefined;
     }
 
     return this;
   }
 
-  /**
-   * Initialize map, layers, units and events.
-   */
+  /** Initialize map, layers, units and events. */
   private init() {
     this.createMap()
       .addTilesetImages()
@@ -353,6 +361,22 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     return this;
+  }
+
+  private moveCursorTo(x = 0, y = 0) {
+    const cursorLayer = this.layers.cursor as Phaser.Tilemaps.DynamicTilemapLayer;
+
+    this.killCursorAnimation();
+
+    cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
+    this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
+
+    this
+      .animateCursor()
+      .highlightUnit(x, y)
+      .moveCamera(x, y);
+
+    this.scene.events.emit('cursorMoved', this.cursor, this.scene);
   }
 
   private onMoveCursorDown() {
@@ -427,20 +451,44 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.dragCamera(pointer);
   }
 
-  private moveCursorTo(x = 0, y = 0) {
-    const cursorLayer = this.layers.cursor as Phaser.Tilemaps.DynamicTilemapLayer;
+  private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
+    this.removeUnitActionListeners();
+    console.log('wait...');
 
-    this.killCursorAnimation();
+  }
 
-    cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
-    this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
+  private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
+    if (!this.previousUnitCoord) { return; }
 
-    this
-      .animateCursor()
-      .highlightUnit(x, y)
-      .moveCamera(x, y);
+    this.removeUnitActionListeners();
 
-    this.scene.events.emit('cursorMoved', this.cursor, this.scene);
+    const { createUnit, scene } = this;
+    const unitsLayer = this.layers.units;
+
+    const { x: addedX, y: addedY } = addedTile;
+    const { x: prevX, y: prevY } = this.previousUnitCoord;
+
+    const tile = unitsLayer.putTileAt(addedTile, prevX, prevY);
+
+    const tileUnit = addedTile.properties.tileUnit as TileUnit;
+
+    tileUnit.destroy();
+    addedTile.destroy();
+
+    tile.properties.tileUnit = new TileUnit({ scene, tile, createUnit });
+
+    this.updateMapMatrix({ added: tile, removed: addedTile });
+
+    unitsLayer.removeTileAt(addedX, addedY);
+
+    this.previousUnitCoord = undefined;
+  }
+
+  private removeUnitActionListeners() {
+    this.scene.events.off(`unit:${unitConst.action.wait}`, this.onUnitActionWait, this, false);
+    this.scene.events.off(`unit:${unitConst.action.cancel}`, this.onUnitActionCancel, this, false);
+
+    return this;
   }
 
   private scaleToGameSize() {
@@ -462,7 +510,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private updateUnitPosition(param: UpdateUnitPositionParam) {
     const { coord: { x, y }, dontShowMenu } = param;
 
-    const { createUnit } = this;
+    const { createUnit, scene } = this;
     const unitsLayer = this.layers.units as Phaser.Tilemaps.DynamicTilemapLayer;
 
     if (!this.selectedUnit) {
@@ -470,49 +518,55 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
-    const { x: charX, y: charY } = this.selectedUnit;
+    const { x: unitX, y: unitY } = this.selectedUnit;
 
     if (!tileUnit.canMoveTo({x, y})) {
       tileUnit.unselect();
 
       this.selectedUnit = undefined;
-      this.lastPointedChar = undefined;
+      this.lastPointedUnit = undefined;
 
       return this;
     }
 
     tileUnit
       .moveTo(x, y)
-      .then((result: any) => {
-        this.scene.events.emit('openUnitActions', this.cursor, this.selectedUnit);
-
+      .then((result) => {
         const unit = result.tileUnit as TileUnit;
         unit.unselect();
         return result;
       })
       .then((result) => {
-        if (!result.moved) { return; }
-        if (!this.selectedUnit) { return; }
+        if (!result.moved || !this.selectedUnit) {
+          return { tile: this.selectedUnit };
+        }
+
+        this.previousUnitCoord = { x: this.selectedUnit.x, y: this.selectedUnit.y };
 
         const tile = unitsLayer
-          .putTileAt(this.selectedUnit, x, y)
-          .setAlpha(1);
+        .putTileAt(this.selectedUnit, x, y)
+        .setAlpha(1);
 
-        const { scene } = this;
+        tileUnit.destroy();
+        this.selectedUnit.destroy();
 
         tile.properties.tileUnit = new TileUnit({ scene, tile, createUnit });
 
         this.updateMapMatrix({ added: tile, removed: this.selectedUnit });
 
-        unitsLayer.removeTileAt(charX, charY);
+        unitsLayer.removeTileAt(unitX, unitY);
 
-        tileUnit.destroy();
-        this.selectedUnit.destroy();
+        return { tile };
 
+      })
+      .then((result) => {
+        const { tile } = result;
+        this.addUnitActionListeners();
+        this.scene.events.emit('openUnitActions', this.cursor, tile);
       })
       .finally(() => {
         this.selectedUnit = undefined;
-        this.lastPointedChar = undefined;
+        this.lastPointedUnit = undefined;
       });
 
     return this;

@@ -183,6 +183,7 @@ declare enum PhysicalWeapons {
   lance,
   sword
 }
+
 interface PhysicalWeaponTriangleCorrespondance {
   [key: string]: string;
   axe: string;

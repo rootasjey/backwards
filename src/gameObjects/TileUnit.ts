@@ -17,7 +17,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private isAnimating: boolean = false;
 
   /** Tile's sprite. */
-  private sprite: any;
+  private sprite: Phaser.GameObjects.Sprite;
 
   /** Unit's tile (where the unit is localized on the map). */
   private tile: Phaser.Tilemaps.Tile;
@@ -49,6 +49,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.once('destroy', () => {
       this.sprite.destroy();
+      this.tile.properties.tileUnit = undefined;
     });
   }
 
@@ -98,7 +99,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /** Move the unit to the coordinates (in tiles). */
-  public moveTo(endX: number, endY: number) {
+  public moveTo(endX: number, endY: number):
+    Promise<{moved: boolean, tileUnit: TileUnit}> {
     return new Promise((resolve) => {
       const { layers } = Game.gameMap;
 
@@ -109,7 +111,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       const { layer: { tilemapLayer },
         x: startX, y: startY } = this.tile;
 
-      const deltaToCenter = this.tile.height / 1.4;
       const path = this.getUnitPath({ startX, startY }, { endX, endY });
 
       if (path.length === 1) { // start === end
@@ -117,6 +118,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       }
 
       this.isAnimating = true;
+      const deltaToCenter = this.tile.height / 1.4;
 
       this.scene.tweens.timeline({
         onComplete: () => {
@@ -196,7 +198,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   /** Create the associated sprite to this unit. */
   private createUnitSprite(tile: Phaser.Tilemaps.Tile) {
-    // const { scene } = tile.layer.tilemapLayer;
     const { scene } = this;
 
     const { x, y } = tile.layer.tilemapLayer.tileToWorldXY(tile.x, tile.y);

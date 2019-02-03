@@ -1,3 +1,4 @@
+import UnitConst    from '../const/UnitConst';
 import ActionButton from './ActionButton';
 
 export default class ActionsMenu extends Phaser.GameObjects.GameObject {
@@ -27,6 +28,8 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
   /** Always displayed buttons (cancel, wait, items) */
   private permanentButtons: Phaser.GameObjects.Container;
+
+  private tile?: Phaser.Tilemaps.Tile;
 
   /**
    * Create an actions menu to perform unit's actions.
@@ -68,7 +71,8 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   }
 
   /** Show actions' menu. */
-  public show(cursor: Phaser.Tilemaps.Tile, character: Phaser.Tilemaps.Tile) {
+  public show(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+    this.tile = tile;
     this.layer.setVisible(true);
 
     const { x, y } = this.getMenuCoord(cursor);
@@ -162,7 +166,10 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
-      onClick: () => { this.hide(); },
+      onClick: () => {
+        this.hide();
+        this.sendAction(UnitConst.action.cancel);
+      },
       text: 'cancel',
     });
 
@@ -182,7 +189,10 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   private createWaitButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 30 },
-      onClick: () => { this.hide(); },
+      onClick: () => {
+        this.hide();
+        this.sendAction(UnitConst.action.wait);
+      },
       text: 'wait',
     });
 
@@ -305,6 +315,11 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
     // IDEA: Remember the last selected entry
     this.cursorIndex = 0;
+  }
+
+  /** Send unit's action to the scene (through event). */
+  private sendAction(action: string) {
+    this.scene.events.emit(`unit:${action}`, this.tile);
   }
 
   /** Show buttons to the cursor location. */

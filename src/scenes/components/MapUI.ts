@@ -79,8 +79,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  private openUnitActions(cursor: Phaser.Tilemaps.Tile, character: Phaser.Tilemaps.Tile) {
-    this.actionsMenu.show(cursor, character);
+  private openUnitActions(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+    this.actionsMenu.show(cursor, tile);
   }
 
   private createUnitInfoPanelText() {
