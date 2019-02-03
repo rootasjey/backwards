@@ -265,7 +265,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   /** Highlight and animate current pointed unit (in tile unit). */
-  private highlightUnit(x: number = 0, y: number = 0) {
+  private highlightUnit(x: number, y: number) {
     if (this.layers.units.hasTileAt(x, y)) {
       this.lastPointedUnit = this.layers.units.getTileAt(x, y);
 
@@ -453,8 +453,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
     this.removeUnitActionListeners();
-    console.log('wait...');
 
+    const tileUnit = addedTile.properties.tileUnit as TileUnit;
+
+    tileUnit.markAsPlayed();
   }
 
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {

@@ -1,9 +1,9 @@
-import * as PF from 'pathfinding';
-import { Unit } from '../logic/Unit';
+import * as PF    from 'pathfinding';
+import { Unit }   from '../logic/Unit';
 
-import { Game } from '../scenes/Game';
+import { Game }   from '../scenes/Game';
 
-import gameConst from '../const/GameConst';
+import gameConst  from '../const/GameConst';
 
 export default class TileUnit extends Phaser.GameObjects.GameObject {
 
@@ -12,6 +12,9 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
    * (Due to gap in attack range).
    */
   private coordGap: CoordHash = {};
+
+  /** Can this unit perform actions during the current turn. */
+  private played: boolean = false;
 
   /** True if the tile is being animated (sprite movement). */
   private isAnimating: boolean = false;
@@ -59,6 +62,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   /** Add sprite animation to tile. */
   public bringToFront() {
+    if (this.played) { return this; }
+
     this.tile.setAlpha(0);
     this.sprite.setAlpha(1);
 
@@ -96,6 +101,27 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     }
 
     return false;
+  }
+
+  /** Return true if this unit can perform actions during the current turn. */
+  public hasPlayed() {
+    return this.played;
+  }
+
+  /** This unit won't be able to perform more actions (during the current turn). */
+  public markAsPlayed() {
+    this.played = true;
+    this.tile.setAlpha(.5);
+
+    return this;
+  }
+
+  /** This unit can now perform actions (during the current turn). */
+  public markAsUnplayed() {
+    this.played = false;
+    this.tile.setAlpha(1);
+
+    return this;
   }
 
   /** Move the unit to the coordinates (in tiles). */
@@ -141,6 +167,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   public sendToBack() {
     // Prevent cancelling movement animation
     if (this.isAnimating) { return; }
+    if (this.played) { return this; }
 
     this.tile.setAlpha(1);
     this.sprite.setAlpha(0);
