@@ -1,7 +1,23 @@
-import UnitConst    from '../const/UnitConst';
 import ActionButton from './ActionButton';
 
-export default class ActionsMenu extends Phaser.GameObjects.GameObject {
+export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject {
+  // ~~~~~~~~~~~~~~~~~
+  // PROTECTED PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+
+  protected linesTiles = {
+    top: [2668, 2669, 2669, 2670],
+    middle: [2698, 2699, 2699, 2700],
+    bottom: [2728, 2729, 2729, 2730],
+  };
+
+  /** Unit tile (facultative). */
+  protected tile?: Phaser.Tilemaps.Tile;
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+
   private additionalButtons?: Phaser.GameObjects.Container;
 
   /** All curent buttons displayed in the menu. */
@@ -10,26 +26,16 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   /** Number of buttons currently displayed in the actions menu. */
   private buttonsCount = 0;
 
-  private config = {
-    textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 },
-    textOffset: { x: 18, y: 10 },
-  };
+  private textOffset = { x: 18, y: 10 };
 
   /** Keyboard cursor (for navigating buttons with keyboard arrows) */
   private cursorIndex = 0;
 
-  /** Actions menu belonging layer. */
+  /** Layer where to create menu. */
   private layer: Phaser.Tilemaps.DynamicTilemapLayer;
 
-  /** Minimum number of buttons in action menu (cancel, wait, items). */
-  private minButtonsCount = 3;
-
-  private minTilesWidth = 4;
-
-  /** Always displayed buttons (cancel, wait, items) */
+  /** Always displayed buttons. */
   private permanentButtons: Phaser.GameObjects.Container;
-
-  private tile?: Phaser.Tilemaps.Tile;
 
   /**
    * Create an actions menu to perform unit's actions.
@@ -59,6 +65,7 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
     this
       .destroyContainer()
+      .destroyAdditionalButtons()
       .disableEvents()
       .removeOverEventButtons()
       .enableMapEvents()
@@ -70,24 +77,47 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
     return this.layer.visible;
   }
 
-  /** Show actions' menu. */
-  public show(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+  /**
+   * Show actions' menu.
+   * @param cursor Coordinates to show the menu.
+   */
+  public show(cursor: Phaser.Tilemaps.Tile, options: ActionsMenuShowOptions) {
+    const { tile } = options;
+
     this.tile = tile;
     this.layer.setVisible(true);
 
     const { x, y } = this.getMenuCoord(cursor);
     const { layer } = this;
 
-    this.buttonsCount = this.minButtonsCount; // + unit's actions
-    const { buttonsCount: itemsCount } = this;
+    const containerButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
+
+    this.additionalButtons = this.createAdditionalButtons();
+
+    if (this.additionalButtons) {
+      const containerAddButtons = this.additionalButtons.list as Phaser.GameObjects.Container[];
+      containerButtons.concat(containerAddButtons);
+    }
+
+    this.allCurrentButtons = containerButtons;
+
+    this.buttonsCount = containerButtons.length;
 
     this
       .disableMapEvents()
-      .createContainer({ coord: { x, y }, itemsCount })
+      .createContainer({ coord: { x, y }, itemsCount: this.buttonsCount })
       .showButtons(layer.tileToWorldXY(x, y))
       .highlightFirstButton()
       .enableEvents();
   }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PROTECTED FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
+  protected abstract createAdditionalButtons(): Phaser.GameObjects.Container;
+
+  protected abstract createPermanentButtons(): Phaser.GameObjects.Container;
 
   // ~~~~~~~~~~~~~~~~~
   // PRIVATE FUNCTIONS
@@ -123,80 +153,30 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   }
 
   private createTopLine(x: number, y: number) {
-    // : 2668 - middle: 2669 - right: 2670
-    const model = [2668, 2669, 2669, 2670];
+    const columns = this.linesTiles.top;
 
-    model
+    columns
       .map((value, index) => {
         this.layer.putTileAt(value, x + index, y);
       });
   }
 
   private createMiddleLine(x: number, y: number) {
-    // left: 2698 - middle: 2699 - right: 2700
-    const model = [2698, 2699, 2699, 2700];
+    const columns = this.linesTiles.middle;
 
-    model
+    columns
       .map((value, index) => {
         this.layer.putTileAt(value, x + index, y);
       });
   }
 
   private createBottomLine(x: number, y: number) {
-    // left: 2728 - middle: 2729 - ight: 2730
-    const model = [2728, 2729, 2729, 2730];
+    const columns = this.linesTiles.bottom;
 
-    model
+    columns
       .map((value, index) => {
         this.layer.putTileAt(value, x + index, y);
       });
-  }
-
-  private createPermanentButtons() {
-    const cancel = this.createCancelButton();
-    const items = this.createItemsButton();
-    const wait = this.createWaitButton();
-
-    const container = this.scene.add
-      .container(0, 0, [cancel, wait, items])
-      .setVisible(false);
-
-    return container;
-  }
-
-  private createCancelButton() {
-    const button = new ActionButton(this.scene, {
-      onClick: () => {
-        this.hide();
-        this.sendAction(UnitConst.action.cancel);
-      },
-      text: 'cancel',
-    });
-
-    return button.getContainer();
-  }
-
-  private createItemsButton() {
-    const button = new ActionButton(this.scene, {
-      coord: { x: 0, y: 60 },
-      onClick: () => { this.hide(); },
-      text: 'items',
-    });
-
-    return button.getContainer();
-  }
-
-  private createWaitButton() {
-    const button = new ActionButton(this.scene, {
-      coord: { x: 0, y: 30 },
-      onClick: () => {
-        this.hide();
-        this.sendAction(UnitConst.action.wait);
-      },
-      text: 'wait',
-    });
-
-    return button.getContainer();
   }
 
   private cursorIndexChanged(newIndex: number) {
@@ -213,6 +193,19 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
 
     const actionButton = buttonOvered.getData('actionButton') as ActionButton;
     actionButton.addHighlight();
+  }
+
+  private destroyAdditionalButtons() {
+    if (!this.additionalButtons) { return this; }
+
+    const children = this.additionalButtons.list as Phaser.GameObjects.Container[];
+
+    children
+      .map((button) => {
+        button.destroy();
+      });
+
+    return this;
   }
 
   private destroyContainer() {
@@ -261,8 +254,8 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
   }
 
   private getMenuCoord(cursor: Phaser.Tilemaps.Tile) {
-    const panelWidth = this.minTilesWidth;
-    const panelHeight = this.minButtonsCount + 2;
+    const panelWidth = this.getPanelWidth();
+    const panelHeight = this.buttonsCount + 2;
 
     let x = cursor.x + 1;
     let y = cursor.y + 1;
@@ -276,6 +269,16 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
     }
 
     return { x, y };
+  }
+
+  private getPanelWidth() {
+    let maxTilesWidth = 0;
+
+    for (const [, columns] of Object.entries(this.linesTiles)) {
+      maxTilesWidth = columns.length > maxTilesWidth ? columns.length : maxTilesWidth;
+    }
+
+    return maxTilesWidth;
   }
 
   private highlightFirstButton() {
@@ -317,14 +320,9 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
     this.cursorIndex = 0;
   }
 
-  /** Send unit's action to the scene (through event). */
-  private sendAction(action: string) {
-    this.scene.events.emit(`unit:${action}`, this.tile);
-  }
-
   /** Show buttons to the cursor location. */
   private showButtons(coord: Coord) {
-    const { textOffset } = this.config;
+    const { textOffset } = this;
     const x = coord.x + textOffset.x;
     const y = coord.y + textOffset.y;
 
@@ -332,7 +330,10 @@ export default class ActionsMenu extends Phaser.GameObjects.GameObject {
       .setVisible(true)
       .setPosition(x, y);
 
-    this.allCurrentButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
+    if (this.additionalButtons) {
+      this.additionalButtons
+        .setPosition(x, y + this.permanentButtons.displayHeight);
+    }
 
     this.addOverEventButtons();
 

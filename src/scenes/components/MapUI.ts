@@ -1,8 +1,8 @@
-import ActionsMenu  from '../../gameObjects/ActionsMenu';
-import { Game }     from '../Game';
+import UnitActionsMenu  from '../../gameObjects/UnitActionsMenu';
+import { Game }         from '../Game';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
-  private actionsMenu: ActionsMenu;
+  private actionsMenu: UnitActionsMenu;
 
   private config: any = {
     textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 },
@@ -31,7 +31,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     scene.add.existing(this);
     this.init();
 
-    this.actionsMenu = new ActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
+    this.actionsMenu = new UnitActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
 
   private openUnitActions(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
-    this.actionsMenu.show(cursor, tile);
+    this.actionsMenu.show(cursor, { tile });
   }
 
   private createUnitInfoPanelText() {

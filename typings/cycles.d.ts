@@ -6,6 +6,10 @@ interface ActionButtonConstrParam {
   text?: string;
 }
 
+interface ActionsMenuShowOptions {
+  tile?: Phaser.Tilemaps.Tile;
+}
+
 interface Consumable {
   /**
    * Item description.
