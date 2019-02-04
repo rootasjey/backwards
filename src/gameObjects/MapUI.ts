@@ -1,12 +1,9 @@
-import MapActionsMenu   from '../../gameObjects/MapActionsMenu';
-import UnitActionsMenu  from '../../gameObjects/UnitActionsMenu';
-import { Game }         from '../Game';
+import { fonts }        from '../const/config';
+import { Game }         from './Game';
+import MapActionsMenu   from './menus/MapActionsMenu';
+import UnitActionsMenu  from './menus/UnitActionsMenu';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
-  private config = {
-    textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 },
-  };
-
   private corners: MapUICorners = {
     topLeft: '',
     topRight: '',
@@ -96,15 +93,15 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const { unitInfoPanel } = this.panels;
     const { texts }         = unitInfoPanel;
     const { left, top }     = unitInfoPanel.bounds;
-    const { textStyle }     = this.config;
+    const { normal }        = fonts.styles;
 
     let { x, y } = Game.gameMap.layers.unitInfoPanel.tileToWorldXY(left, top);
 
     x += 20;
     y += 10;
 
-    texts.name  = add.text(0, 0, ' hero name ', Object.assign({}, textStyle, { fontSize: 40 }));
-    texts.hp    = add.text(0, 50, 'HP ', textStyle);
+    texts.name  = add.text(0, 0, ' hero name ', Object.assign({}, normal, { fontSize: 40 }));
+    texts.hp    = add.text(0, 50, 'HP ', normal);
 
     unitInfoPanel.textsContainer = add
       .container(x, y, [texts.name, texts.hp])
@@ -118,16 +115,16 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const { tileInfoPanel } = this.panels;
     const { texts }         = tileInfoPanel;
     const { left, top }     = tileInfoPanel.bounds;
-    const { textStyle }     = this.config;
+    const { normal }        = fonts.styles;
 
     let { x, y } = Game.gameMap.layers.tileInfoPanel.tileToWorldXY(left, top);
 
     x += 20;
     y += 10;
 
-    texts.name = add.text(0, 0, ' - ', { ...textStyle, ...{ fontSize: 40 }});
-    texts.def   = add.text(0, 50, 'DEF. ', textStyle);
-    texts.avo   = add.text(0, 70, 'AVO. ', textStyle);
+    texts.name = add.text(0, 0, ' - ', { ...normal, ...{ fontSize: 40 }});
+    texts.def   = add.text(0, 50, 'DEF. ', normal);
+    texts.avo   = add.text(0, 70, 'AVO. ', normal);
 
     tileInfoPanel.textsContainer = add
       .container(x, y, [texts.name, texts.def, texts.avo])
@@ -137,7 +134,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   private disableEvents() {
-    this.scene.events.off('cursorMoved', this.updatePanels, undefined, false);
+    this.scene.events.off('cursorMoved', this.updatePanels, this, false);
     this.scene.events.off('openUnitActions', this.openUnitActions, this, false);
     this.scene.events.off('openMapActions', this.openMapActions, this, false);
 
@@ -145,7 +142,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   private enableEvents() {
-    this.scene.events.on('cursorMoved', this.updatePanels);
+    this.scene.events.on('cursorMoved', this.updatePanels, this);
     this.scene.events.on('openUnitActions', this.openUnitActions, this);
     this.scene.events.on('openMapActions', this.openMapActions, this);
 
@@ -484,8 +481,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   /** React to user inputs -> cursor moved. */
   private updatePanels(tileCursor: Phaser.Tilemaps.Tile) {
-    Game.mapUI.updateTileInfoPanel(tileCursor);
-    Game.mapUI.updateUnitInfoPanel(tileCursor);
+    this.updateTileInfoPanel(tileCursor);
+    this.updateUnitInfoPanel(tileCursor);
 
     return this;
   }

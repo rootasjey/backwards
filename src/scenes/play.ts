@@ -1,11 +1,7 @@
-// import 'phaser';
-
-import { VisualLoader } from './components/VisualLoader';
-
-import { Game } from './Game';
-
-import GameMap from './components/GameMap';
-import MapUI from './components/MapUI';
+import { Game }         from '../gameObjects/Game';
+import GameMap          from '../gameObjects/GameMap';
+import MapUI            from '../gameObjects/MapUI';
+import { VisualLoader } from '../gameObjects/VisualLoader';
 
 export default class Play extends Phaser.Scene {
   private visualLoader: VisualLoader;

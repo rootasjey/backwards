@@ -1,5 +1,5 @@
 import 'phaser';
-import gameConst from '../const/GameConst';
+import { hexColors } from '../const/config';
 
 const Rectangle = Phaser.Geom.Rectangle;
 
@@ -48,7 +48,7 @@ export default class BootScene extends Phaser.Scene {
         !this.progressBgRect ||
         !this.progressRect) { return; }
 
-    const { darkGray, red, white } = gameConst.hexColors;
+    const { darkGray, red, white } = hexColors;
 
     this.progressRect.width = progress * this.progressBgRect.width;
     this.progressBar

@@ -1,9 +1,9 @@
-import { MapActions }   from '../../actions/map';
-import { UnitActions }  from '../../actions/unit';
-import gameConst        from '../../const/GameConst';
-import TileUnit         from '../../gameObjects/TileUnit';
-import { unitsFactory } from '../../logic/unitsFactory';
-import { Game }         from '../Game';
+import { MapActions }   from '../actions/map';
+import { UnitActions }  from '../actions/unit';
+import { colors }       from '../const/config';
+import { unitsFactory } from '../logic/unitsFactory';
+import { Game }         from './Game';
+import TileUnit         from './TileUnit';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
 
@@ -323,7 +323,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     if (this.selectedUnit) {
       this.updateUnitPosition({ coord: {x, y} });
-      this.cursor.tint = gameConst.colors.tileMovementPassive;
+      this.cursor.tint = colors.tileMovementPassive;
       return;
     }
 
@@ -337,7 +337,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
     tileUnit.select();
 
-    this.cursor.tint = gameConst.colors.tileMovementActive;
+    this.cursor.tint = colors.tileMovementActive;
   }
 
   /**

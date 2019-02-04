@@ -11,16 +11,14 @@ interface ActionsMenuShowOptions {
 }
 
 interface Consumable {
-  /**
-   * Item description.
-   */
+  /** Item description. */
   desc: string;
   effect: {
     target: string;
     value: number;
   };
 
-  itemType: ItemType;
+  itemType: ItemTypes;
   name: string;
   range: string;
   type: string;
@@ -115,7 +113,7 @@ interface InventoryRawItem {
   usage: number;
 }
 
-declare enum ItemType {
+declare enum ItemTypes {
   consumable = 'consumable',
   weapon = 'weapon',
 }
@@ -390,7 +388,7 @@ interface Weapon {
   damageType: string;
   desc: string;
   hit: number;
-  itemType: ItemType;
+  itemType: ItemTypes;
   name: string;
   range: string;
   rank: string;
@@ -425,15 +423,6 @@ interface WeaponRank {
   lance: string;
   light: string;
   sword: string;
-}
-
-declare enum WeaponRanks {
-  S = 'S',
-  A = 'A',
-  B = 'B',
-  C = 'C',
-  D = 'D',
-  E = 'E'
 }
 
 interface WeaponRankBonus {

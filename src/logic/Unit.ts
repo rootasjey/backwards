@@ -1,9 +1,10 @@
-import WeaponConst from '../const/WeaponConst';
+import { ItemTypes } from '../const/items';
 
-enum ItemType {
-  consumable = 'consumable',
-  weapon = 'weapon',
-}
+import {
+  WeaponDamageType,
+  WeaponRanks,
+  WeaponTypes,
+} from '../const/weapons';
 
 export class Unit {
   private state: UnitState;
@@ -97,7 +98,7 @@ export class Unit {
     let totalAtk = 0;
     const weaponAtk = weapon.atk;
 
-    if (weapon.damageType === WeaponConst.damageTypes.physical) {
+    if (weapon.damageType === WeaponDamageType.physical) {
       totalAtk = weaponAtk + str;
 
       opponentDamageReduction = opponent ?
@@ -154,7 +155,6 @@ export class Unit {
   public getCriticalHit(opponent?: Unit): number {
     const skl = this.state.skl;
     const ennemyLuck = opponent ? opponent.state.lck : 0;
-    const { rank: WEAPON_RANK } = WeaponConst;
 
     if (!this.state.weapon) { return 0; }
 
@@ -162,7 +162,7 @@ export class Unit {
 
     let sRankBonus = 0;
 
-    if (rank === WEAPON_RANK.S) { sRankBonus = 5; }
+    if (rank === WeaponRanks.S) { sRankBonus = 5; }
 
     return ((skl / 2) + sRankBonus + ctr) - ennemyLuck;
   }
@@ -190,7 +190,7 @@ export class Unit {
     const { lck, mag, skl } = this.state;
     const { hit, type } = this.state.weapon;
 
-    if (type === WeaponConst.types.staff) {
+    if (type === WeaponTypes.staff) {
       return (mag * 5) + skl + 30;
     }
 
@@ -209,7 +209,7 @@ export class Unit {
     let max = 0;
 
     inventory.getItems()
-      .filter((item) => item.itemType === ItemType.weapon)
+      .filter((item) => item.itemType === ItemTypes.weapon)
       .map((item) => {
         // Diff range formats: '0', '1-3'
         const rangeValues = item.range.split('-');
@@ -247,8 +247,6 @@ export class Unit {
    * @param {Object} stats Contains statistic name and value to add.
    */
   public getWeaponRankBonus(): WeaponRankBonus {
-    const { rank: WEAPON_RANK, types: WEAPON_TYPES } = WeaponConst;
-
     let bonus = {
       hit       : 0,
       atk       : 0,
@@ -259,44 +257,44 @@ export class Unit {
     const { rank, type } = this.state.weapon;
 
     switch (type) {
-      case WEAPON_TYPES.axe:
-        if (WEAPON_RANK.C === rank) { bonus.hit = 5; }
-        if (WEAPON_RANK.B === rank) { bonus.hit = 10; }
-        if (WEAPON_RANK.A === rank) { bonus.hit = 15; }
+      case WeaponTypes.axe:
+        if (WeaponRanks.C === rank) { bonus.hit = 5; }
+        if (WeaponRanks.B === rank) { bonus.hit = 10; }
+        if (WeaponRanks.A === rank) { bonus.hit = 15; }
 
         break;
 
-      case WEAPON_TYPES.bow:
-        if (WEAPON_RANK.C === rank) { bonus.atk = 1; }
-        if (WEAPON_RANK.B === rank) { bonus = { atk: 1, hit: 5 , recovery: 0 }; }
-        if (WEAPON_RANK.A === rank) { bonus = { atk: 2, hit: 5 , recovery: 0 }; }
+      case WeaponTypes.bow:
+        if (WeaponRanks.C === rank) { bonus.atk = 1; }
+        if (WeaponRanks.B === rank) { bonus = { atk: 1, hit: 5 , recovery: 0 }; }
+        if (WeaponRanks.A === rank) { bonus = { atk: 2, hit: 5 , recovery: 0 }; }
 
         break;
 
-      case WEAPON_TYPES.lance:
-        if (WEAPON_RANK.C === rank) { bonus.atk = 1; }
-        if (WEAPON_RANK.B === rank) { bonus = { atk: 1, hit: 5, recovery: 0 }; }
-        if (WEAPON_RANK.A === rank) { bonus = { atk: 2, hit: 5, recovery: 0 }; }
+      case WeaponTypes.lance:
+        if (WeaponRanks.C === rank) { bonus.atk = 1; }
+        if (WeaponRanks.B === rank) { bonus = { atk: 1, hit: 5, recovery: 0 }; }
+        if (WeaponRanks.A === rank) { bonus = { atk: 2, hit: 5, recovery: 0 }; }
 
         break;
 
-      case WEAPON_TYPES.staff:
-        if (WEAPON_RANK.C === rank) { bonus.recovery = 1; }
-        if (WEAPON_RANK.B === rank) { bonus.recovery = 2; }
-        if (WEAPON_RANK.A === rank) { bonus.recovery = 3; }
+      case WeaponTypes.staff:
+        if (WeaponRanks.C === rank) { bonus.recovery = 1; }
+        if (WeaponRanks.B === rank) { bonus.recovery = 2; }
+        if (WeaponRanks.A === rank) { bonus.recovery = 3; }
 
         break;
 
-      case WEAPON_TYPES.sword:
-        if (WEAPON_RANK.C === rank) { bonus.atk = 1; }
-        if (WEAPON_RANK.B === rank) { bonus.atk = 2; }
-        if (WEAPON_RANK.A === rank) { bonus.atk = 3; }
+      case WeaponTypes.sword:
+        if (WeaponRanks.C === rank) { bonus.atk = 1; }
+        if (WeaponRanks.B === rank) { bonus.atk = 2; }
+        if (WeaponRanks.A === rank) { bonus.atk = 3; }
         break;
 
-      case WEAPON_TYPES.tome:
-        if (WEAPON_RANK.C === rank) { bonus.atk = 1; }
-        if (WEAPON_RANK.B === rank) { bonus = { atk: 1, hit: 5, recovery: 0 }; }
-        if (WEAPON_RANK.A === rank) { bonus = { atk: 2, hit: 5, recovery: 0 }; }
+      case WeaponTypes.tome:
+        if (WeaponRanks.C === rank) { bonus.atk = 1; }
+        if (WeaponRanks.B === rank) { bonus = { atk: 1, hit: 5, recovery: 0 }; }
+        if (WeaponRanks.A === rank) { bonus = { atk: 2, hit: 5, recovery: 0 }; }
 
         break;
 

@@ -1,8 +1,8 @@
-import { UnitActions }  from '../actions/unit';
-import ActionButton     from './ActionButton';
-import ActionsMenu      from './ActionsMenu';
+import { MapActions } from '../../actions/map';
+import ActionButton   from './ActionButton';
+import ActionsMenu    from './ActionsMenu';
 
-export default class UnitActionsMenu extends ActionsMenu {
+export default class MapActionsMenu extends ActionsMenu {
   constructor(scene: Phaser.Scene, layer: Phaser.Tilemaps.DynamicTilemapLayer) {
     super(scene, layer);
   }
@@ -13,11 +13,11 @@ export default class UnitActionsMenu extends ActionsMenu {
 
   protected createPermanentButtons() {
     const cancel = this.createCancelButton();
-    const items = this.createItemsButton();
-    const wait = this.createWaitButton();
+    const endTurn = this.createEndTurnButton();
+    const suspend = this.createSuspendButton();
 
     const container = this.scene.add
-      .container(0, 0, [cancel, wait, items])
+      .container(0, 0, [cancel, endTurn, suspend])
       .setVisible(false);
 
     return container;
@@ -27,7 +27,7 @@ export default class UnitActionsMenu extends ActionsMenu {
     const button = new ActionButton(this.scene, {
       onClick: () => {
         this.hide();
-        this.sendAction(UnitActions.cancel);
+        this.sendAction(MapActions.cancel);
       },
       text: 'cancel',
     });
@@ -35,24 +35,27 @@ export default class UnitActionsMenu extends ActionsMenu {
     return button.getContainer();
   }
 
-  private createItemsButton() {
+  private createEndTurnButton() {
     const button = new ActionButton(this.scene, {
-      coord: { x: 0, y: 60 },
-      onClick: () => { this.hide(); },
-      text: 'items',
+      coord: { x: 0, y: 30 },
+      onClick: () => {
+        this.hide();
+        this.sendAction(MapActions.endTurn);
+      },
+      text: 'end turn',
     });
 
     return button.getContainer();
   }
 
-  private createWaitButton() {
+  private createSuspendButton() {
     const button = new ActionButton(this.scene, {
-      coord: { x: 0, y: 30 },
+      coord: { x: 0, y: 60 },
       onClick: () => {
         this.hide();
-        this.sendAction(UnitActions.wait);
+        this.sendAction(MapActions.suspend);
       },
-      text: 'wait',
+      text: 'suspend',
     });
 
     return button.getContainer();
@@ -60,6 +63,6 @@ export default class UnitActionsMenu extends ActionsMenu {
 
   /** Send unit's action to the scene (through event). */
   private sendAction(action: string) {
-    this.scene.events.emit(`unit:${action}`, this.tile);
+    this.scene.events.emit(`map:${action}`);
   }
 }

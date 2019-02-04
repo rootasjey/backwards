@@ -1,9 +1,7 @@
 import * as PF    from 'pathfinding';
+import { colors } from '../const/config';
 import { Unit }   from '../logic/Unit';
-
-import { Game }   from '../scenes/Game';
-
-import gameConst  from '../const/GameConst';
+import { Game }   from './Game';
 
 export default class TileUnit extends Phaser.GameObjects.GameObject {
 
@@ -361,7 +359,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const {
       tileMovementActive: activeColor,
       tileMovementPassive: passiveColor,
-    } = gameConst.colors;
+    } = colors;
 
     // Revert back past movement tiles to their original tint
     tileUnit.tilesPath.map((tile) => tile.tint = passiveColor);
@@ -402,7 +400,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
       // const tileAtkRange = layerAtkRange.putTileAt(2525, x, y);
       const tileAtkRange = layerAtkRange.putTileAt(2569, x, y);
-      tileAtkRange.tint = gameConst.colors.tileAttack;
+      tileAtkRange.tint = colors.tileAttack;
 
       // Alpha will be animate later to show atk range
       tileAtkRange.setAlpha(0);
