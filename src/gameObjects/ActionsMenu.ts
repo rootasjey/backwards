@@ -81,10 +81,12 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
    * Show actions' menu.
    * @param cursor Coordinates to show the menu.
    */
-  public show(cursor: Phaser.Tilemaps.Tile, options: ActionsMenuShowOptions) {
-    const { tile } = options;
+  public show(cursor: Phaser.Tilemaps.Tile, options?: ActionsMenuShowOptions) {
+    if (options) {
+      const { tile } = options;
+      this.tile = tile;
+    }
 
-    this.tile = tile;
     this.layer.setVisible(true);
 
     const { x, y } = this.getMenuCoord(cursor);

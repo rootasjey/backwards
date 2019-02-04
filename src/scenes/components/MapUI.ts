@@ -1,10 +1,9 @@
+import MapActionsMenu   from '../../gameObjects/MapActionsMenu';
 import UnitActionsMenu  from '../../gameObjects/UnitActionsMenu';
 import { Game }         from '../Game';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
-  private actionsMenu: UnitActionsMenu;
-
-  private config: any = {
+  private config = {
     textStyle: { fontFamily: 'Kenney Pixel', fontSize: 30 },
   };
 
@@ -22,7 +21,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     bottomLeft: { x: 1, y: 21 },
   };
 
+  private mapActionsMenu: MapActionsMenu;
+
   private panels: MapUIPanels = {};
+
+  private unitActionsMenu: UnitActionsMenu;
 
   /** Manage UI overlay on in-game maps. */
   constructor(scene: Phaser.Scene) {
@@ -31,7 +34,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     scene.add.existing(this);
     this.init();
 
-    this.actionsMenu = new UnitActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
+    this.mapActionsMenu = new MapActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
+    this.unitActionsMenu = new UnitActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -79,8 +83,12 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
+  private openMapActions(cursor: Phaser.Tilemaps.Tile) {
+    this.mapActionsMenu.show(cursor);
+  }
+
   private openUnitActions(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
-    this.actionsMenu.show(cursor, { tile });
+    this.unitActionsMenu.show(cursor, { tile });
   }
 
   private createUnitInfoPanelText() {
@@ -131,6 +139,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   private disableEvents() {
     this.scene.events.off('cursorMoved', this.updatePanels, undefined, false);
     this.scene.events.off('openUnitActions', this.openUnitActions, this, false);
+    this.scene.events.off('openMapActions', this.openMapActions, this, false);
 
     return this;
   }
@@ -138,6 +147,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   private enableEvents() {
     this.scene.events.on('cursorMoved', this.updatePanels);
     this.scene.events.on('openUnitActions', this.openUnitActions, this);
+    this.scene.events.on('openMapActions', this.openMapActions, this);
 
     return this;
   }

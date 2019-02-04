@@ -1,5 +1,6 @@
+import { MapActions }   from '../../actions/map';
+import { UnitActions }  from '../../actions/unit';
 import gameConst        from '../../const/GameConst';
-import unitConst        from '../../const/UnitConst';
 import TileUnit         from '../../gameObjects/TileUnit';
 import { unitsFactory } from '../../logic/unitsFactory';
 import { Game }         from '../Game';
@@ -46,6 +47,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
   private cursor: Phaser.Tilemaps.Tile;
 
+  /** Last cursor coordinates on pointerdown. TODO: Use velocity w/ Phaser 3.16. */
+  private cursorDownCoord?: Coord;
+
   private lastPointedUnit?: Phaser.Tilemaps.Tile;
 
   private previousUnitCoord?: Coord;
@@ -85,9 +89,17 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private addUnitActionListeners() {
-    this.scene.events.once(`unit:${unitConst.action.wait}`, this.onUnitActionWait, this);
-    this.scene.events.once(`unit:${unitConst.action.cancel}`, this.onUnitActionCancel, this);
+  private addMapActionsListeners() {
+    this.scene.events.once(`map:${MapActions.cancel}`, this.onMapActionCancel, this);
+    this.scene.events.once(`map:${MapActions.endTurn}`, this.onMapActionEndTurn, this);
+    this.scene.events.once(`map:${MapActions.suspend}`, this.onMapActionSuspend, this);
+
+    return this;
+  }
+
+  private addUnitActionsListeners() {
+    this.scene.events.once(`unit:${UnitActions.wait}`, this.onUnitActionWait, this);
+    this.scene.events.once(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this);
 
     return this;
   }
@@ -195,14 +207,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private disableEvents() {
     const { input } = this.scene;
 
-    input.off('pointerup', this.onPointerUp, undefined, false);
-    input.off('pointerdown', this.onPointerDown, undefined, false);
-    input.off('pointermove', this.onPointerMove, undefined, false);
+    input.off('pointerup', this.onPointerUp, this, false);
+    input.off('pointerdown', this.onPointerDown, this, false);
+    input.off('pointermove', this.onPointerMove, this, false);
 
-    input.keyboard.off('keydown_UP', this.onMoveCursorUp, undefined, false);
-    input.keyboard.off('keydown_DOWN', this.onMoveCursorDown, undefined, false);
-    input.keyboard.off('keydown_LEFT', this.onMoveCursorLeft, undefined, false);
-    input.keyboard.off('keydown_RIGHT', this.onMoveCursorRight, undefined, false);
+    input.keyboard.off('keydown_UP', this.onMoveCursorUp, this, false);
+    input.keyboard.off('keydown_DOWN', this.onMoveCursorDown, this, false);
+    input.keyboard.off('keydown_LEFT', this.onMoveCursorLeft, this, false);
+    input.keyboard.off('keydown_RIGHT', this.onMoveCursorRight, this, false);
 
     return this;
   }
@@ -379,6 +391,18 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.scene.events.emit('cursorMoved', this.cursor, this.scene);
   }
 
+  private onMapActionCancel() {
+    this.removeMapActionsListeners();
+  }
+
+  private onMapActionEndTurn() {
+    this.removeMapActionsListeners();
+  }
+
+  private onMapActionSuspend() {
+    this.removeMapActionsListeners();
+  }
+
   private onMoveCursorDown() {
     const { x, y } = this.cursor;
 
@@ -421,13 +445,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.moveCursorTo(x, previousY);
   }
 
-  private onPointerDown() {
+  private onPointerDown(pointer: Phaser.Input.Pointer) {
     this.canDrag = true;
+
+    this.cursorDownCoord = { x: pointer.x, y: pointer.y };
   }
 
-  private onPointerUp() {
+  private onPointerUp(pointer: Phaser.Input.Pointer) {
     this.canDrag = false;
     this.interactWithUnit();
+    this.tryShowMapMenu(pointer);
   }
 
   private onPointerMove(pointer: Phaser.Input.Pointer) {
@@ -452,7 +479,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
-    this.removeUnitActionListeners();
+    this.removeUnitActionsListeners();
 
     const tileUnit = addedTile.properties.tileUnit as TileUnit;
 
@@ -462,7 +489,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
     if (!this.previousUnitCoord) { return; }
 
-    this.removeUnitActionListeners();
+    this.removeUnitActionsListeners();
 
     const { createUnit, scene } = this;
     const unitsLayer = this.layers.units;
@@ -488,9 +515,17 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.moveCursorTo(prevX, prevY);
   }
 
-  private removeUnitActionListeners() {
-    this.scene.events.off(`unit:${unitConst.action.wait}`, this.onUnitActionWait, this, false);
-    this.scene.events.off(`unit:${unitConst.action.cancel}`, this.onUnitActionCancel, this, false);
+  private removeMapActionsListeners() {
+    this.scene.events.off(`map:${MapActions.cancel}`, this.onMapActionCancel, this, false);
+    this.scene.events.off(`map:${MapActions.endTurn}`, this.onMapActionEndTurn, this, false);
+    this.scene.events.off(`map:${MapActions.suspend}`, this.onMapActionSuspend, this, false);
+
+    return this;
+  }
+
+  private removeUnitActionsListeners() {
+    this.scene.events.off(`unit:${UnitActions.wait}`, this.onUnitActionWait, this, false);
+    this.scene.events.off(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this, false);
 
     return this;
   }
@@ -506,6 +541,26 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .map((layer) => layer.setDisplaySize(h, w));
 
     return this;
+  }
+
+  /** Show map menu if cursor is not on unit. */
+  private tryShowMapMenu(pointer: Phaser.Input.Pointer) {
+    const { x, y } = this.cursor;
+
+    if (!this.cursorDownCoord ||
+      this.selectedUnit ||
+      this.layers.units.hasTileAt(x, y)) {
+      return;
+    }
+
+    const distX = Math.abs(pointer.x - this.cursorDownCoord.x);
+    const distY = Math.abs(pointer.y - this.cursorDownCoord.y);
+
+    // NOTE: may need adjustments
+    if (distX > 10 || distY > 10) { return; }
+
+    this.addMapActionsListeners();
+    this.scene.events.emit('openMapActions', this.cursor);
   }
 
   /** Move a unit to a {x,y} coordinates in tiles.
@@ -565,7 +620,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       })
       .then((result) => {
         const { tile } = result;
-        this.addUnitActionListeners();
+        this.addUnitActionsListeners();
         this.scene.events.emit('openUnitActions', this.cursor, tile);
       })
       .finally(() => {
