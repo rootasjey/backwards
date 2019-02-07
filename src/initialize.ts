@@ -6,8 +6,11 @@ import { Game } from './gameObjects/Game';
 
 Game.instance = new Phaser.Game({
   // See <https://github.com/photonstorm/phaser/blob/master/src/boot/Config.js>
-  width: 812,
-  height: 812,
+  scale: {
+    mode: Phaser.Scale.ENVELOP,
+    width: 812,
+    height: 812,
+  },
   // zoom: 1,
   // resolution: 1,
   type: Phaser.AUTO,

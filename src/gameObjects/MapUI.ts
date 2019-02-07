@@ -167,7 +167,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
       top: 0,
     };
 
-    const layer = Game.gameMap.layers[name];
+    const layer = Game.gameMap.layers[name] as Phaser.Tilemaps.DynamicTilemapLayer;
 
     const tileToFind = layer.findTile(
       (tile: Phaser.Tilemaps.Tile) => typeof tile === 'object',

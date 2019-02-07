@@ -211,10 +211,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     input.off('pointerdown', this.onPointerDown, this, false);
     input.off('pointermove', this.onPointerMove, this, false);
 
-    input.keyboard.off('keydown_UP', this.onMoveCursorUp, this, false);
-    input.keyboard.off('keydown_DOWN', this.onMoveCursorDown, this, false);
-    input.keyboard.off('keydown_LEFT', this.onMoveCursorLeft, this, false);
-    input.keyboard.off('keydown_RIGHT', this.onMoveCursorRight, this, false);
+    input.keyboard.off('keydown-UP', this.onMoveCursorUp, this, false);
+    input.keyboard.off('keydown-DOWN', this.onMoveCursorDown, this, false);
+    input.keyboard.off('keydown-LEFT', this.onMoveCursorLeft, this, false);
+    input.keyboard.off('keydown-RIGHT', this.onMoveCursorRight, this, false);
 
     return this;
   }
@@ -244,10 +244,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     input.on('pointerdown', this.onPointerDown, this);
     input.on('pointermove', this.onPointerMove, this);
 
-    input.keyboard.on('keydown_UP', this.onMoveCursorUp, this);
-    input.keyboard.on('keydown_DOWN', this.onMoveCursorDown, this);
-    input.keyboard.on('keydown_LEFT', this.onMoveCursorLeft, this);
-    input.keyboard.on('keydown_RIGHT', this.onMoveCursorRight, this);
+    input.keyboard.on('keydown-UP', this.onMoveCursorUp, this);
+    input.keyboard.on('keydown-DOWN', this.onMoveCursorDown, this);
+    input.keyboard.on('keydown-LEFT', this.onMoveCursorLeft, this);
+    input.keyboard.on('keydown-RIGHT', this.onMoveCursorRight, this);
 
     return this;
   }

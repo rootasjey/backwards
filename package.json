@@ -7,6 +7,7 @@
   "scripts": {
     "build:dev": "webpack --env dev",
     "build:prd": "webpack --env prd",
+    "download-phaser-typedef": "download --out typings https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
     "start": "webpack-dev-server -d --env dev",
     "test": "ava",
     "watch": "webpack --env dev --watch"
@@ -14,7 +15,7 @@
   "dependencies": {
     "copy-webpack-plugin": "4.6.0",
     "pathfinding": "0.4.18",
-    "phaser": "3.15.1",
+    "phaser": "3.16.1",
     "typescript": "3.2.2",
     "webpack": "4.28.4",
     "webpack-cli": "3.2.1",
@@ -25,13 +26,18 @@
     "@types/pathfinding": "0.0.2",
     "@types/webpack": "4.4.22",
     "ava": "1.0.1",
+    "download-cli": "1.1.1",
     "raw-loader": "1.0.0",
     "ts-loader": "5.3.3",
     "ts-node": "7.0.1",
     "tslint": "5.12.1"
   },
   "ava": {
-    "extensions": ["ts"],
-    "require": ["ts-node/register/transpile-only"]
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register/transpile-only"
+    ]
   }
 }

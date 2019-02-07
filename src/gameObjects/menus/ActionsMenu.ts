@@ -224,9 +224,9 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   private disableEvents() {
     const { input } = this.scene;
 
-    input.keyboard.off('keydown_UP', this.keydownUP, this, false);
-    input.keyboard.off('keydown_DOWN', this.keydownDOWN, this, false);
-    input.keyboard.off('keydown_ENTER', this.keydownENTER, this, false);
+    input.keyboard.off('keydown-UP', this.keydownUP, this, false);
+    input.keyboard.off('keydown-DOWN', this.keydownDOWN, this, false);
+    input.keyboard.off('keydown-ENTER', this.keydownENTER, this, false);
 
     return this;
   }
@@ -239,9 +239,9 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   private enableEvents() {
     const { input } = this.scene;
 
-    input.keyboard.on('keydown_UP', this.keydownUP, this);
-    input.keyboard.on('keydown_DOWN', this.keydownDOWN, this);
-    input.keyboard.on('keydown_ENTER', this.keydownENTER, this);
+    input.keyboard.on('keydown-UP', this.keydownUP, this);
+    input.keyboard.on('keydown-DOWN', this.keydownDOWN, this);
+    input.keyboard.on('keydown-ENTER', this.keydownENTER, this);
 
     return this;
   }

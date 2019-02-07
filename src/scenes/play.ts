@@ -13,7 +13,6 @@ export default class Play extends Phaser.Scene {
   constructor() {
     super('game');
 
-    // addVisualLoader(this);
     this.visualLoader = new VisualLoader(this);
   }
 
