@@ -91,9 +91,6 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
     this.layer.setVisible(true);
 
-    const { x, y } = this.getMenuCoord(cursor);
-    const { layer } = this;
-
     const containerButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
 
     this.additionalButtons = this.createAdditionalButtons();
@@ -106,6 +103,9 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     this.allCurrentButtons = containerButtons;
 
     this.buttonsCount = containerButtons.length;
+
+    const { x, y } = this.getMenuCoord(cursor);
+    const { layer } = this;
 
     this
       .disableMapEvents()
