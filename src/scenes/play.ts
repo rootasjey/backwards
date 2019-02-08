@@ -79,7 +79,11 @@ export default class Play extends Phaser.Scene {
 
   public setCameraBorders() {
     const { displayHeight, displayWidth } = Game.gameMap.layers.floor;
-    this.cameras.main.setBounds(0, 0, displayHeight + 60, displayWidth + 60);
+
+    const overflowX = Math.max(0, displayWidth - window.innerWidth);
+    const overflowY = Math.max(0, displayHeight - window.innerHeight);
+
+    this.cameras.main.setBounds(0, 0, displayWidth + overflowX, displayHeight + overflowY);
   }
 
   /**

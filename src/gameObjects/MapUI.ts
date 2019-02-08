@@ -378,12 +378,17 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /** Set predefined corners according to window dimentions. */
   private setAutoCorners() {
     const { cornersXY } = this;
-    const { innerHeight: height, innerWidth: width } = window;
+    const { innerHeight: windowsHeight, innerWidth: windowWidth } = window;
 
-    const rightX = width - 200;
-    const bottomY = height - 140;
+    const { displayHeight, displayWidth } = Game.gameMap.layers.tileInfoPanel;
 
-    const { x, y } = Game.gameMap.map.worldToTileXY(rightX, bottomY);
+    const height = windowsHeight > displayHeight ? displayHeight : windowsHeight;
+    const width = windowWidth > displayWidth ? displayWidth : windowWidth;
+
+    let { x, y } = Game.gameMap.map.worldToTileXY(width, height);
+
+    x -= 9;
+    y -= 5;
 
     cornersXY.topRight.x    = x;
     cornersXY.bottomLeft.y  = y;

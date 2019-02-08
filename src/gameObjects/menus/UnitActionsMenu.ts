@@ -23,11 +23,18 @@ export default class UnitActionsMenu extends ActionsMenu {
     return container;
   }
 
+  protected onPointerUpOutside() {
+    this
+      .hide()
+      .sendAction(UnitActions.cancel);
+  }
+
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
       onClick: () => {
-        this.hide();
-        this.sendAction(UnitActions.cancel);
+        this.
+          hide()
+          .sendAction(UnitActions.cancel);
       },
       text: 'cancel',
     });

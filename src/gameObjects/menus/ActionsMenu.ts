@@ -70,6 +70,8 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       .removeOverEventButtons()
       .enableMapEvents()
       .reinitializeProperties();
+
+    return this;
   }
 
   /** Return true if actions' menu is visible. False otherwise. */
@@ -120,6 +122,10 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   protected abstract createAdditionalButtons(): Phaser.GameObjects.Container;
 
   protected abstract createPermanentButtons(): Phaser.GameObjects.Container;
+
+  protected onPointerUpOutside(event: Phaser.Events.EventEmitter) {
+    this.hide();
+  }
 
   // ~~~~~~~~~~~~~~~~~
   // PRIVATE FUNCTIONS
@@ -224,9 +230,11 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   private disableEvents() {
     const { input } = this.scene;
 
-    input.keyboard.off('keydown-UP', this.keydownUP, this, false);
-    input.keyboard.off('keydown-DOWN', this.keydownDOWN, this, false);
-    input.keyboard.off('keydown-ENTER', this.keydownENTER, this, false);
+    input.keyboard.off('keydown-UP', this.onKeydownUP, this);
+    input.keyboard.off('keydown-DOWN', this.onKeydownDOWN, this);
+    input.keyboard.off('keydown-ENTER', this.onKeydownENTER, this);
+
+    input.off('pointerup', this.onPointerUpOutside, this);
 
     return this;
   }
@@ -239,9 +247,11 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   private enableEvents() {
     const { input } = this.scene;
 
-    input.keyboard.on('keydown-UP', this.keydownUP, this);
-    input.keyboard.on('keydown-DOWN', this.keydownDOWN, this);
-    input.keyboard.on('keydown-ENTER', this.keydownENTER, this);
+    input.keyboard.on('keydown-UP', this.onKeydownUP, this);
+    input.keyboard.on('keydown-DOWN', this.onKeydownDOWN, this);
+    input.keyboard.on('keydown-ENTER', this.onKeydownENTER, this);
+
+    input.on('pointerup', this.onPointerUpOutside, this);
 
     return this;
   }
@@ -292,13 +302,13 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     return this;
   }
 
-  private keydownDOWN() {
+  private onKeydownDOWN() {
     const newIndex = (this.cursorIndex + 1) % this.buttonsCount;
 
     this.cursorIndexChanged(newIndex);
   }
 
-  private keydownENTER() {
+  private onKeydownENTER() {
     const buttonOver = this.allCurrentButtons[this.cursorIndex];
 
     const actionButton = buttonOver.getData('actionButton') as ActionButton;
@@ -307,7 +317,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     buttonOver.emit('pointerup');
   }
 
-  private keydownUP() {
+  private onKeydownUP() {
     const previousIndex = this.cursorIndex - 1;
     const newIndex = previousIndex < 0 ? this.buttonsCount - 1 : previousIndex;
 
@@ -320,6 +330,8 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
     // IDEA: Remember the last selected entry
     this.cursorIndex = 0;
+
+    return this;
   }
 
   /** Show buttons to the cursor location. */
