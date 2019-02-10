@@ -545,6 +545,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   /** Show map menu if cursor is not on unit. */
   private tryShowMapMenu(pointer: Phaser.Input.Pointer) {
+    const { cursor } = this;
     const { x, y } = this.cursor;
 
     if (!this.cursorDownCoord ||
@@ -560,7 +561,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     if (distX > 10 || distY > 10) { return; }
 
     this.addMapActionsListeners();
-    this.scene.events.emit('openMapActions', this.cursor);
+
+    this.scene.events.emit('openMapActions', cursor);
   }
 
   /** Move a unit to a {x,y} coordinates in tiles.

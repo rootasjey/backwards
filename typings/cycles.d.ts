@@ -10,6 +10,13 @@ interface ActionsMenuShowOptions {
   tile?: Phaser.Tilemaps.Tile;
 }
 
+interface Bounds {
+  bottom: number;
+  left: number;
+  right: number;
+  top: number;
+}
+
 interface Consumable {
   /** Item description. */
   desc: string;
@@ -161,13 +168,6 @@ interface MapUIPanel {
   textsContainer?: Phaser.GameObjects.Container;
 }
 
-interface Bounds {
-  bottom: number;
-  left: number;
-  right: number;
-  top: number;
-}
-
 interface moveTilesGroupParam {
   /** The grouped tiles bounds. */
   bounds?: Bounds;
@@ -193,10 +193,19 @@ interface PhysicalWeaponTriangleCorrespondance {
   sword: string;
 }
 
+interface Player {
+  id: number;
+  name: string;
+}
+
 interface TileUnitConstructorParam {
   createUnit: Function /*(hero: string) => Unit*/;
   scene: Phaser.Scene;
   tile: Phaser.Tilemaps.Tile;
+}
+
+interface TurnConstructorParam {
+  players: Player[];
 }
 
 interface UnitData {

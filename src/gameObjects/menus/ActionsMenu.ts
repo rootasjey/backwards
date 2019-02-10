@@ -79,10 +79,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     return this.layer.visible;
   }
 
-  /**
-   * Show actions' menu.
-   * @param cursor Coordinates to show the menu.
-   */
+  /** Show actions' menu. */
   public show(cursor: Phaser.Tilemaps.Tile, options?: ActionsMenuShowOptions) {
     if (options) {
       const { tile } = options;
@@ -266,21 +263,30 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   }
 
   private getMenuCoord(cursor: Phaser.Tilemaps.Tile) {
-    const panelWidth = this.getPanelWidth();
-    const panelHeight = this.buttonsCount + 2;
+    const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
-    let x = cursor.x + 1;
-    let y = cursor.y + 1;
+    const panelTilesWidth = this.getPanelWidth();
+    const panelTilesHeight = this.buttonsCount + 2;
 
-    if ((x + panelWidth) > this.layer.tilemap.width) {
-      x = x - (panelWidth + 1);
+    let tileX = cursor.x + 1;
+    let tileY = cursor.y + 1;
+
+    const cursorPixels = cursor.tilemap.tileToWorldXY(tileX, tileY);
+    const windowPixels = new Phaser.Math.Vector2(windowWidth, windowHeight);
+
+    const panelPixelsWidth = cursor.width * panelTilesWidth;
+    const panelPixelsHeight = cursor.height * panelTilesHeight;
+
+    // NOTE: too handy with the right edge.
+    if (cursorPixels.x + panelPixelsWidth + 42 > windowPixels.x) {
+      tileX = tileX - (panelTilesWidth + 1);
     }
 
-    if ((y + panelHeight) > this.layer.tilemap.height) {
-      y = y - panelHeight;
+    if (cursorPixels.y + panelPixelsHeight > windowPixels.y) {
+      tileY = tileY - panelTilesHeight;
     }
 
-    return { x, y };
+    return { x: tileX, y: tileY };
   }
 
   private getPanelWidth() {
