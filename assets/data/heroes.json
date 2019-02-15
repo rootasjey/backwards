@@ -59,5 +59,66 @@
       "light": "",
       "sword": "D"
     }
+  },
+
+  "victor": {
+    "class": "Myrmidon",
+    "desc": "A strong-hearted renegade who often acts before she thinks.",
+    "gender": "m",
+    "inventory": [
+      {
+        "name": "Iron Sword",
+        "usage": 45
+      }
+    ],
+    "level": 1,
+    "name": "Victor",
+    "skills": {},
+    "stats": {
+      "base": {
+        "cons": 2,
+        "def": 1,
+        "fullHP": 12,
+        "hp": 12,
+        "lck": 2,
+        "mag": 1,
+        "move": 4,
+        "res": 1,
+        "skl": 5,
+        "spd": 7,
+        "str": 3
+      },
+      "growth": {
+        "cons": 2,
+        "def": 1,
+        "fullHP": 105,
+        "hp": 105,
+        "lck": 2,
+        "mag": 1,
+        "move": 4,
+        "res": 1,
+        "skl": 5,
+        "spd": 7,
+        "str": 55
+      }
+    },
+    "wexp": {
+      "anima": 0,
+      "axe": 0,
+      "bow": 0,
+      "dark": 0,
+      "lance": 0,
+      "light": 0,
+      "sword": 8
+    },
+    "wrank": {
+      "anima": "",
+      "axe": "",
+      "bows": "",
+      "dark": "",
+      "lance": "",
+      "light": "",
+      "sword": "D"
+    }
   }
 }

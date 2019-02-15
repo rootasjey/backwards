@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextobjectid="16">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextobjectid="21">
  <tileset firstgid="1" name="terrain" tilewidth="16" tileheight="16" spacing="3" margin="1" tilecount="1767" columns="57">
   <image source="terrain.png" width="1082" height="588"/>
   <tile id="0">
@@ -3085,17 +3085,18 @@
   <image source="units.png" width="918" height="203"/>
   <tile id="270">
    <properties>
-    <property name="spritesIds" value="270"/>
+    <property name="playerId" type="int" value="1"/>
+    <property name="playerName" value="me"/>
+    <property name="spriteId" value="270"/>
     <property name="unitName" value="emilie"/>
    </properties>
   </tile>
-  <tile id="541">
+  <tile id="432">
    <properties>
-    <property name="atk" type="int" value="3"/>
-    <property name="def" type="int" value="1"/>
-    <property name="life" type="int" value="10"/>
-    <property name="move" type="int" value="4"/>
-    <property name="name" value="man-8"/>
+    <property name="playerId" type="int" value="2"/>
+    <property name="playerName" value="CPU"/>
+    <property name="spriteId" value="432"/>
+    <property name="unitName" value="victor"/>
    </properties>
   </tile>
  </tileset>
@@ -3298,7 +3299,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2038,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -3306,6 +3307,26 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="UnitsInit">
+  <object id="17" type="unit" gid="2038" x="402.492" y="301.389" width="16" height="16">
+   <properties>
+    <property name="playerId" type="int" value="1"/>
+    <property name="playerName" value="me"/>
+    <property name="spriteId" value="270"/>
+    <property name="tileId" type="int" value="2038"/>
+    <property name="unitName" value="emilie"/>
+   </properties>
+  </object>
+  <object id="20" type="unit" gid="2200" x="338.483" y="332.219" width="16" height="16">
+   <properties>
+    <property name="playerId" type="int" value="2"/>
+    <property name="playerName" value="CPU"/>
+    <property name="spriteId" value="432"/>
+    <property name="tileId" type="int" value="2200"/>
+    <property name="unitName" value="victor"/>
+   </properties>
+  </object>
+ </objectgroup>
  <layer name="Objects" width="30" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

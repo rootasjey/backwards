@@ -12,19 +12,19 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
 
   public layers: GameMapLayers = {
+    attackRange     : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    carpet          : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    collision       : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    cursor          : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    details         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    floor           : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    hiddenFloor     : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    movement        : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    objects         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    tileInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    units           : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    attackRange   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    carpet        : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    units         : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    unitInfoPanel : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    collision     : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    cursor        : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    details       : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    floor         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    hiddenFloor   : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    movement      : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    objects       : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    tileInfoPanel : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    unitInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
   };
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
@@ -52,6 +52,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private lastPointedUnit?: Phaser.Tilemaps.Tile;
 
+  private objectLayers: GameMapObjectLayers = {
+    unitsInit: Phaser.Tilemaps.ObjectLayer.prototype,
+  };
+
   private previousUnitCoord?: Coord;
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
@@ -71,6 +75,31 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     scene.add.existing(this);
 
     this.init();
+  }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC FUNCTIONS
+  // ~~~~~~~~~~~~~~~~~
+
+  public getAllPlayersOnMap() {
+    const players: PlayerMap = {};
+
+    const { units: unitsLayer } = this.layers;
+
+    unitsLayer.forEachTile((tile) => {
+      const properties = tile.properties as TiledObjectProperties;
+      const { playerId: id, playerName: name } = properties;
+
+      if (players[id]) { return; }
+
+      players[id] = {
+        id,
+        name,
+      };
+
+    }, undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
+
+    return players;
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -130,7 +159,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private createDynamicLayer() {
+  private createDynamicLayers() {
     const { layers, map, tileset } = this;
 
     layers.collision        = map.createDynamicLayer('Collision', tileset.map, 0, 0);
@@ -166,6 +195,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     this.mapMatrix = matrix;
+    return this;
+  }
+
+  private createObjectLayers() {
+    this.objectLayers.unitsInit = this.map.getObjectLayer('UnitsInit');
+
     return this;
   }
 
@@ -308,13 +343,31 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.createMap()
       .addTilesetImages()
       .createStaticLayers()
-      .createDynamicLayer()
+      .createDynamicLayers()
+      .createObjectLayers()
+      .initializeUnitsObjectLayer()
       .scaleToGameSize()
       .fixLayers()
       .createMapCursor()
       .createUnits()
       .createMapMatrix()
       .listenToEvents();
+  }
+
+  private initializeUnitsObjectLayer() {
+    const { units: unitsLayer } = this.layers;
+
+    this.objectLayers.unitsInit.objects
+      .filter((object) => object.type === 'unit')
+      .map((object) => {
+        const tiledObject = object as TiledObject;
+        const { properties: { tileId }, x, y } = tiledObject;
+
+        const tile = unitsLayer.putTileAtWorldXY(tileId, x, y);
+        tile.properties = { ...{}, ...tiledObject.properties };
+      });
+
+    return this;
   }
 
   /** Fired when a unit receives a pointer event. */
@@ -396,6 +449,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private onMapActionEndTurn() {
+    Game.turn.next();
     this.removeMapActionsListeners();
   }
 

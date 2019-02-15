@@ -101,6 +101,29 @@ interface GameMapLayers {
   unitInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
+interface GameMapObjectLayers {
+  unitsInit: Phaser.Tilemaps.ObjectLayer;
+}
+
+// TODO: Open an issue (and PR) on phaser => wrong type.
+interface TiledObject extends Phaser.GameObjects.GameObject {
+  gid: number;
+  id: number;
+  name: string;
+  properties: TiledObjectProperties;
+  type: string;
+  x: number;
+  y: number;
+}
+
+interface TiledObjectProperties {
+  playerId: number;
+  playerName: string;
+  spriteId: number;
+  tileId: number;
+  unitName: string;
+}
+
 interface IInventory {
   maxItems: number;
   getItems: InventoryGetItemsFun;
@@ -196,6 +219,10 @@ interface PhysicalWeaponTriangleCorrespondance {
 interface Player {
   id: number;
   name: string;
+}
+
+interface PlayerMap {
+  [key: number]: Player;
 }
 
 interface TileUnitConstructorParam {

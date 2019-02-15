@@ -1,6 +1,7 @@
 import { Game }         from '../gameObjects/Game';
 import GameMap          from '../gameObjects/GameMap';
 import MapUI            from '../gameObjects/MapUI';
+import Turn             from '../gameObjects/Turn';
 import { VisualLoader } from '../gameObjects/VisualLoader';
 
 export default class Play extends Phaser.Scene {
@@ -73,6 +74,12 @@ export default class Play extends Phaser.Scene {
   public create(/* data */) {
     Game.gameMap = new GameMap(this);
     Game.mapUI = new MapUI(this);
+
+    const players = Object.values(Game.gameMap.getAllPlayersOnMap());
+
+    Game.turn = new Turn({ players });
+
+    Game.turn.start();
 
     this.setCameraBorders();
   }

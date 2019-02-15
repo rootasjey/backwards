@@ -4,6 +4,17 @@ import { Unit }   from '../logic/Unit';
 import { Game }   from './Game';
 
 export default class TileUnit extends Phaser.GameObjects.GameObject {
+  // ~~~~~~~~~~~~~~~~~
+  // PUBLIC PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
+
+  public get player(): Player {
+    return this.PLAYER;
+  }
+
+  // ~~~~~~~~~~~~~~~~~
+  // PRIVATE PROPERTIES
+  // ~~~~~~~~~~~~~~~~~
 
   /**
    * Coordinates where tiles attack shouldn't be put
@@ -11,11 +22,15 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
    */
   private coordGap: CoordHash = {};
 
+  /** True if the tile is being animated (sprite movement). */
+  private isAnimating: boolean = false;
+
   /** Can this unit perform actions during the current turn. */
   private played: boolean = false;
 
-  /** True if the tile is being animated (sprite movement). */
-  private isAnimating: boolean = false;
+  private PLAYER: Player;
+
+  // private player: Player;
 
   /** Tile's sprite. */
   private sprite: Phaser.GameObjects.Sprite;
@@ -47,6 +62,11 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.sprite = this.createUnitSprite(tile);
     this.unit = createUnit(tile.properties.unitName); // TODO: PR in Phaser for properties: any
     this.tile = tile;
+
+    this.PLAYER = {
+      id: tile.properties.playerId,
+      name: tile.properties.playerName,
+    };
 
     this.once('destroy', () => {
       this.sprite.destroy();
@@ -226,7 +246,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const { scene } = this;
 
     const { x, y } = tile.layer.tilemapLayer.tileToWorldXY(tile.x, tile.y);
-    const id = Number.parseInt(tile.properties.spritesIds, 10);
+    const id = Number.parseInt(tile.properties.spriteId, 10);
 
     const deltaToCenter = tile.height / 1.4;
 
@@ -362,12 +382,25 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     } = colors;
 
     // Revert back past movement tiles to their original tint
-    tileUnit.tilesPath.map((tile) => tile.tint = passiveColor);
+    tileUnit.tilesPath.map((tile) => {
+      // NOTE: moving cursor fast outside reachable
+      // movement result in null result.
+      if (!tile) { return; }
+
+      tile.tint = passiveColor;
+    });
 
     tileUnit.tilesPath = tileUnit
       .getUnitPath({ startX, startY }, { endX, endY })
       .map(([x, y]) => movement.getTileAt(x, y))
-      .map((tile) => { tile.tint = activeColor; return tile; });
+      .map((tile) => {
+        // NOTE: moving cursor fast outside reachable
+        // movement result in null result.
+        if (!tile) { return tile; }
+
+        tile.tint = activeColor;
+        return tile;
+      });
   }
 
   /** Recursively add tiles which show attack range. */
