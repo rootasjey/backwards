@@ -451,6 +451,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private onMapActionEndTurn() {
     this.removeMapActionsListeners();
 
+    this.previousUnitCoord = undefined;
+
     Game.turn.next();
 
     const { currentPlayer, turnNumber } = Game.turn;
@@ -546,9 +548,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
-    if (!this.previousUnitCoord) { return; }
-
     this.removeUnitActionsListeners();
+    if (!this.previousUnitCoord) { return; }
 
     const { createUnit, scene } = this;
     const unitsLayer = this.layers.units;

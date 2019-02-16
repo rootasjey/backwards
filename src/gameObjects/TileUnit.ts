@@ -128,6 +128,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   /** This unit won't be able to perform more actions (during the current turn). */
   public markAsPlayed() {
+    this.sendToBack();
     this.played = true;
     this.tile.setAlpha(.5);
 
@@ -184,8 +185,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   /** Remove sprite animation from tile. */
   public sendToBack() {
     // Prevent cancelling movement animation
-    if (this.isAnimating) { return; }
-    if (this.played) { return this; }
+    if (this.isAnimating || this.played) { return this; }
 
     this.tile.setAlpha(1);
     this.sprite.setAlpha(0);
