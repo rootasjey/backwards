@@ -2,6 +2,7 @@ import { Game }         from '../gameObjects/Game';
 import GameMap          from '../gameObjects/GameMap';
 import MapUI            from '../gameObjects/MapUI';
 import Turn             from '../gameObjects/Turn';
+import TurnVisualizer   from '../gameObjects/TurnVisualizer';
 import { VisualLoader } from '../gameObjects/VisualLoader';
 
 export default class Play extends Phaser.Scene {
@@ -75,11 +76,12 @@ export default class Play extends Phaser.Scene {
     Game.gameMap = new GameMap(this);
     Game.mapUI = new MapUI(this);
 
-    const players = Object.values(Game.gameMap.getAllPlayersOnMap());
+    const players = Game.gameMap.getAllPlayersOnMap();
 
     Game.turn = new Turn({ players });
-
     Game.turn.start();
+
+    Game.turnVisualizer = new TurnVisualizer(this);
 
     this.setCameraBorders();
   }
@@ -90,7 +92,7 @@ export default class Play extends Phaser.Scene {
     const overflowX = Math.max(0, displayWidth - window.innerWidth);
     const overflowY = Math.max(0, displayHeight - window.innerHeight);
 
-    this.cameras.main.setBounds(0, 0, displayWidth + overflowX, displayHeight + overflowY);
+    this.cameras.main.setBounds(0, -5, displayWidth + overflowX, displayHeight + overflowY);
   }
 
   /**

@@ -6,9 +6,14 @@ export default class Turn {
   // PUBLIC PROPERTIES
   // ~~~~~~~~~~~~~~~~~
 
-  /** The current turn since the beggining of the party. */
+  /** Current turn number since the beggining of the party. */
   public get turnNumber(): number {
     return this.TURN_NUMBER;
+  }
+
+  /** Current active player. */
+  public get currentPlayer(): Player {
+    return this.players[this.currentPlayerIndex];
   }
 
   // ~~~~~~~~~~~~~~~~~

@@ -81,7 +81,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // PUBLIC FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
-  public getAllPlayersOnMap() {
+  public getAllPlayersOnMap(): Player[] {
     const players: PlayerMap = {};
 
     const { units: unitsLayer } = this.layers;
@@ -99,7 +99,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
     }, undefined, undefined, undefined, undefined, undefined, { isNotEmpty: true });
 
-    return players;
+    return Object.values(players);
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -449,8 +449,13 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private onMapActionEndTurn() {
-    Game.turn.next();
     this.removeMapActionsListeners();
+
+    Game.turn.next();
+
+    const { currentPlayer, turnNumber } = Game.turn;
+
+    Game.turnVisualizer.showNext({ player: currentPlayer, turnNumber });
   }
 
   private onMapActionSuspend() {

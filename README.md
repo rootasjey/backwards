@@ -2,7 +2,7 @@
 
 [WIP] A turn-based game system built with [Phaser 3](http://phaser.io).
 
-<img src='./screenshot.gif' height='500' />
+<img src='./cycles-preview.gif' height='500' />
 
 ## Roadmap
 
@@ -24,25 +24,25 @@
 
 Reach one of the map objectives:
 
-* Defeat all enemies
-* Survive X days
-* Defeat a specific enemy
-* Rescue someone
+- Defeat all enemies
+- Survive X days
+- Defeat a specific enemy
+- Rescue someone
 
 ### A player turn
 
 A typical player turn:
 
-* Move units
-* Make units attack or use items
-* End turn
+- Move units
+- Make units attack or use items
+- End turn
 
 ## Thanks
 
 Thanks to these awesome tools and assets, I can have fun building a game:
 
-* [Phaser 3](http://phaser.io)
-* [Kenney assets](https://www.kenney.nl)
+- [Phaser 3](http://phaser.io)
+- [Kenney assets](https://www.kenney.nl)
 
 ## Licence
 
