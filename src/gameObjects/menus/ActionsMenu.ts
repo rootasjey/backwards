@@ -88,13 +88,13 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
     this.layer.setVisible(true);
 
-    const containerButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
+    let containerButtons = this.permanentButtons.list as Phaser.GameObjects.Container[];
 
     this.additionalButtons = this.createAdditionalButtons();
 
     if (this.additionalButtons) {
       const containerAddButtons = this.additionalButtons.list as Phaser.GameObjects.Container[];
-      containerButtons.concat(containerAddButtons);
+      containerButtons = containerButtons.concat(containerAddButtons);
     }
 
     this.allCurrentButtons = containerButtons;
@@ -141,18 +141,14 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
   private createContainer(param: CreateContainerParam) {
     const { coord: { x, y }, itemsCount } = param;
-    const middleLineCount = Math.max(0, itemsCount - 2);
-
-    let bottomY = y + middleLineCount;
 
     this.createTopLine(x, y);
 
     for (let index = 0; index < itemsCount; index++) {
       this.createMiddleLine(x, y + index + 1);
-      bottomY++;
     }
 
-    this.createBottomLine(x, bottomY);
+    this.createBottomLine(x, y + itemsCount);
 
     return this;
   }
@@ -350,11 +346,6 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       .setVisible(true)
       .setPosition(x, y);
 
-    if (this.additionalButtons) {
-      this.additionalButtons
-        .setPosition(x, y + this.permanentButtons.displayHeight);
-    }
-
     this.addOverEventButtons();
 
     return this;
@@ -364,6 +355,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     this.allCurrentButtons
       .map((button) => {
         const actionButton = button.getData('actionButton') as ActionButton;
+        if (!actionButton) { return; }
 
         actionButton.removeHighlight();
         actionButton.onPointerOver = undefined;

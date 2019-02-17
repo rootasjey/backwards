@@ -107,7 +107,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     return this
       .showMovement()
-      .showAllAtkRange();
+      .showAtkRange();
   }
 
   public canMoveTo(coord: Coord) {
@@ -124,6 +124,32 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   /** Return true if this unit can perform actions during the current turn. */
   public hasPlayed() {
     return this.played;
+  }
+
+  public isEnemyInAtkRange(): boolean {
+    this
+      .addSelfTileMove()
+      .findAtkRange();
+
+    const { units: layerUits } = Game.gameMap.layers;
+
+    return this.tilesAtkRange
+      .filter((atkTile) => {
+        const { x, y } = atkTile;
+
+        if(!layerUits.hasTileAt(x, y)) {
+          return false;
+        }
+
+        const otherUnit = layerUits.getTileAt(x, y);
+        const otherTileUnit = otherUnit.properties.tileUnit as TileUnit;
+
+        return otherTileUnit.player.id !== this.player.id;
+      })
+      .some((atkEnemyTile) => {
+        if (atkEnemyTile) { return true; }
+        return false;
+      });
   }
 
   /** This unit won't be able to perform more actions (during the current turn). */
@@ -201,7 +227,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   public select() {
     this
       .focusMovement()
-      .focusAllAtkRange();
+      .focusAtkRange();
 
     this.scene.events.on('cursorMoved', this.onCursorMoved);
 
@@ -224,8 +250,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
 
   /** Add a single tile under the unit if the unit cannot move. */
-  private addSelfTileIfNoMove(coord: Coord) {
-    const { x, y } = coord;
+  private addSelfTileMove() {
+    const { x, y } = this.tile;
     const { layers } = Game.gameMap;
 
     const layerMovement = layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
@@ -435,7 +461,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       const tileAtkRange = layerAtkRange.putTileAt(2569, x, y);
       tileAtkRange.tint = colors.tileAttack;
 
-      // Alpha will be animate later to show atk range
+      // Alpha will be animated later to show atk range
       tileAtkRange.setAlpha(0);
 
       this.tilesAtkRange.push(tileAtkRange);
@@ -526,7 +552,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     if (!layerMovement.hasTileAt(x, y)) {
       const tileMovement = layerMovement.putTileAt(2569, x, y);
 
-      // Alpha will be animate later to show movement
+      // Alpha will be animated later to show movement
       tileMovement.setAlpha(0);
 
       this.tilesMove.push(tileMovement);
@@ -545,8 +571,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.recursiveFindMovement({ coord: coordRight, remainingMove: newRemainingMove });
   }
 
-  /** Show unit's attack range. (Consider all current weapons in inventory). */
-  private showAllAtkRange() {
+  /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
+  private findAtkRange() {
+    this.hideAttackRange();
+
     const range = this.unit.getAllWeaponsRange();
 
     const { move } = this.unit;
@@ -592,6 +620,13 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         });
       });
 
+    return this;
+  }
+
+  /** Show unit's attack range. (Consider all current weapons in inventory). */
+  private showAtkRange() {
+    this.findAtkRange();
+
     this.fadeInTiles({
       tiles: this.tilesAtkRange,
       options: { alpha: .3 },
@@ -613,7 +648,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     };
 
     if (!move) {
-      return this.addSelfTileIfNoMove(coord);
+      return this.addSelfTileMove();
     }
 
     const remainingMove = move + 1;
@@ -625,7 +660,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /** Animate tiles attack range opacity to 1. */
-  private focusAllAtkRange() {
+  private focusAtkRange() {
     this.fadeInTiles({
       tiles: this.tilesAtkRange,
       options: { alpha: .7 },

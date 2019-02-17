@@ -3317,7 +3317,7 @@
     <property name="unitName" value="emilie"/>
    </properties>
   </object>
-  <object id="20" type="unit" gid="2200" x="338.483" y="332.219" width="16" height="16">
+  <object id="20" type="unit" gid="2200" x="372.027" y="332.981" width="16" height="16">
    <properties>
     <property name="playerId" type="int" value="2"/>
     <property name="playerName" value="CPU"/>

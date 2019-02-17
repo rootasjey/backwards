@@ -127,8 +127,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private addUnitActionsListeners() {
-    this.scene.events.once(`unit:${UnitActions.wait}`, this.onUnitActionWait, this);
+    this.scene.events.once(`unit:${UnitActions.attack}`, this.onUnitActionAtk, this);
     this.scene.events.once(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this);
+    this.scene.events.once(`unit:${UnitActions.wait}`, this.onUnitActionWait, this);
 
     return this;
   }
@@ -539,17 +540,20 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.dragCamera(pointer);
   }
 
-  private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
-    this.removeUnitActionsListeners();
-
-    const tileUnit = addedTile.properties.tileUnit as TileUnit;
-
-    tileUnit.markAsPlayed();
+  private onUnitActionAtk(addedTile: Phaser.Tilemaps.Tile) {
+    console.log('unit atk');
   }
 
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
     this.removeUnitActionsListeners();
-    if (!this.previousUnitCoord) { return; }
+
+    const tileUnit = addedTile.properties.tileUnit as TileUnit;
+    tileUnit.sendToBack();
+
+    if (!this.previousUnitCoord) {
+      this.moveCursorTo(addedTile.x, addedTile.y);
+      return;
+    }
 
     const { createUnit, scene } = this;
     const unitsLayer = this.layers.units;
@@ -558,8 +562,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x: prevX, y: prevY } = this.previousUnitCoord;
 
     const tile = unitsLayer.putTileAt(addedTile, prevX, prevY);
-
-    const tileUnit = addedTile.properties.tileUnit as TileUnit;
 
     tileUnit.destroy();
     addedTile.destroy();
@@ -575,6 +577,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.moveCursorTo(prevX, prevY);
   }
 
+  private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
+    this.removeUnitActionsListeners();
+
+    const tileUnit = addedTile.properties.tileUnit as TileUnit;
+
+    tileUnit.markAsPlayed();
+  }
+
   private removeMapActionsListeners() {
     this.scene.events.off(`map:${MapActions.cancel}`, this.onMapActionCancel, this, false);
     this.scene.events.off(`map:${MapActions.endTurn}`, this.onMapActionEndTurn, this, false);
@@ -584,8 +594,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private removeUnitActionsListeners() {
-    this.scene.events.off(`unit:${UnitActions.wait}`, this.onUnitActionWait, this, false);
+    this.scene.events.off(`unit:${UnitActions.attack}`, this.onUnitActionAtk, this, false);
     this.scene.events.off(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this, false);
+    this.scene.events.off(`unit:${UnitActions.wait}`, this.onUnitActionWait, this, false);
 
     return this;
   }

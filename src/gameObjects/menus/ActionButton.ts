@@ -58,14 +58,6 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
     this.container = this.init();
 
     this.container.setData('actionButton', this);
-
-    this.once('destroy', () => {
-      this.freeMemory();
-    });
-
-    this.container.once('destroy', () => {
-      this.freeMemory();
-    });
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -93,34 +85,6 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
-
-  private freeMemory() {
-    this.container.setData('actionButton', undefined);
-
-    const children = this.container.list;
-
-    const rect = children[0] as Phaser.GameObjects.Rectangle;
-
-    this.container
-      .off('pointerover', this.onPointerOverContainer, this, false)
-      .off('pointerout', this.onPointerOutContainer, this, false)
-      .off('pointerup', this.onPointerUpContainer, this, false);
-
-    rect
-      .off('pointerup', this.onClickRect, this, false)
-      .off('pointerover', this.onPointerOverRect, this, false)
-      .off('pointerout', this.onPointerOutRect, this, false);
-
-    const textValue = children[1] as Phaser.GameObjects.Text;
-
-    rect.destroy();
-    textValue.destroy();
-    this.container.destroy();
-
-    this.onClick = undefined;
-    this.onPointerOut = undefined;
-    this.onPointerOver = undefined;
-  }
 
   private init() {
     const { add } = this.scene;

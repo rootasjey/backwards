@@ -1,4 +1,5 @@
 import { UnitActions }  from '../../actions/unit';
+import TileUnit         from '../TileUnit';
 import ActionButton     from './ActionButton';
 import ActionsMenu      from './ActionsMenu';
 
@@ -8,7 +9,19 @@ export default class UnitActionsMenu extends ActionsMenu {
   }
 
   protected createAdditionalButtons() {
-    return this.scene.add.container(0, 0);
+    const container = this.scene.add.container(0, 0);
+
+    if (!this.tile) { return container; }
+
+    const tileUnit = this.tile.properties.tileUnit as TileUnit;
+    const canAttack = tileUnit.isEnemyInAtkRange();
+
+    if (canAttack) {
+      const attack = this.createAtkButton();
+      container.add(attack);
+    }
+
+    return container;
   }
 
   protected createPermanentButtons() {
@@ -29,11 +42,25 @@ export default class UnitActionsMenu extends ActionsMenu {
       .sendAction(UnitActions.cancel);
   }
 
+  private createAtkButton() {
+    const button = new ActionButton(this.scene, {
+      coord: { x: 0, y: 90 },
+      onClick: () => {
+        this
+          .hide()
+          .sendAction(UnitActions.attack);
+      },
+      text: 'attack',
+    });
+
+    return button.getContainer();
+  }
+
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
       onClick: () => {
-        this.
-          hide()
+        this
+          .hide()
           .sendAction(UnitActions.cancel);
       },
       text: 'cancel',

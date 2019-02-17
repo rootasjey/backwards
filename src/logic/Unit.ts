@@ -9,9 +9,7 @@ import {
 export class Unit {
   private state: UnitState;
 
-  /**
-   * Unit class which has a state.
-   */
+  /** Unit class which has a state. */
   constructor(data: UnitDataConstructorParam) {
     this.state = data.unitData.stats.base;
 
@@ -31,31 +29,23 @@ export class Unit {
     return this.state.inventory;
   }
 
-  /**
-   * Return the amount of cells this unit can move.
-   */
+  /** Return the amount of cells this unit can move. */
   get move() {
     return this.state.move;
   }
 
-  /**
-   * Return unit's name.
-   */
+  /**  unit's name. */
   get name() {
     return this.state.name;
   }
 
-  /**
-   * Return true if the weapon can be equipped. False otherwise.
-   */
+  /** Return true if the weapon can be equipped. False otherwise. */
   public canEquip(weapon: Weapon): boolean {
     const wrank = this.state.wrank;
     return wrank[weapon.type] !== '';
   }
 
-  /**
-   * Equip a weapon available in the unit's items.
-   */
+  /** Equip a weapon available in the unit's items. */
   public equip(weapon: Weapon) {
     if (this.canEquip(weapon)) {
       this.state.weapon = weapon;
