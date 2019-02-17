@@ -346,6 +346,11 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       .setVisible(true)
       .setPosition(x, y);
 
+    if (this.additionalButtons) {
+      this.additionalButtons
+        .setPosition(x, y + this.permanentButtons.displayHeight);
+    }
+
     this.addOverEventButtons();
 
     return this;
