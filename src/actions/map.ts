@@ -8,3 +8,5 @@ export enum MapActions {
   /** Save the current game's state. */
   suspend = 'suspend',
 }
+
+export const eventName = 'map:';

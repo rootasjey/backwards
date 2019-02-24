@@ -17,23 +17,27 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
 
   private coord: Coord = { x: 0, y: 0 };
 
+  private height: number;
+
   private onClick?: () => void;
 
   private onPointerOut?: () => void;
 
   private text: string = '';
 
+  private width: number;
+
   constructor(scene: Phaser.Scene, param: ActionButtonConstrParam) {
     super(scene, 'ActionButton');
-
-    if (!param) { return; }
 
     const {
       coord,
       onClick,
+      height,
       onPointerOut,
       onPointerOver,
       text,
+      width,
     } = param;
 
     if (coord) {
@@ -52,6 +56,9 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
     if (onPointerOut) {
       this.onPointerOut = onPointerOut;
     }
+
+    this.height = height ? height : 30;
+    this.width = width ? width : 92;
 
     this.text = text ? text : '';
 
@@ -90,15 +97,16 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
     const { add } = this.scene;
     const { textStyle } = this.config;
 
+    const { width, height } = this;
     const { x: textX, y: textY } = this.coord;
 
-    const rectX = textX + 35;
-    const rectY = textY + 15;
+    const rectX = textX + (width / 2) - 10;
+    const rectY = textY + (height / 2);
 
     const text = add.text(textX, textY, this.text, textStyle);
 
     const rect = add
-      .rectangle(rectX, rectY, 92, 30)
+      .rectangle(rectX, rectY, width, height)
       .setFillStyle(0x000000, 0)
       .setInteractive();
 

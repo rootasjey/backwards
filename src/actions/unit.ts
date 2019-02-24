@@ -14,3 +14,5 @@ export enum UnitActions {
   /** Wait at the current position. */
   wait = 'wait',
 }
+
+export const eventName = 'unit:';

@@ -1,9 +1,11 @@
 interface ActionButtonConstrParam {
   coord?: Coord;
+  height?: number;
   onClick?: () => void;
   onPointerOver?: () => void;
   onPointerOut?: () => void;
   text?: string;
+  width?: number;
 }
 
 interface ActionsMenuShowOptions {
@@ -85,20 +87,21 @@ interface fadeInTilesParamsOptions {
 }
 
 interface GameMapLayers {
-  [index: string] : Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
-  attackRange     : Phaser.Tilemaps.DynamicTilemapLayer;
-  carpet          : Phaser.Tilemaps.StaticTilemapLayer;
-  collision       : Phaser.Tilemaps.DynamicTilemapLayer;
-  cursor          : Phaser.Tilemaps.DynamicTilemapLayer;
-  details         : Phaser.Tilemaps.StaticTilemapLayer;
-  floor           : Phaser.Tilemaps.StaticTilemapLayer;
-  hiddenFloor     : Phaser.Tilemaps.StaticTilemapLayer;
-  movement        : Phaser.Tilemaps.DynamicTilemapLayer;
-  objects         : Phaser.Tilemaps.StaticTilemapLayer;
-  tileInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer;
-  units           : Phaser.Tilemaps.DynamicTilemapLayer;
-  unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer;
-  unitInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer;
+  [index: string]     : Phaser.Tilemaps.DynamicTilemapLayer | Phaser.Tilemaps.StaticTilemapLayer;
+  attackRange         : Phaser.Tilemaps.DynamicTilemapLayer;
+  carpet              : Phaser.Tilemaps.StaticTilemapLayer;
+  collision           : Phaser.Tilemaps.DynamicTilemapLayer;
+  cursor              : Phaser.Tilemaps.DynamicTilemapLayer;
+  details             : Phaser.Tilemaps.StaticTilemapLayer;
+  floor               : Phaser.Tilemaps.StaticTilemapLayer;
+  hiddenFloor         : Phaser.Tilemaps.StaticTilemapLayer;
+  movement            : Phaser.Tilemaps.DynamicTilemapLayer;
+  objects             : Phaser.Tilemaps.StaticTilemapLayer;
+  tileInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer;
+  units               : Phaser.Tilemaps.DynamicTilemapLayer;
+  unitActionsPanel    : Phaser.Tilemaps.DynamicTilemapLayer;
+  unitInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer;
+  weaponSelectionPanel: Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
 interface GameMapObjectLayers {
@@ -108,6 +111,7 @@ interface GameMapObjectLayers {
 interface IInventory {
   maxItems: number;
   getItems: InventoryGetItemsFun;
+  getWeapons: InventoryGetWeaponsFun;
 }
 
 interface InventoryFactoryParam {
@@ -117,6 +121,10 @@ interface InventoryFactoryParam {
 
 interface InventoryGetItemsFun {
   (): (Consumable|Weapon)[];
+}
+
+interface InventoryGetWeaponsFun {
+  (): Weapon[];
 }
 
 interface InventoryRawItem {

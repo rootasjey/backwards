@@ -1,4 +1,8 @@
-import { MapActions } from '../../actions/map';
+import {
+  eventName as mapEvent,
+  MapActions,
+} from '../../actions/map';
+
 import ActionButton   from './ActionButton';
 import ActionsMenu    from './ActionsMenu';
 
@@ -63,6 +67,6 @@ export default class MapActionsMenu extends ActionsMenu {
 
   /** Send unit's action to the scene (through event). */
   private sendAction(action: string) {
-    this.scene.events.emit(`map:${action}`);
+    this.scene.events.emit(`${mapEvent}${action}`);
   }
 }

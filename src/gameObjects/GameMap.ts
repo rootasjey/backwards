@@ -1,9 +1,22 @@
-import { MapActions }   from '../actions/map';
-import { UnitActions }  from '../actions/unit';
-import { colors }       from '../const/config';
-import { unitsFactory } from '../logic/unitsFactory';
-import { Game }         from './Game';
-import TileUnit         from './TileUnit';
+import {
+  eventName as mapEvent,
+  MapActions ,
+} from '../actions/map';
+
+import {
+  eventName as unitEvent,
+  UnitActions,
+} from '../actions/unit';
+
+import {
+  eventName as weaponSelectorEvent,
+  WeaponSelectorActions,
+}  from '../actions/weaponSelector';
+
+import { colors }                 from '../const/config';
+import { unitsFactory }           from '../logic/unitsFactory';
+import { Game }                   from './Game';
+import TileUnit                   from './TileUnit';
 
 export default class GameMap extends Phaser.GameObjects.GameObject {
 
@@ -12,19 +25,20 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
 
   public layers: GameMapLayers = {
-    attackRange     : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    carpet          : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    collision       : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    cursor          : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    details         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    floor           : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    hiddenFloor     : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    movement        : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    objects         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
-    tileInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    units           : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    unitActionsPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
-    unitInfoPanel   : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    attackRange         : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    carpet              : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    collision           : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    cursor              : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    details             : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    floor               : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    hiddenFloor         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    movement            : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    objects             : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    tileInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    units               : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    unitActionsPanel    : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    unitInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    weaponSelectionPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
   };
 
   // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
@@ -119,17 +133,27 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private addMapActionsListeners() {
-    this.scene.events.once(`map:${MapActions.cancel}`, this.onMapActionCancel, this);
-    this.scene.events.once(`map:${MapActions.endTurn}`, this.onMapActionEndTurn, this);
-    this.scene.events.once(`map:${MapActions.suspend}`, this.onMapActionSuspend, this);
+    this.scene.events.once(`${mapEvent}${MapActions.cancel}`, this.onMapActionCancel, this);
+    this.scene.events.once(`${mapEvent}${MapActions.endTurn}`, this.onMapActionEndTurn, this);
+    this.scene.events.once(`${mapEvent}${MapActions.suspend}`, this.onMapActionSuspend, this);
 
     return this;
   }
 
   private addUnitActionsListeners() {
-    this.scene.events.once(`unit:${UnitActions.attack}`, this.onUnitActionAtk, this);
-    this.scene.events.once(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this);
-    this.scene.events.once(`unit:${UnitActions.wait}`, this.onUnitActionWait, this);
+    const { events } = this.scene;
+
+    events.once(`${unitEvent}${UnitActions.attack}`, this.onUnitActionAtk, this);
+    events.once(`${unitEvent}${UnitActions.cancel}`, this.onUnitActionCancel, this);
+    events.once(`${unitEvent}${UnitActions.wait}`, this.onUnitActionWait, this);
+
+    return this;
+  }
+
+  private addWeaponSelectorListeners() {
+    const { events } = this.scene;
+
+    events.once(`${weaponSelectorEvent}${WeaponSelectorActions.cancel}`, this.onWeaponSelectorCancel, this);
 
     return this;
   }
@@ -163,14 +187,15 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private createDynamicLayers() {
     const { layers, map, tileset } = this;
 
-    layers.collision        = map.createDynamicLayer('Collision', tileset.map, 0, 0);
-    layers.attackRange      = map.createDynamicLayer('AttackRange', tileset.ui, 0, 0);
-    layers.movement         = map.createDynamicLayer('Movement', tileset.ui, 0, 0);
-    layers.units            = map.createDynamicLayer('Units', tileset.units, 0, 0);
-    layers.cursor           = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
-    layers.tileInfoPanel    = map.createDynamicLayer('TileInfoPanel', tileset.ui, 0, 0);
-    layers.unitInfoPanel    = map.createDynamicLayer('UnitInfoPanel', tileset.ui, 0, 0);
-    layers.unitActionsPanel = map.createDynamicLayer('UnitActionsPanel', tileset.ui, 0, 0);
+    layers.collision            = map.createDynamicLayer('Collision', tileset.map, 0, 0);
+    layers.attackRange          = map.createDynamicLayer('AttackRange', tileset.ui, 0, 0);
+    layers.movement             = map.createDynamicLayer('Movement', tileset.ui, 0, 0);
+    layers.units                = map.createDynamicLayer('Units', tileset.units, 0, 0);
+    layers.cursor               = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
+    layers.tileInfoPanel        = map.createDynamicLayer('TileInfoPanel', tileset.ui, 0, 0);
+    layers.unitInfoPanel        = map.createDynamicLayer('UnitInfoPanel', tileset.ui, 0, 0);
+    layers.unitActionsPanel     = map.createDynamicLayer('UnitActionsPanel', tileset.ui, 0, 0);
+    layers.weaponSelectionPanel = map.createDynamicLayer('WeaponSelectionPanel', tileset.ui, 0, 0);
 
     return this;
   }
@@ -540,8 +565,12 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     this.dragCamera(pointer);
   }
 
-  private onUnitActionAtk(addedTile: Phaser.Tilemaps.Tile) {
-    console.log('unit atk');
+  private onUnitActionAtk(unit: Phaser.Tilemaps.Tile) {
+    this
+      .removeUnitActionsListeners()
+      .addWeaponSelectorListeners();
+
+    this.scene.events.emit('openWeaponSelector', this.cursor, unit);
   }
 
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
@@ -585,18 +614,43 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     tileUnit.markAsPlayed();
   }
 
+  private onWeaponSelectorCancel(unit: Phaser.Tilemaps.Tile) {
+    this.removeWeaponSelectorListeners();
+
+    this.addUnitActionsListeners();
+
+    setTimeout(() => {
+      // NOTE: pointerup fires too soon after listening outside UnitActions' clicks.
+      this.scene.events.emit('openUnitActions', this.cursor, unit);
+    }, 10);
+  }
+
   private removeMapActionsListeners() {
-    this.scene.events.off(`map:${MapActions.cancel}`, this.onMapActionCancel, this, false);
-    this.scene.events.off(`map:${MapActions.endTurn}`, this.onMapActionEndTurn, this, false);
-    this.scene.events.off(`map:${MapActions.suspend}`, this.onMapActionSuspend, this, false);
+    this.scene.events.off(`${mapEvent}${MapActions.cancel}`, this.onMapActionCancel, this);
+    this.scene.events.off(`${mapEvent}${MapActions.endTurn}`, this.onMapActionEndTurn, this);
+    this.scene.events.off(`${mapEvent}${MapActions.suspend}`, this.onMapActionSuspend, this);
 
     return this;
   }
 
   private removeUnitActionsListeners() {
-    this.scene.events.off(`unit:${UnitActions.attack}`, this.onUnitActionAtk, this, false);
-    this.scene.events.off(`unit:${UnitActions.cancel}`, this.onUnitActionCancel, this, false);
-    this.scene.events.off(`unit:${UnitActions.wait}`, this.onUnitActionWait, this, false);
+    const { events } = this.scene;
+
+    events.off(`${unitEvent}${UnitActions.attack}`, this.onUnitActionAtk, this);
+    events.off(`${unitEvent}${UnitActions.cancel}`, this.onUnitActionCancel, this);
+    events.off(`${unitEvent}${UnitActions.wait}`, this.onUnitActionWait, this);
+
+    return this;
+  }
+
+  private removeWeaponSelectorListeners() {
+    const { events } = this.scene;
+
+    events.off(
+      `${weaponSelectorEvent}${WeaponSelectorActions.cancel}`,
+      this.onWeaponSelectorCancel,
+      this,
+    );
 
     return this;
   }

@@ -1,7 +1,8 @@
-import { fonts }        from '../const/config';
-import { Game }         from './Game';
-import MapActionsMenu   from './menus/MapActionsMenu';
-import UnitActionsMenu  from './menus/UnitActionsMenu';
+import { fonts }          from '../const/config';
+import { Game }           from './Game';
+import MapActionsMenu     from './menus/MapActionsMenu';
+import UnitActionsMenu    from './menus/UnitActionsMenu';
+import WeaponSelectorMenu from './menus/WeaponSelectorMenu';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
   private corners: MapUICorners = {
@@ -24,15 +25,21 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   private unitActionsMenu: UnitActionsMenu;
 
+  private weaponSelectorMenu: WeaponSelectorMenu;
+
   /** Manage UI overlay on in-game maps. */
   constructor(scene: Phaser.Scene) {
     super(scene, 'MapUI');
 
     scene.add.existing(this);
+
     this.init();
 
-    this.mapActionsMenu = new MapActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
-    this.unitActionsMenu = new UnitActionsMenu(scene, Game.gameMap.layers.unitActionsPanel);
+    const { layers } = Game.gameMap;
+
+    this.mapActionsMenu = new MapActionsMenu(scene, layers.unitActionsPanel);
+    this.unitActionsMenu = new UnitActionsMenu(scene, layers.unitActionsPanel);
+    this.weaponSelectorMenu = new WeaponSelectorMenu(scene, layers.weaponSelectionPanel);
   }
 
   // ~~~~~~~~~~~~~~~~~
@@ -88,6 +95,10 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this.unitActionsMenu.show(cursor, { tile });
   }
 
+  private openWeaponSelector(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+    this.weaponSelectorMenu.show(cursor, { tile });
+  }
+
   private createUnitInfoPanelText() {
     const { add }           = this.scene;
     const { unitInfoPanel } = this.panels;
@@ -134,17 +145,23 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   private disableEvents() {
-    this.scene.events.off('cursorMoved', this.updatePanels, this, false);
-    this.scene.events.off('openUnitActions', this.openUnitActions, this, false);
-    this.scene.events.off('openMapActions', this.openMapActions, this, false);
+    const { events } = this.scene;
+
+    events.off('cursorMoved', this.updatePanels, this);
+    events.off('openUnitActions', this.openUnitActions, this);
+    events.off('openMapActions', this.openMapActions, this);
+    events.off('openWeaponSelector', this.openWeaponSelector, this);
 
     return this;
   }
 
   private enableEvents() {
-    this.scene.events.on('cursorMoved', this.updatePanels, this);
-    this.scene.events.on('openUnitActions', this.openUnitActions, this);
-    this.scene.events.on('openMapActions', this.openMapActions, this);
+    const { events } = this.scene;
+
+    events.on('cursorMoved', this.updatePanels, this);
+    events.on('openUnitActions', this.openUnitActions, this);
+    events.on('openMapActions', this.openMapActions, this);
+    events.on('openWeaponSelector', this.openWeaponSelector, this);
 
     return this;
   }

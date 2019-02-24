@@ -121,6 +121,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return false;
   }
 
+  public getUnit() {
+    return this.unit;
+  }
+
   /** Return true if this unit can perform actions during the current turn. */
   public hasPlayed() {
     return this.played;
@@ -137,7 +141,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .filter((atkTile) => {
         const { x, y } = atkTile;
 
-        if(!layerUits.hasTileAt(x, y)) {
+        if (!layerUits.hasTileAt(x, y)) {
           return false;
         }
 

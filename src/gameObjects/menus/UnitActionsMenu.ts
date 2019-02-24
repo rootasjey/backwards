@@ -1,4 +1,8 @@
-import { UnitActions }  from '../../actions/unit';
+import {
+  eventName as unitEvent,
+  UnitActions,
+}  from '../../actions/unit';
+
 import TileUnit         from '../TileUnit';
 import ActionButton     from './ActionButton';
 import ActionsMenu      from './ActionsMenu';
@@ -46,9 +50,11 @@ export default class UnitActionsMenu extends ActionsMenu {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 90 },
       onClick: () => {
-        this
-          .hide()
-          .sendAction(UnitActions.attack);
+        this.hide();
+
+        setTimeout(() => {
+          this.sendAction(UnitActions.attack);
+        }, 20);
       },
       text: 'attack',
     });
@@ -83,8 +89,9 @@ export default class UnitActionsMenu extends ActionsMenu {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 30 },
       onClick: () => {
-        this.hide();
-        this.sendAction(UnitActions.wait);
+        this
+          .hide()
+          .sendAction(UnitActions.wait);
       },
       text: 'wait',
     });
@@ -94,6 +101,6 @@ export default class UnitActionsMenu extends ActionsMenu {
 
   /** Send unit's action to the scene (through event). */
   private sendAction(action: string) {
-    this.scene.events.emit(`unit:${action}`, this.tile);
+    this.scene.events.emit(`${unitEvent}${action}`, this.tile);
   }
 }

@@ -6,9 +6,9 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   // ~~~~~~~~~~~~~~~~~
 
   protected linesTiles = {
-    top: [2668, 2669, 2669, 2670],
-    middle: [2698, 2699, 2699, 2700],
-    bottom: [2728, 2729, 2729, 2730],
+    top     : [2668, 2669, 2669, 2670],
+    middle  : [2698, 2699, 2699, 2700],
+    bottom  : [2728, 2729, 2729, 2730],
   };
 
   /** Unit tile (facultative). */
@@ -253,7 +253,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     // NOTE: pointerup fires too soon after re-enabling GameMap events.
     setTimeout(() => {
       this.scene.events.emit('subscribeMapEvents');
-    }, 100);
+    }, 10);
 
     return this;
   }
@@ -297,6 +297,8 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
   private highlightFirstButton() {
     const firstButton = this.allCurrentButtons[0];
+
+    if (!firstButton) { return this; }
 
     const firstActionButton = firstButton.getData('actionButton') as ActionButton;
     firstActionButton.addHighlight();

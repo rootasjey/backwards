@@ -1,3 +1,5 @@
+import { ItemTypes } from '../const/items';
+
 export class Inventory {
   private _MAXITEMS = 5;
   private items: Array<Weapon | Consumable>;
@@ -33,6 +35,19 @@ export class Inventory {
    */
   public getItems() {
     return this.items;
+  }
+
+  public getWeapons() {
+    const weapons: Weapon[] = [];
+
+    this.items.filter((item) => {
+      if (item.itemType === ItemTypes.weapon) {
+        const weapon = item as Weapon;
+        weapons.push(weapon);
+      }
+    });
+
+    return weapons;
   }
 
   /**
