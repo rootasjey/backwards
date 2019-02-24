@@ -201,10 +201,10 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
 
     const children = this.additionalButtons.list as Phaser.GameObjects.Container[];
 
-    children
-      .map((button) => {
-        button.destroy();
-      });
+    while (children.length) {
+      const buttonContainer = children[0];
+      buttonContainer.destroy();
+    }
 
     return this;
   }

@@ -13,5 +13,20 @@
     "usage": 45,
     "value": 100,
     "weight": 3
+  },
+  "Broken Sword": {
+    "atk": 4,
+    "crt": 8,
+    "damageType": "physical",
+    "desc": "A broken sword which can attack at distance.",
+    "hit": 80,
+    "itemType": "weapon",
+    "name": "Broken Sword",
+    "range": "1-2",
+    "rank": "D",
+    "type": "sword",
+    "usage": 25,
+    "value": 400,
+    "weight": 2
   }
 }

@@ -8,6 +8,10 @@
       {
         "name": "Iron Sword",
         "usage": 45
+      },
+      {
+        "name": "Broken Sword",
+        "usage": 25
       }
     ],
     "level": 1,
