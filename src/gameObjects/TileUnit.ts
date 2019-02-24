@@ -238,6 +238,27 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  /** Show unit's attack range. (Consider all current weapons in inventory). */
+  public showAtkRange() {
+    this.findAtkRange();
+
+    this.fadeInTiles({
+      tiles: this.tilesAtkRange,
+      options: { alpha: .3 },
+    });
+
+    return this;
+  }
+
+  public showWeaponRange(index: number) {
+    this
+      .addSelfTileMove()
+      .findAtkRange(index)
+      .hideMovement();
+
+    return this;
+  }
+
   /** Unselect this unit. */
   public unselect() {
     this
@@ -576,10 +597,12 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
-  private findAtkRange() {
+  private findAtkRange(weaponIndex?: number) {
     this.hideAttackRange();
 
-    const range = this.unit.getAllWeaponsRange();
+    const range = typeof weaponIndex === 'number' ?
+      this.unit.getWeaponRange(weaponIndex) :
+      this.unit.getAllWeaponsRange();
 
     const { move } = this.unit;
 
@@ -623,18 +646,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
           remainingMove: remainingRange,
         });
       });
-
-    return this;
-  }
-
-  /** Show unit's attack range. (Consider all current weapons in inventory). */
-  private showAtkRange() {
-    this.findAtkRange();
-
-    this.fadeInTiles({
-      tiles: this.tilesAtkRange,
-      options: { alpha: .3 },
-    });
 
     return this;
   }

@@ -747,8 +747,14 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       })
       .then((result) => {
         const { tile } = result;
+
         this.addUnitActionsListeners();
         this.scene.events.emit('openUnitActions', this.cursor, tile);
+
+        if (tile) {
+          const tileUnitResult = tile.properties.tileUnit as TileUnit;
+          tileUnitResult.showAtkRange();
+        }
       })
       .finally(() => {
         this.selectedUnit = undefined;

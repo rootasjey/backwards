@@ -198,11 +198,11 @@ export class Unit {
     let min = Infinity;
     let max = 0;
 
-    inventory.getItems()
-      .filter((item) => item.itemType === ItemTypes.weapon)
-      .map((item) => {
+    inventory
+      .getWeapons()
+      .map((weapon) => {
         // Diff range formats: '0', '1-3'
-        const rangeValues = item.range.split('-');
+        const rangeValues = weapon.range.split('-');
 
         // Supposing the format is well formed: 'min-max'
         let minR = parseInt(rangeValues[0], 10);
@@ -228,6 +228,32 @@ export class Unit {
 
     min = Number.isInteger(min) ? min : 0;
     max = Number.isInteger(max) ? max : 0;
+
+    return { min, max };
+  }
+
+  public getWeaponRange(weaponIndex: number) {
+    const { inventory } = this.state;
+
+    const weapons = inventory.getWeapons();
+
+    if (weapons.length === 0) {
+      return { min: 0, max: 0 };
+    }
+
+    if (weaponIndex < 0 || weaponIndex >= weapons.length) {
+      throw new Error(`The weapon's index specified is out of range.
+        Please provide a number between 0 and ${weapons.length}`);
+    }
+
+    const weapon = weapons[weaponIndex];
+
+    const rangeValues = weapon.range.split('-');
+
+    const min = parseInt(rangeValues[0], 10);
+    const max = rangeValues[1] ?
+      parseInt(rangeValues[1], 10) :
+      parseInt(rangeValues[0], 10);
 
     return { min, max };
   }
