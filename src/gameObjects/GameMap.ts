@@ -632,13 +632,18 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     setTimeout(() => {
       // NOTE: pointerup fires too soon after listening outside UnitActions' clicks.
       this.scene.events.emit('openUnitActions', this.cursor, unit);
+
+      const tileUnitResult = unit.properties.tileUnit as TileUnit;
+      tileUnitResult.showAtkRange();
     }, 10);
   }
 
   private removeMapActionsListeners() {
-    this.scene.events.off(`${mapEvent}${MapActions.cancel}`, this.onMapActionCancel, this);
-    this.scene.events.off(`${mapEvent}${MapActions.endTurn}`, this.onMapActionEndTurn, this);
-    this.scene.events.off(`${mapEvent}${MapActions.suspend}`, this.onMapActionSuspend, this);
+    const { events } = this.scene;
+
+    events.off(`${mapEvent}${MapActions.cancel}`, this.onMapActionCancel, this);
+    events.off(`${mapEvent}${MapActions.endTurn}`, this.onMapActionEndTurn, this);
+    events.off(`${mapEvent}${MapActions.suspend}`, this.onMapActionSuspend, this);
 
     return this;
   }

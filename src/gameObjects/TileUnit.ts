@@ -240,6 +240,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   /** Show unit's attack range. (Consider all current weapons in inventory). */
   public showAtkRange() {
+    if (this.tilesMove.length === 0) {
+      this.addSelfTileMove();
+    }
+
     this.findAtkRange();
 
     this.fadeInTiles({
