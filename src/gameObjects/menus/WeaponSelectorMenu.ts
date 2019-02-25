@@ -51,6 +51,12 @@ export default class WeaponSelectorMenu extends ActionsMenu {
     return container;
   }
 
+  protected onPointerUpOutside() {
+    this
+      .hide()
+      .sendAction(WeaponSelectorActions.cancel);
+  }
+
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
       text: 'cancel',
@@ -94,5 +100,6 @@ export default class WeaponSelectorMenu extends ActionsMenu {
   /** Send attack's action to the scene (through event). */
   private sendAction(action: string) {
     this.scene.events.emit(`${weaponSelectorEvent}${action}`, this.tile);
+    return this;
   }
 }
