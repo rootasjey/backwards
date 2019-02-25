@@ -348,7 +348,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-
   /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
   private findAtkRange(weaponIndex?: number) {
     this.hideAttackRange();

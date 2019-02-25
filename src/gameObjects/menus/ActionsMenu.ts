@@ -321,7 +321,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     const actionButton = buttonOver.getData('actionButton') as ActionButton;
     actionButton.removeHighlight();
 
-    buttonOver.emit('pointerup');
+    actionButton.emit('click');
   }
 
   private onKeydownUP() {

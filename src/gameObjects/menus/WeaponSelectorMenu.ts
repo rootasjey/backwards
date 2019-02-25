@@ -78,7 +78,6 @@ export default class WeaponSelectorMenu extends ActionsMenu {
     button
       .on('click', () => {
         this.hide();
-        console.log(weapon);
       })
       .on('cusorchanged', () => {
         const { tile } = this;
