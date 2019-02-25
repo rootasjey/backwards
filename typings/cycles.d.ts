@@ -1,9 +1,6 @@
-interface ActionButtonConstrParam {
+interface ActionButtonConfig {
   coord?: Coord;
   height?: number;
-  onClick?: () => void;
-  onPointerOver?: () => void;
-  onPointerOut?: () => void;
   text?: string;
   width?: number;
 }

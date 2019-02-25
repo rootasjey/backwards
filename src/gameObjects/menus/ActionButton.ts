@@ -1,13 +1,4 @@
 export default class ActionButton extends Phaser.GameObjects.GameObject {
-  // ~~~~~~~~~~~~~~~~~
-  // PUBLIC PROPERTIES
-  // ~~~~~~~~~~~~~~~~~
-  public onPointerOver?: () => void;
-
-  // ~~~~~~~~~~~~~~~~~
-  // PRIVATE PROPERTIES
-  // ~~~~~~~~~~~~~~~~~
-
   private config = {
     textStyle: { color: 'black', fontFamily: 'Kenney Pixel', fontSize: 30 },
   };
@@ -19,42 +10,23 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
 
   private height: number;
 
-  private onClick?: () => void;
-
-  private onPointerOut?: () => void;
-
   private text: string = '';
 
   private width: number;
 
-  constructor(scene: Phaser.Scene, param: ActionButtonConstrParam) {
+  constructor(scene: Phaser.Scene, config: ActionButtonConfig) {
     super(scene, 'ActionButton');
 
     const {
       coord,
-      onClick,
       height,
-      onPointerOut,
-      onPointerOver,
       text,
       width,
-    } = param;
+    } = config;
 
     if (coord) {
       this.coord.x = typeof coord.x === 'number' ? coord.x : this.coord.x;
       this.coord.y = typeof coord.y === 'number' ? coord.y : this.coord.y;
-    }
-
-    if (onClick) {
-      this.onClick = onClick;
-    }
-
-    if (onPointerOver) {
-      this.onPointerOver = onPointerOver;
-    }
-
-    if (onPointerOut) {
-      this.onPointerOut = onPointerOut;
     }
 
     this.height = height ? height : 30;
@@ -121,22 +93,14 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
   }
 
   private onClickRect() {
-    if (!this.onClick) { return; }
-
-    this.onClick();
+    this.emit('click');
   }
 
   private onPointerOverRect() {
     this.emit('pointerover');
-
-    if (!this.onPointerOver) { return; }
-
-    this.onPointerOver();
   }
 
   private onPointerOutRect() {
-    if (!this.onPointerOut) { return; }
-
-    this.onPointerOut();
+    this.emit('pointerout');
   }
 }

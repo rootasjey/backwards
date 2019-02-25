@@ -67,7 +67,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       .destroyContainer()
       .destroyAdditionalButtons()
       .disableEvents()
-      .removeOverEventButtons()
+      .removeButtonHighlight()
       .enableMapEvents()
       .reinitializeProperties();
 
@@ -133,7 +133,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       .map((button, index) => {
         const actionButton = button.getData('actionButton') as ActionButton;
 
-        actionButton.onPointerOver = () => { this.cursorIndexChanged(index); };
+        actionButton.on('pointerover', () => { this.cursorIndexChanged(index); });
       });
 
     return this;
@@ -361,14 +361,13 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     return this;
   }
 
-  private removeOverEventButtons() {
+  private removeButtonHighlight() {
     this.allCurrentButtons
       .map((button) => {
         const actionButton = button.getData('actionButton') as ActionButton;
         if (!actionButton) { return; }
 
         actionButton.removeHighlight();
-        actionButton.onPointerOver = undefined;
       });
 
     return this;

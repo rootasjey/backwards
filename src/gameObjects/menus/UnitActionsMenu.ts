@@ -49,14 +49,15 @@ export default class UnitActionsMenu extends ActionsMenu {
   private createAtkButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 90 },
-      onClick: () => {
-        this.hide();
-
-        setTimeout(() => {
-          this.sendAction(UnitActions.attack);
-        }, 20);
-      },
       text: 'attack',
+    });
+
+    button.on('click', () => {
+      this.hide();
+
+      setTimeout(() => {
+        this.sendAction(UnitActions.attack);
+      }, 20);
     });
 
     return button.getContainer();
@@ -64,12 +65,13 @@ export default class UnitActionsMenu extends ActionsMenu {
 
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
-      onClick: () => {
-        this
-          .hide()
-          .sendAction(UnitActions.cancel);
-      },
       text: 'cancel',
+    });
+
+    button.on('click', () => {
+      this
+        .hide()
+        .sendAction(UnitActions.cancel);
     });
 
     return button.getContainer();
@@ -78,9 +80,10 @@ export default class UnitActionsMenu extends ActionsMenu {
   private createItemsButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 60 },
-      onClick: () => { this.hide(); },
       text: 'items',
     });
+
+    button.on('click', () => { this.hide(); });
 
     return button.getContainer();
   }
@@ -88,12 +91,13 @@ export default class UnitActionsMenu extends ActionsMenu {
   private createWaitButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 30 },
-      onClick: () => {
-        this
-          .hide()
-          .sendAction(UnitActions.wait);
-      },
       text: 'wait',
+    });
+
+    button.on('click', () => {
+      this
+        .hide()
+        .sendAction(UnitActions.wait);
     });
 
     return button.getContainer();

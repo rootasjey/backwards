@@ -53,13 +53,14 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
-      onClick: () => {
-        this
-          .hide()
-          .sendAction(WeaponSelectorActions.cancel);
-      },
       text: 'cancel',
       width: 200,
+    });
+
+    button.on('click', () => {
+      this
+        .hide()
+        .sendAction(WeaponSelectorActions.cancel);
     });
 
     return button.getContainer();
@@ -70,22 +71,23 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
     const button = new ActionButton(this.scene, {
       coord,
-      onClick: () => {
-        this.hide();
-        console.log(weapon);
-      },
       text: `${weapon.name}         x${weapon.usage}`,
       width: this.buttonWidth,
     });
 
-    button.on('cusorchanged', () => {
-      const { tile } = this;
+    button
+      .on('click', () => {
+        this.hide();
+        console.log(weapon);
+      })
+      .on('cusorchanged', () => {
+        const { tile } = this;
 
-      if (!tile) { return; }
+        if (!tile) { return; }
 
-      const tileUnit = tile.properties.tileUnit as TileUnit;
-      tileUnit.showWeaponRange(index);
-    });
+        const tileUnit = tile.properties.tileUnit as TileUnit;
+        tileUnit.showWeaponRange(index);
+      });
 
     return button.getContainer();
   }

@@ -29,11 +29,12 @@ export default class MapActionsMenu extends ActionsMenu {
 
   private createCancelButton() {
     const button = new ActionButton(this.scene, {
-      onClick: () => {
-        this.hide();
-        this.sendAction(MapActions.cancel);
-      },
       text: 'cancel',
+    });
+
+    button.on('click', () => {
+      this.hide();
+      this.sendAction(MapActions.cancel);
     });
 
     return button.getContainer();
@@ -42,11 +43,12 @@ export default class MapActionsMenu extends ActionsMenu {
   private createEndTurnButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 30 },
-      onClick: () => {
-        this.hide();
-        this.sendAction(MapActions.endTurn);
-      },
       text: 'end turn',
+    });
+
+    button.on('click', () => {
+      this.hide();
+      this.sendAction(MapActions.endTurn);
     });
 
     return button.getContainer();
@@ -55,11 +57,12 @@ export default class MapActionsMenu extends ActionsMenu {
   private createSuspendButton() {
     const button = new ActionButton(this.scene, {
       coord: { x: 0, y: 60 },
-      onClick: () => {
-        this.hide();
-        this.sendAction(MapActions.suspend);
-      },
       text: 'suspend',
+    });
+
+    button.on('click', () => {
+      this.hide();
+      this.sendAction(MapActions.suspend);
     });
 
     return button.getContainer();
