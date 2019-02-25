@@ -117,25 +117,7 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
       .on('pointerover', this.onPointerOverRect, this)
       .on('pointerout', this.onPointerOutRect, this);
 
-    container
-      .on('pointerover', this.onPointerOverContainer, this)
-      .on('pointerout', this.onPointerOutContainer, this)
-      .on('pointerup', this.onPointerUpContainer, this);
-
     return container;
-  }
-
-  private onPointerOverContainer() {
-    this.container.list.map((gameObject) => { gameObject.emit('pointerover'); });
-  }
-
-  private onPointerOutContainer() {
-    this.container.list.map((gameObject) => { gameObject.emit('pointerout'); });
-  }
-
-  private onPointerUpContainer() {
-    this.container.list.map((gameObject) => { gameObject.emit('pointerup'); });
-    this.container.list.map((gameObject) => { gameObject.emit('pointerout'); });
   }
 
   private onClickRect() {
@@ -145,6 +127,8 @@ export default class ActionButton extends Phaser.GameObjects.GameObject {
   }
 
   private onPointerOverRect() {
+    this.emit('pointerover');
+
     if (!this.onPointerOver) { return; }
 
     this.onPointerOver();

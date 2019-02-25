@@ -254,7 +254,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this
       .addSelfTileMove()
       .findAtkRange(index)
-      .hideMovement();
+      .hideMovement()
+      .focusAtkRange();
 
     return this;
   }
@@ -342,6 +343,90 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       });
 
       delay += delayStep;
+    });
+
+    return this;
+  }
+
+
+  /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
+  private findAtkRange(weaponIndex?: number) {
+    this.hideAttackRange();
+
+    const range = typeof weaponIndex === 'number' ?
+      this.unit.getWeaponRange(weaponIndex) :
+      this.unit.getAllWeaponsRange();
+
+    const { move } = this.unit;
+
+    if (range.min === 0 && range.max === 0) {
+      return this;
+    }
+
+    let gap = (range.min - 1) - move;
+    gap = Math.max(0, gap);
+
+    let remainingRange = (range.max + 1) - range.min;
+
+    // NOTE: may be a simpler way to handle this case.
+    if (gap === 0) {
+      remainingRange = range.max + 1;
+
+    } else {
+      // Adding +1 because it starts from the (self) unit's tile.
+      // A gap of 1 tile would only allow to mark the unit's tile.
+      gap += 1;
+    }
+
+    // Take other possibilities w/ move
+    if (remainingRange === 1) {
+      remainingRange += move;
+    }
+
+    this.recursiveFindGap({
+      coord: { x: this.tile.x, y: this.tile.y },
+      remainingMove: gap,
+    });
+
+    this.tilesMove
+      .filter((tileMovement) => {
+        return this.isEdgeTile(tileMovement);
+      })
+      .map((edgeTile, index, arr) => {
+        this.recursiveFindAtkRange({
+          coord: { x: edgeTile.x, y: edgeTile.y },
+          gap,
+          remainingMove: remainingRange,
+        });
+      });
+
+    return this;
+  }
+
+  /** Animate tiles attack range opacity to 1. */
+  private focusAtkRange() {
+    this.fadeInTiles({
+      tiles: this.tilesAtkRange,
+      options: { alpha: .7 },
+    });
+
+    return this;
+  }
+
+  /** Animate tiles movement opacity to 1. */
+  private focusMovement() {
+    let delay = 0;
+
+    // Double check tile's movement.
+    // Can happens if the cursor didn't move on unit before click.
+    if (this.tilesMove.length === 0) {
+      this.bringToFront();
+      delay = 500;
+    }
+
+    this.fadeInTiles({
+      tiles: this.tilesMove,
+      options: { alpha: 1, duration: 25, delay },
     });
 
     return this;
@@ -596,60 +681,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.recursiveFindMovement({ coord: coordRight, remainingMove: newRemainingMove });
   }
 
-  /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
-  private findAtkRange(weaponIndex?: number) {
-    this.hideAttackRange();
-
-    const range = typeof weaponIndex === 'number' ?
-      this.unit.getWeaponRange(weaponIndex) :
-      this.unit.getAllWeaponsRange();
-
-    const { move } = this.unit;
-
-    if (range.min === 0 && range.max === 0) {
-      return this;
-    }
-
-    let gap = (range.min - 1) - move;
-    gap = Math.max(0, gap);
-
-    let remainingRange = (range.max + 1) - range.min;
-
-    // NOTE: may be a simpler way to handle this case.
-    if (gap === 0) {
-      remainingRange = range.max + 1;
-
-    } else {
-      // Adding +1 because it starts from the (self) unit's tile.
-      // A gap of 1 tile would only allow to mark the unit's tile.
-      gap += 1;
-    }
-
-    // Take other possibilities w/ move
-    if (remainingRange === 1) {
-      remainingRange += move;
-    }
-
-    this.recursiveFindGap({
-      coord: { x: this.tile.x, y: this.tile.y },
-      remainingMove: gap,
-    });
-
-    this.tilesMove
-      .filter((tileMovement) => {
-        return this.isEdgeTile(tileMovement);
-      })
-      .map((edgeTile, index, arr) => {
-        this.recursiveFindAtkRange({
-          coord: { x: edgeTile.x, y: edgeTile.y },
-          gap,
-          remainingMove: remainingRange,
-        });
-      });
-
-    return this;
-  }
-
   /** Show the allowed movement for the target unit tile. */
   private showMovement() {
     const { tile } = this;
@@ -673,32 +704,4 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     return this;
   }
-
-  /** Animate tiles attack range opacity to 1. */
-  private focusAtkRange() {
-    this.fadeInTiles({
-      tiles: this.tilesAtkRange,
-      options: { alpha: .7 },
-    });
-  }
-
-  /** Animate tiles movement opacity to 1. */
-  private focusMovement() {
-    let delay = 0;
-
-    // Double check tile's movement.
-    // Can happens if the cursor didn't move on unit before click.
-    if (this.tilesMove.length === 0) {
-      this.bringToFront();
-      delay = 500;
-    }
-
-    this.fadeInTiles({
-      tiles: this.tilesMove,
-      options: { alpha: 1, duration: 25, delay },
-    });
-
-    return this;
-  }
-
 }

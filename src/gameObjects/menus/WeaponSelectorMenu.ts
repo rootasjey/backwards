@@ -32,7 +32,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
       const weaponButtons = weapons.map((weapon, index) => {
         const coord = { x: 0, y: (index + 1) * 30 };
-        return this.createWeaponButton(weapon, coord);
+        return this.createWeaponButton({ coord, index, weapon });
       });
 
       container.add(weaponButtons);
@@ -65,7 +65,9 @@ export default class WeaponSelectorMenu extends ActionsMenu {
     return button.getContainer();
   }
 
-  private createWeaponButton(weapon: Weapon, coord?: Coord) {
+  private createWeaponButton(config: CreateWeaponButtonConfig) {
+    const { coord, index, weapon } = config;
+
     const button = new ActionButton(this.scene, {
       coord,
       onClick: () => {
@@ -74,6 +76,15 @@ export default class WeaponSelectorMenu extends ActionsMenu {
       },
       text: `${weapon.name}         x${weapon.usage}`,
       width: this.buttonWidth,
+    });
+
+    button.on('cusorchanged', () => {
+      const { tile } = this;
+
+      if (!tile) { return; }
+
+      const tileUnit = tile.properties.tileUnit as TileUnit;
+      tileUnit.showWeaponRange(index);
     });
 
     return button.getContainer();

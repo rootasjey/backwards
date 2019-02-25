@@ -52,6 +52,12 @@ interface CreateContainerParam {
   coord: Coord;
 }
 
+interface CreateWeaponButtonConfig {
+  coord?: Coord;
+  index: number;
+  weapon: Weapon;
+}
+
 interface DataConsummables {
   [key: string]: any;
 }

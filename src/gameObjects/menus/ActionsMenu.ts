@@ -193,7 +193,10 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
     const buttonOvered = this.allCurrentButtons[this.cursorIndex];
 
     const actionButton = buttonOvered.getData('actionButton') as ActionButton;
-    actionButton.addHighlight();
+
+    actionButton
+      .addHighlight()
+      .emit('cusorchanged');
   }
 
   private destroyAdditionalButtons() {
