@@ -27,8 +27,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
     if (tile) {
       const tileUnit = tile.properties.tileUnit as TileUnit;
-      const unit = tileUnit.getUnit();
-      const weapons = unit.inventory.getWeapons();
+      const weapons = tileUnit.getWeaponsHittingEnemy();
 
       const weaponButtons = weapons.map((weapon, index) => {
         const coord = { x: 0, y: (index + 1) * 30 };

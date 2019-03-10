@@ -8,6 +8,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   // PUBLIC PROPERTIES
   // ~~~~~~~~~~~~~~~~~
 
+  /** Which player own this unit. */
   public get player(): Player {
     return this.PLAYER;
   }
@@ -29,8 +30,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private played: boolean = false;
 
   private PLAYER: Player;
-
-  // private player: Player;
 
   /** Tile's sprite. */
   private sprite: Phaser.GameObjects.Sprite;
@@ -123,6 +122,21 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   public getUnit() {
     return this.unit;
+  }
+
+  public getWeaponsHittingEnemy() {
+    const weapons = this.unit.inventory.getWeapons();
+
+    return weapons
+      .filter((w, i) => {
+        this
+          .hideAttackRange()
+          .addSelfTileMove()
+          .findAtkRange(i)
+          .hideMovement();
+
+        return this.isCurrentAtkInRangeOfEnemy();
+      });
   }
 
   /** Return true if this unit can perform actions during the current turn. */
@@ -310,6 +324,22 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .sprite(x + deltaToCenter, y + deltaToCenter, 'unitsSpriteSheet', id)
       .setScale(1.4)
       .setAlpha(0);
+  }
+
+  private isCurrentAtkInRangeOfEnemy() {
+    return this.tilesAtkRange
+      .some((tile) => {
+        const { x, y } = tile;
+        const { units: unitsLayer } = Game.gameMap.layers;
+
+        if (!unitsLayer.hasTileAt(x, y)) { return false; }
+
+        const unit = unitsLayer.getTileAt(x, y);
+        const tileUnit = unit.properties.tileUnit as TileUnit;
+
+        // NOTE: may need some changes for NPC
+        return this.player !== tileUnit.player;
+      });
   }
 
   /** Return a unit's tiles path from a start to an end. */
