@@ -1,6 +1,6 @@
 {
   "name": "cycles",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": "Jeremie CORPINOT",
   "description": "A turn based game system built with Phaser",
   "license": "MIT",
@@ -13,24 +13,24 @@
     "watch": "webpack --env dev --watch"
   },
   "dependencies": {
-    "copy-webpack-plugin": "4.6.0",
+    "copy-webpack-plugin": "5.0.0",
     "pathfinding": "0.4.18",
-    "phaser": "3.16.1",
-    "typescript": "3.2.2",
-    "webpack": "4.28.4",
-    "webpack-cli": "3.2.1",
-    "webpack-dev-server": "3.1.14"
+    "phaser": "3.16.2",
+    "typescript": "3.3.3333",
+    "webpack": "4.29.6",
+    "webpack-cli": "3.2.3",
+    "webpack-dev-server": "3.2.1"
   },
   "devDependencies": {
-    "@types/node": "10.12.18",
+    "@types/node": "11.11.0",
     "@types/pathfinding": "0.0.2",
-    "@types/webpack": "4.4.22",
-    "ava": "1.0.1",
+    "@types/webpack": "4.4.25",
+    "ava": "1.3.1",
     "download-cli": "1.1.1",
     "raw-loader": "1.0.0",
     "ts-loader": "5.3.3",
-    "ts-node": "7.0.1",
-    "tslint": "5.12.1"
+    "ts-node": "8.0.3",
+    "tslint": "5.13.1"
   },
   "ava": {
     "extensions": [

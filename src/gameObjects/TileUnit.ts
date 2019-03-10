@@ -128,11 +128,11 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const weapons = this.unit.inventory.getWeapons();
 
     return weapons
-      .filter((w, i) => {
+      .filter((...[, weaponIndex]) => {
         this
           .hideAttackRange()
           .addSelfTileMove()
-          .findAtkRange(i)
+          .findAtkRange(weaponIndex)
           .hideMovement();
 
         return this.isCurrentAtkInRangeOfEnemy();
