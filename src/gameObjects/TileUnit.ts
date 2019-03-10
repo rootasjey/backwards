@@ -132,7 +132,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
         this
           .hideAttackRange()
           .addSelfTileMove()
-          .findAtkRange(weaponIndex)
+          .findAtkRange({ weaponIndex })
           .hideMovement();
 
         return this.isCurrentAtkInRangeOfEnemy();
@@ -268,10 +268,10 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  public showWeaponRange(index: number) {
+  public showWeaponRange(weapon: Weapon) {
     this
       .addSelfTileMove()
-      .findAtkRange(index)
+      .findAtkRange({ weapon })
       .hideMovement()
       .focusAtkRange();
 
@@ -383,12 +383,21 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /** Put attack tiles at this unit's range. Uses recursiveFindAtkRange. */
-  private findAtkRange(weaponIndex?: number) {
+  private findAtkRange(config?: weaponRangeConfig) {
     this.hideAttackRange();
 
-    const range = typeof weaponIndex === 'number' ?
-      this.unit.getWeaponRange(weaponIndex) :
-      this.unit.getAllWeaponsRange();
+    let range;
+
+    if (!config) {
+      range = this.unit.getAllWeaponsRange();
+
+    } else {
+      const { weapon, weaponIndex } = config;
+
+      range = typeof weaponIndex === 'number' ?
+        this.unit.getWeaponRange({ weaponIndex }) :
+        this.unit.getWeaponRange({ weapon });
+    }
 
     const { move } = this.unit;
 

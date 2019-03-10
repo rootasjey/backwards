@@ -232,21 +232,41 @@ export class Unit {
     return { min, max };
   }
 
-  public getWeaponRange(weaponIndex: number) {
+  public getWeaponRange(config: weaponRangeConfig) {
+    const { weapon: weaponConfig, weaponIndex } = config;
     const { inventory } = this.state;
-
     const weapons = inventory.getWeapons();
 
     if (weapons.length === 0) {
       return { min: 0, max: 0 };
     }
 
-    if (weaponIndex < 0 || weaponIndex >= weapons.length) {
+    let index = 0;
+
+    if (typeof weaponIndex === 'number') {
+      index = weaponIndex;
+
+    } else {
+      if (!weaponConfig) { throw new Error('No weapon\'s index specifed, neither a weapon object.'); }
+
+      weapons
+        .some((weaponInventory, i) => {
+          if (weaponInventory.name === weaponConfig.name &&
+              weaponInventory.usage === weaponConfig.usage) {
+                index = i;
+                return true;
+          }
+
+          return false;
+        });
+    }
+
+    if (index < 0 || index >= weapons.length) {
       throw new Error(`The weapon's index specified is out of range.
         Please provide a number between 0 and ${weapons.length}`);
     }
 
-    const weapon = weapons[weaponIndex];
+    const weapon = weapons[index];
 
     const rangeValues = weapon.range.split('-');
 

@@ -31,7 +31,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
       const weaponButtons = weapons.map((weapon, index) => {
         const coord = { x: 0, y: (index + 1) * 30 };
-        return this.createWeaponButton({ coord, index, weapon });
+        return this.createWeaponButton({ coord, weapon });
       });
 
       container.add(weaponButtons);
@@ -72,7 +72,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
   }
 
   private createWeaponButton(config: CreateWeaponButtonConfig) {
-    const { coord, index, weapon } = config;
+    const { coord, weapon } = config;
 
     const button = new ActionButton(this.scene, {
       coord,
@@ -90,7 +90,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
         if (!tile) { return; }
 
         const tileUnit = tile.properties.tileUnit as TileUnit;
-        tileUnit.showWeaponRange(index);
+        tileUnit.showWeaponRange(weapon);
       });
 
     return button.getContainer();

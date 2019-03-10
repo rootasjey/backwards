@@ -51,12 +51,16 @@ interface CreateContainerParam {
 
 interface CreateWeaponButtonConfig {
   coord?: Coord;
-  index: number;
   weapon: Weapon;
 }
 
 interface DataConsummables {
   [key: string]: any;
+}
+
+interface weaponRangeConfig {
+  weapon?: Weapon;
+  weaponIndex?: number;
 }
 
 interface fadeInTilesParams {
