@@ -124,7 +124,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this.unit;
   }
 
-  public getWeaponsHittingEnemy() {
+  public getWeaponsHittingOpponent() {
     const weapons = this.unit.inventory.getWeapons();
 
     return weapons
@@ -135,7 +135,52 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
           .findAtkRange({ weaponIndex })
           .hideMovement();
 
-        return this.isCurrentAtkInRangeOfEnemy();
+        return this.isCurrentAtkInRangeOfOpponent();
+      });
+  }
+
+  public getWeaponTargetsMarkers(weapon: Weapon) {
+    this
+      .addSelfTileMove()
+      .findAtkRange({ weapon })
+      .hideMovement();
+
+    const { units: layerUnits } = Game.gameMap.layers;
+
+    return this.tilesAtkRange
+      .filter((atkTile) => {
+        const { x, y } = atkTile;
+
+        if (!layerUnits.hasTileAt(x, y)) {
+          return false;
+        }
+
+        const otherUnit = layerUnits.getTileAt(x, y);
+        const otherTileUnit = otherUnit.properties.tileUnit as TileUnit;
+
+        return otherTileUnit.player.id !== this.player.id;
+      });
+  }
+
+  public getWeaponTargets(weapon: Weapon) {
+    const { units: layerUnits } = Game.gameMap.layers;
+
+    return this.tilesAtkRange
+      .filter((atkTile) => {
+        const { x, y } = atkTile;
+
+        if (!layerUnits.hasTileAt(x, y)) {
+          return false;
+        }
+
+        const otherUnit = layerUnits.getTileAt(x, y);
+        const otherTileUnit = otherUnit.properties.tileUnit as TileUnit;
+
+        return otherTileUnit.player.id !== this.player.id;
+      })
+      .map((markerTile) => {
+        const { x, y } = markerTile;
+        return layerUnits.getTileAt(x, y);
       });
   }
 
@@ -149,17 +194,17 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .addSelfTileMove()
       .findAtkRange();
 
-    const { units: layerUits } = Game.gameMap.layers;
+    const { units: layerUnits } = Game.gameMap.layers;
 
     return this.tilesAtkRange
       .filter((atkTile) => {
         const { x, y } = atkTile;
 
-        if (!layerUits.hasTileAt(x, y)) {
+        if (!layerUnits.hasTileAt(x, y)) {
           return false;
         }
 
-        const otherUnit = layerUits.getTileAt(x, y);
+        const otherUnit = layerUnits.getTileAt(x, y);
         const otherTileUnit = otherUnit.properties.tileUnit as TileUnit;
 
         return otherTileUnit.player.id !== this.player.id;
@@ -252,7 +297,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /** Show unit's attack range. (Consider all current weapons in inventory). */
+  /** Show unit's attack range (consider all current weapons in inventory). */
   public showAtkRange() {
     if (this.tilesMove.length === 0) {
       this.addSelfTileMove();
@@ -326,7 +371,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       .setAlpha(0);
   }
 
-  private isCurrentAtkInRangeOfEnemy() {
+  private isCurrentAtkInRangeOfOpponent() {
     return this.tilesAtkRange
       .some((tile) => {
         const { x, y } = tile;
@@ -609,7 +654,6 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
       !this.coordGap[`${x},${y}`] &&
       gap < 1) {
 
-      // const tileAtkRange = layerAtkRange.putTileAt(2525, x, y);
       const tileAtkRange = layerAtkRange.putTileAt(2569, x, y);
       tileAtkRange.tint = colors.tileAttack;
 

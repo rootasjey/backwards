@@ -34,6 +34,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     hiddenFloor         : Phaser.Tilemaps.StaticTilemapLayer.prototype,
     movement            : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     objects             : Phaser.Tilemaps.StaticTilemapLayer.prototype,
+    targetSelector      : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
+    targetSelectorPanel : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     tileInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     units               : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
     unitActionsPanel    : Phaser.Tilemaps.DynamicTilemapLayer.prototype,
@@ -154,6 +156,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { events } = this.scene;
 
     events.once(`${weaponSelectorEvent}${WeaponSelectorActions.cancel}`, this.onWeaponSelectorCancel, this);
+    events.once(`${weaponSelectorEvent}${WeaponSelectorActions.select}`, this.onWeaponSelectorSelect, this);
 
     return this;
   }
@@ -190,8 +193,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     layers.collision            = map.createDynamicLayer('Collision', tileset.map, 0, 0);
     layers.attackRange          = map.createDynamicLayer('AttackRange', tileset.ui, 0, 0);
     layers.movement             = map.createDynamicLayer('Movement', tileset.ui, 0, 0);
+    layers.targetSelector       = map.createDynamicLayer('TargetSelector', tileset.ui, 0, 0);
     layers.units                = map.createDynamicLayer('Units', tileset.units, 0, 0);
     layers.cursor               = map.createDynamicLayer('Cursor', tileset.map, 0, 0);
+    layers.targetSelectorPanel  = map.createDynamicLayer('TargetSelectorPanel', tileset.ui, 0, 0);
     layers.tileInfoPanel        = map.createDynamicLayer('TileInfoPanel', tileset.ui, 0, 0);
     layers.unitInfoPanel        = map.createDynamicLayer('UnitInfoPanel', tileset.ui, 0, 0);
     layers.unitActionsPanel     = map.createDynamicLayer('UnitActionsPanel', tileset.ui, 0, 0);
@@ -313,18 +318,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /**
-   * Fix some layers so they won't scroll with the camera.
-   */
-  private fixLayers() {
-    const { layers } = this;
-
-    layers.tileInfoPanel.setScrollFactor(0);
-    layers.unitInfoPanel.setScrollFactor(0);
-
-    return this;
-  }
-
   private getBinaryCellType(x: number, y: number) {
     const { layers } = this;
 
@@ -383,7 +376,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       .createObjectLayers()
       .initializeUnitsObjectLayer()
       .scaleToGameSize()
-      .fixLayers()
       .createMapCursor()
       .createUnits()
       .createMapMatrix()
@@ -417,14 +409,17 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     if (!this.layers.units.hasTileAt(x, y)) {
+      this.scene.events.emit('showPanelsInfo');
       return;
     }
 
     this.selectedUnit = this.layers
-      .units.getTileAt(x, y);
+    .units.getTileAt(x, y);
 
     const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
     tileUnit.select();
+
+    this.scene.events.emit('hidePanelsInfo');
 
     this.cursor.tint = colors.tileMovementActive;
   }
@@ -585,6 +580,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private onUnitActionCancel(addedTile: Phaser.Tilemaps.Tile) {
     this.removeUnitActionsListeners();
+    this.scene.events.emit('showPanelsInfo');
 
     const tileUnit = addedTile.properties.tileUnit as TileUnit;
     tileUnit.sendToBack();
@@ -618,6 +614,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private onUnitActionWait(addedTile: Phaser.Tilemaps.Tile) {
     this.removeUnitActionsListeners();
+    this.scene.events.emit('showPanelsInfo');
 
     const tileUnit = addedTile.properties.tileUnit as TileUnit;
 
@@ -636,6 +633,16 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
       const tileUnitResult = unit.properties.tileUnit as TileUnit;
       tileUnitResult.showAtkRange();
     }, 10);
+  }
+
+  private onWeaponSelectorSelect(attackerTile: Phaser.Tilemaps.Tile, weapon?: Weapon) {
+    if (!weapon) { throw new Error('No weapon sent for attack'); }
+
+    const tileUnit = attackerTile.properties.tileUnit as TileUnit;
+    const markers = tileUnit.getWeaponTargetsMarkers(weapon);
+    const targets = tileUnit.getWeaponTargets(weapon);
+
+    this.scene.events.emit('openTargetSelector', { markers, targets, attackerTile, weapon });
   }
 
   private removeMapActionsListeners() {

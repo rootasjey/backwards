@@ -1,6 +1,6 @@
 export enum WeaponSelectorActions {
   cancel = 'cancel',
-  selected = 'selected',
+  select = 'select',
 }
 
 export const eventName = 'weaponSelector:';

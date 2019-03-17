@@ -3,9 +3,9 @@ import {
   WeaponSelectorActions,
 } from '../../actions/weaponSelector';
 
-import TileUnit from '../TileUnit';
+import TileUnit     from '../TileUnit';
 import ActionButton from './ActionButton';
-import ActionsMenu from './ActionsMenu';
+import ActionsMenu  from './ActionsMenu';
 
 export default class WeaponSelectorMenu extends ActionsMenu {
   protected linesTiles = {
@@ -27,7 +27,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
     if (tile) {
       const tileUnit = tile.properties.tileUnit as TileUnit;
-      const weapons = tileUnit.getWeaponsHittingEnemy();
+      const weapons = tileUnit.getWeaponsHittingOpponent();
 
       const weaponButtons = weapons.map((weapon, index) => {
         const coord = { x: 0, y: (index + 1) * 30 };
@@ -82,7 +82,9 @@ export default class WeaponSelectorMenu extends ActionsMenu {
 
     button
       .on('click', () => {
-        this.hide();
+        this
+          .hide()
+          .sendAction(WeaponSelectorActions.select, weapon);
       })
       .on('cusorchanged', () => {
         const { tile } = this;
@@ -97,8 +99,8 @@ export default class WeaponSelectorMenu extends ActionsMenu {
   }
 
   /** Send attack's action to the scene (through event). */
-  private sendAction(action: string) {
-    this.scene.events.emit(`${weaponSelectorEvent}${action}`, this.tile);
+  private sendAction(action: string, weapon?: Weapon) {
+    this.scene.events.emit(`${weaponSelectorEvent}${action}`, this.tile, weapon);
     return this;
   }
 }

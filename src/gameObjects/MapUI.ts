@@ -3,6 +3,7 @@ import { Game }           from './Game';
 import MapActionsMenu     from './menus/MapActionsMenu';
 import UnitActionsMenu    from './menus/UnitActionsMenu';
 import WeaponSelectorMenu from './menus/WeaponSelectorMenu';
+import TargetSelector     from './TargetSelector';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
   private corners: MapUICorners = {
@@ -19,9 +20,14 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     bottomLeft: { x: 1, y: 21 },
   };
 
+  private isUnitSelected: boolean = false;
+
   private mapActionsMenu: MapActionsMenu;
 
+  // @ts-ignore : This prop is initialized in init() function.
   private panels: MapUIPanels = {};
+
+  private targetSelector: TargetSelector;
 
   private unitActionsMenu: UnitActionsMenu;
 
@@ -36,9 +42,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this.init();
 
     const { layers } = Game.gameMap;
+    const { targetSelectorPanel: panelLayer, targetSelector: targetsLayer } = layers;
 
-    this.mapActionsMenu = new MapActionsMenu(scene, layers.unitActionsPanel);
-    this.unitActionsMenu = new UnitActionsMenu(scene, layers.unitActionsPanel);
+    this.mapActionsMenu     = new MapActionsMenu(scene, layers.unitActionsPanel);
+    this.targetSelector     = new TargetSelector({scene, panelLayer, targetsLayer });
+    this.unitActionsMenu    = new UnitActionsMenu(scene, layers.unitActionsPanel);
     this.weaponSelectorMenu = new WeaponSelectorMenu(scene, layers.weaponSelectionPanel);
   }
 
@@ -86,18 +94,6 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
   // PRIVATE FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
-
-  private openMapActions(cursor: Phaser.Tilemaps.Tile) {
-    this.mapActionsMenu.show(cursor);
-  }
-
-  private openUnitActions(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
-    this.unitActionsMenu.show(cursor, { tile });
-  }
-
-  private openWeaponSelector(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
-    this.weaponSelectorMenu.show(cursor, { tile });
-  }
 
   private createUnitInfoPanelText() {
     const { add }           = this.scene;
@@ -147,10 +143,13 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   private disableEvents() {
     const { events } = this.scene;
 
-    events.off('cursorMoved', this.updatePanels, this);
-    events.off('openUnitActions', this.openUnitActions, this);
-    events.off('openMapActions', this.openMapActions, this);
-    events.off('openWeaponSelector', this.openWeaponSelector, this);
+    events.off('cursorMoved',         this.updatePanels,        this);
+    events.off('openUnitActions',     this.openUnitActions,     this);
+    events.off('openMapActions',      this.openMapActions,      this);
+    events.off('openTargetSelector',  this.openTargetSelector,  this);
+    events.off('openWeaponSelector',  this.openWeaponSelector,  this);
+    events.off('showPanelsInfo',      this.onShowPanelsInfo,    this);
+    events.off('hidePanelsInfo',      this.onHidePanelsInfo,    this);
 
     return this;
   }
@@ -158,10 +157,13 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   private enableEvents() {
     const { events } = this.scene;
 
-    events.on('cursorMoved', this.updatePanels, this);
-    events.on('openUnitActions', this.openUnitActions, this);
-    events.on('openMapActions', this.openMapActions, this);
-    events.on('openWeaponSelector', this.openWeaponSelector, this);
+    events.on('cursorMoved',        this.updatePanels,        this);
+    events.on('openUnitActions',    this.openUnitActions,     this);
+    events.on('openMapActions',     this.openMapActions,      this);
+    events.on('openTargetSelector', this.openTargetSelector,  this);
+    events.on('openWeaponSelector', this.openWeaponSelector,  this);
+    events.on('hidePanelsInfo',     this.onHidePanelsInfo,    this);
+    events.on('showPanelsInfo',     this.onShowPanelsInfo,    this);
 
     return this;
   }
@@ -176,12 +178,22 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  /** Prevent camera scroll */
+  private fixUILayers() {
+    const { layers } = Game.gameMap;
+
+    layers.tileInfoPanel.setScrollFactor(0);
+    layers.unitInfoPanel.setScrollFactor(0);
+
+    return this;
+  }
+
   private getPanelBounds(name: string) {
     const bounds = {
       bottom: 0,
-      left: 0,
-      right: 0,
-      top: 0,
+      left:   0,
+      right:  0,
+      top:    0,
     };
 
     const layer = Game.gameMap.layers[name] as Phaser.Tilemaps.DynamicTilemapLayer;
@@ -303,6 +315,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   /** Create UI panels. */
   private init() {
     this
+      .fixUILayers()
       .getPanelsNames()
       .map((name) => {
         this
@@ -392,6 +405,62 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
+  private onHidePanelsInfo() {
+    this.isUnitSelected = true;
+
+    const { layers } = Game.gameMap;
+
+    layers.tileInfoPanel.setVisible(false);
+    layers.unitInfoPanel.setVisible(false);
+
+    const tileInfoPanelContainer = this.panels.tileInfoPanel.textsContainer;
+    const unitInfoPanelContainer = this.panels.unitInfoPanel.textsContainer;
+
+    if (tileInfoPanelContainer) {
+      tileInfoPanelContainer.setVisible(false);
+    }
+
+    if (unitInfoPanelContainer) {
+      unitInfoPanelContainer.setVisible(false);
+    }
+  }
+
+  private onShowPanelsInfo() {
+    this.isUnitSelected = false;
+
+    const { layers } = Game.gameMap;
+
+    layers.tileInfoPanel.setVisible(true);
+    layers.unitInfoPanel.setVisible(true);
+
+    const tileInfoPanelContainer = this.panels.tileInfoPanel.textsContainer;
+    const unitInfoPanelContainer = this.panels.unitInfoPanel.textsContainer;
+
+    if (tileInfoPanelContainer) {
+      tileInfoPanelContainer.setVisible(true);
+    }
+
+    if (unitInfoPanelContainer) {
+      unitInfoPanelContainer.setVisible(true);
+    }
+  }
+
+  private openMapActions(cursor: Phaser.Tilemaps.Tile) {
+    this.mapActionsMenu.show(cursor);
+  }
+
+  private openUnitActions(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+    this.unitActionsMenu.show(cursor, { tile });
+  }
+
+  private openTargetSelector(config: OpenTargetSelectorEventConfig) {
+    this.targetSelector.show(config);
+  }
+
+  private openWeaponSelector(cursor: Phaser.Tilemaps.Tile, tile: Phaser.Tilemaps.Tile) {
+    this.weaponSelectorMenu.show(cursor, { tile });
+  }
+
   /** Set predefined corners according to window dimentions. */
   private setAutoCorners() {
     const { cornersXY } = this;
@@ -464,24 +533,6 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  /** Update char panel with refreshed texts values. */
-  private updateUnitInfoPanel(tileCursor: Phaser.Tilemaps.Tile) {
-    const panelName = 'unitInfoPanel';
-    const panelValues = this.getUnitInfoPanelValues(tileCursor);
-
-    if (panelValues.name.length === 0) {
-      this.toggleUnitInfoPanel(panelValues);
-      return this;
-    }
-
-    this
-      .setTextPanel(panelName, panelValues)
-      .checkPanelPosition(tileCursor, panelName)
-      .toggleUnitInfoPanel(panelValues);
-
-    return this;
-  }
-
   /** Set a new corner to the targeted panel. */
   private updateCorner(panelName: string, newCorner: string) {
     // Empty last corner
@@ -503,6 +554,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
   /** React to user inputs -> cursor moved. */
   private updatePanels(tileCursor: Phaser.Tilemaps.Tile) {
+    if (this.isUnitSelected) { return; }
+
     this.updateTileInfoPanel(tileCursor);
     this.updateUnitInfoPanel(tileCursor);
 
@@ -534,6 +587,24 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     this
       .setTextPanel(panelName, panelValues)
       .checkPanelPosition(tileCursor, panelName);
+
+    return this;
+  }
+
+  /** Update char panel with refreshed texts values. */
+  private updateUnitInfoPanel(tileCursor: Phaser.Tilemaps.Tile) {
+    const panelName = 'unitInfoPanel';
+    const panelValues = this.getUnitInfoPanelValues(tileCursor);
+
+    if (panelValues.name.length === 0) {
+      this.toggleUnitInfoPanel(panelValues);
+      return this;
+    }
+
+    this
+      .setTextPanel(panelName, panelValues)
+      .checkPanelPosition(tileCursor, panelName)
+      .toggleUnitInfoPanel(panelValues);
 
     return this;
   }

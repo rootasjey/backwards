@@ -4,10 +4,6 @@ export class Inventory {
   private _MAXITEMS = 5;
   private items: Array<Weapon | Consumable>;
 
-  /**
-   * Create a new inventory
-   * @param {Array} items Items which should be added to the inventory.
-   */
   constructor(data: any) {
     this.items = data.items as Array<Weapon | Consumable>;
   }
@@ -18,9 +14,6 @@ export class Inventory {
     return this._MAXITEMS;
   }
 
-  /**
-   * add
-   */
   public add(item: (Weapon | Consumable)) {
     if (this.count() >= this.maxItems) {
       return this;
@@ -30,11 +23,19 @@ export class Inventory {
     return this;
   }
 
-  /**
-   * Return inventory's items.
-   */
+  /** Return inventory's items. */
   public getItems() {
     return this.items;
+  }
+
+  public getWeapon(index: number) {
+    const weapons = this.getWeapons();
+
+    if (index < 0 || index > weapons.length) {
+      throw new Error('The index specified it out of boundaries.');
+    }
+
+    return weapons[index];
   }
 
   public getWeapons() {
@@ -50,9 +51,26 @@ export class Inventory {
     return weapons;
   }
 
-  /**
-   * Remove the passed item.
-   */
+  public moveWeaponToTop(weapon: Weapon) {
+    let index = 0;
+
+    this.items
+      .some((item, itemIndex) => {
+        if (item.name === weapon.name && item.usage === weapon.usage) {
+          index = itemIndex;
+          return true;
+        }
+
+        return false;
+      });
+
+    this.items.splice(index, 1);
+    this.items.splice(0, 0, weapon);
+
+    return this;
+  }
+
+  /** Remove the passed item. */
   public remove(item: Consumable | Weapon) {
     this.getItems()
       .some((currItem, index) => {

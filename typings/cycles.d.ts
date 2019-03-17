@@ -104,6 +104,8 @@ interface GameMapLayers {
   hiddenFloor         : Phaser.Tilemaps.StaticTilemapLayer;
   movement            : Phaser.Tilemaps.DynamicTilemapLayer;
   objects             : Phaser.Tilemaps.StaticTilemapLayer;
+  targetSelector      : Phaser.Tilemaps.DynamicTilemapLayer;
+  targetSelectorPanel : Phaser.Tilemaps.DynamicTilemapLayer;
   tileInfoPanel       : Phaser.Tilemaps.DynamicTilemapLayer;
   units               : Phaser.Tilemaps.DynamicTilemapLayer;
   unitActionsPanel    : Phaser.Tilemaps.DynamicTilemapLayer;
@@ -115,23 +117,19 @@ interface GameMapObjectLayers {
   unitsInit: Phaser.Tilemaps.ObjectLayer;
 }
 
-interface IInventory {
+interface InventoryShape {
+  count: () => number;
+  getItems: () => (Consumable|Weapon)[];
+  getWeapon: (index: number) => Weapon;
+  getWeapons: () => Weapon[];
   maxItems: number;
-  getItems: InventoryGetItemsFun;
-  getWeapons: InventoryGetWeaponsFun;
+  moveWeaponToTop: (weapon: Weapon) => InventoryShape;
+  remove: (item: Consumable | Weapon) => InventoryShape;
 }
 
 interface InventoryFactoryParam {
   dataConsummables: any;
   dataWeapons: any;
-}
-
-interface InventoryGetItemsFun {
-  (): (Consumable|Weapon)[];
-}
-
-interface InventoryGetWeaponsFun {
-  (): Weapon[];
 }
 
 interface InventoryRawItem {
@@ -174,6 +172,8 @@ interface MapUICornersXY {
 
 interface MapUIPanels {
   [key: string]: MapUIPanel;
+  tileInfoPanel: MapUIPanel;
+  unitInfoPanel: MapUIPanel;
 }
 
 interface MapUIPanel {
@@ -196,6 +196,13 @@ interface moveTilesGroupParam {
 
   /** Layer on which to move the tiles. */
   layer: Phaser.Tilemaps.DynamicTilemapLayer;
+}
+
+interface OpenTargetSelectorEventConfig {
+  markers: Phaser.Tilemaps.Tile[];
+  targets: Phaser.Tilemaps.Tile[];
+  attackerTile: Phaser.Tilemaps.Tile;
+  weapon: Weapon;
 }
 
 declare enum PhysicalWeapons {
@@ -226,6 +233,21 @@ interface ShowTurnParam {
   turnNumber: number;
 }
 
+interface TargetSelectorConfig {
+  scene: Phaser.Scene;
+  panelLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  targetsLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+}
+
+interface TextsFightInfo {
+  /** Unit starting the fight. */
+  attackerName: Phaser.GameObjects.Text;
+  attackerHP: Phaser.GameObjects.Text;
+  attackerMt: Phaser.GameObjects.Text;
+  attackerHit: Phaser.GameObjects.Text;
+  container: Phaser.GameObjects.Container;
+}
+
 // TODO: Open an issue (and PR) on phaser => wrong type.
 interface TiledObject extends Phaser.GameObjects.GameObject {
   gid: number;
@@ -243,6 +265,10 @@ interface TiledObjectProperties {
   spriteId: number;
   tileId: number;
   unitName: string;
+}
+
+interface TileTargets {
+  [key: string]: Phaser.Tilemaps.Tile;
 }
 
 interface TileUnitConstructorParam {
@@ -264,8 +290,8 @@ interface UnitData {
   name: string;
   skills: object;
   stats: {
-    base: UnitState;
-    growth: UnitState;
+    base: UnitStats;
+    growth: UnitStats;
   },
   wexp: WeaponExp;
   wrank: WeaponRank;
@@ -285,13 +311,13 @@ interface UnitStats {
   str: number;
 }
 
-interface UnitDataConstructorParam {
+interface UnitConfig {
   createInventory: UnitCreateInventoryFun;
   unitData: UnitData;
 }
 
 interface UnitCreateInventoryFun {
-  (items: InventoryRawItem[]): IInventory;
+  (items: InventoryRawItem[]): InventoryShape;
 }
 
 interface UnitInfoPanelStats {
@@ -304,121 +330,6 @@ interface UnitsFactoryParam {
   dataHeroes: any;
   dataUnits: any;
   dataWeapons: any;
-}
-
-interface UnitState {
-  // ~~~~~~~~~~~~~~~
-  // Fighting stats
-  // ~~~~~~~~~~~~~~~
-
-  /**
-   * How sturdly this unit is.
-   * Affects resistance for special types of damage (poisons, illness).
-   * Used to determine if this unit can save another.
-   */
-  cons: number;
-
-  /**
-   * Decrease physical damage taken.
-   */
-  def: number;
-
-  /**
-   * Full Health Point.
-   */
-  fullHP: number;
-
-  /**
-   * Health Points.
-   */
-  hp: number;
-
-  /**
-   * Magical damage.
-   */
-  mag: number;
-
-  /**
-   * Affects critical hit.
-   */
-  lck: number;
-
-  /**
-   * Decrease magical damage taken.
-   */
-  res: number;
-
-  /**
-   * Affects unit's rate and critical hit rate.
-   */
-  skl: number;
-
-  /**
-   * Affects the number of strikes the unit can make,
-   * alongside her/his hability to evade a foe attack.
-   */
-  spd: number;
-
-  /**
-   * Physical damage.
-   */
-  str: number;
-
-  /**
-   * Weapons' exp
-   */
-  wexp: WeaponExp;
-
-  /**
-   * The unit must have a rank at or higher than
-   * a weapon rank to us it in battle.
-   */
-  wrank: WeaponRank;
-
-  // ~~~~~~~~~~~~
-  // Properties
-  // ~~~~~~~~~~~~
-
-  /**
-   * Unit's class.
-   */
-  class: string;
-
-  /**
-   * Level up when it reaches 100.
-   */
-  experience: number;
-
-  /**
-   * Uniq identifier.
-   */
-  id: string;
-
-  /**
-   * Unit's inventory.
-   */
-  inventory: IInventory;
-
-  /**
-   * From 1 to 20. After each level up, abilities points are distributed.
-   */
-  level: number;
-
-  /**
-   * Amount of cells the unit can move to.
-   */
-  move: number;
-
-  /**
-   * Unit's name.
-   */
-  name: string;
-
-  /**
-   * Current weapon wield.
-   * This weapon will be used if the unit attacks.
-   */
-  weapon?: Weapon;
 }
 
 interface UpdateUnitPositionParam {

@@ -1,5 +1,3 @@
-import { ItemTypes } from '../const/items';
-
 import {
   WeaponDamageType,
   WeaponRanks,
@@ -7,48 +5,53 @@ import {
 } from '../const/weapons';
 
 export class Unit {
-  private state: UnitState;
+  private privateInventory: InventoryShape;
 
-  /** Unit class which has a state. */
-  constructor(data: UnitDataConstructorParam) {
-    this.state = data.unitData.stats.base;
+  private data: UnitData;
 
-    const rawItems = data.unitData.inventory as InventoryRawItem[];
-    this.state.inventory = data.createInventory(rawItems);
-  }
+  /** Shortcur on data.stats.base. */
+  private stats: UnitStats;
 
   get fullHP() {
-    return this.state.fullHP;
+    return this.stats.fullHP;
   }
 
   get hp() {
-    return this.state.hp;
+    return this.stats.hp;
   }
 
   get inventory() {
-    return this.state.inventory;
+    return this.privateInventory;
   }
 
   /** Return the amount of cells this unit can move. */
   get move() {
-    return this.state.move;
+    return this.stats.move;
   }
 
   /**  unit's name. */
   get name() {
-    return this.state.name;
+    return this.data.name;
+  }
+
+  constructor(config: UnitConfig) {
+    this.data = config.unitData;
+    this.stats = config.unitData.stats.base;
+
+    const rawItems = config.unitData.inventory as InventoryRawItem[];
+    this.privateInventory = config.createInventory(rawItems);
   }
 
   /** Return true if the weapon can be equipped. False otherwise. */
   public canEquip(weapon: Weapon): boolean {
-    const wrank = this.state.wrank;
+    const { wrank } = this.data;
     return wrank[weapon.type] !== '';
   }
 
   /** Equip a weapon available in the unit's items. */
   public equip(weapon: Weapon) {
     if (this.canEquip(weapon)) {
-      this.state.weapon = weapon;
+      this.inventory.moveWeaponToTop(weapon);
     }
 
     return this;
@@ -69,18 +72,19 @@ export class Unit {
       defEvade = opponent.getEvade();
 
       weaponTriangleEffect = this.getWeaponTriangleEffect(
-        this.state.weapon, opponent.state.weapon);
+        this.inventory.getWeapon(0), opponent.inventory.getWeapon(0));
     }
 
     return atkHitRate - defEvade + weaponTriangleEffect.hit;
   }
+
   /**
    * Returns the unit's attack value.
    * If an opponent is provided, it'll return the value against this opponent.
    */
   public getAtk(opponent?: Unit) {
-    const weapon = this.state.weapon;
-    const { mag, str } = this.state;
+    const weapon = this.inventory.getWeapon(0);
+    const { mag, str } = this.stats;
 
     if (!weapon || !weapon.atk) { return 0; }
 
@@ -92,13 +96,13 @@ export class Unit {
       totalAtk = weaponAtk + str;
 
       opponentDamageReduction = opponent ?
-        opponent.state.def : 0;
+        opponent.stats.def : 0;
 
     } else {
       totalAtk = weaponAtk + mag;
 
       opponentDamageReduction = opponent ?
-        opponent.state.res : 0;
+        opponent.stats.res : 0;
     }
 
     // Opponent => damage reduction
@@ -112,11 +116,11 @@ export class Unit {
    * if the unit's value is >= 4 points than the enemy.
    */
   public getAtkSpeed() {
-    const { cons, spd } = this.state;
+    const { cons, spd } = this.stats;
 
-    if (!this.state.weapon) { return 0; }
+    if (!this.inventory.getWeapon(0)) { return 0; }
 
-    const { weight } = this.state.weapon;
+    const { weight } = this.inventory.getWeapon(0);
 
     if (typeof weight === 'undefined') { return 0; }
 
@@ -125,9 +129,7 @@ export class Unit {
     return spd - burden;
   }
 
-  /**
-   * Return an object containing battle stats values.
-   */
+  /** Return an object containing battle stats values. */
   public getBattleStats(opponent?: Unit) {
     return {
       atk: this.getAtk(opponent),
@@ -143,12 +145,12 @@ export class Unit {
    * http://fireemblem.wikia.com/wiki/Critical_hit
    */
   public getCriticalHit(opponent?: Unit): number {
-    const skl = this.state.skl;
-    const ennemyLuck = opponent ? opponent.state.lck : 0;
+    const skl = this.stats.skl;
+    const ennemyLuck = opponent ? opponent.stats.lck : 0;
 
-    if (!this.state.weapon) { return 0; }
+    if (!this.inventory.getWeapon(0)) { return 0; }
 
-    const { ctr, rank } = this.state.weapon;
+    const { ctr, rank } = this.inventory.getWeapon(0);
 
     let sRankBonus = 0;
 
@@ -164,21 +166,17 @@ export class Unit {
    */
   public getEvade() {
     const atkSpeed = this.getAtkSpeed() * 2;
-    const lck = this.state.lck;
+    const lck = this.stats.lck;
 
     return atkSpeed + lck;
   }
 
-  /**
-   * Return hit value.
-   * If an opponent is provided, it'll return the value against this opponent.
-   * https://fireemblem.fandom.com/wiki/Hit_Rate
-   */
+  /** Return hit value. https://fireemblem.fandom.com/wiki/Hit_Rate */
   public getHitRate() {
-    if (!this.state.weapon) { return 0; }
+    if (!this.inventory.getWeapon(0)) { return 0; }
 
-    const { lck, mag, skl } = this.state;
-    const { hit, type } = this.state.weapon;
+    const { lck, mag, skl } = this.stats;
+    const { hit, type } = this.inventory.getWeapon(0);
 
     if (type === WeaponTypes.staff) {
       return (mag * 5) + skl + 30;
@@ -189,16 +187,12 @@ export class Unit {
     return (skl * 2) + (lck * 0.5) + hitRankBonus + hit;
   }
 
-  /**
-   * Return unit's attack range.
-   */
+  /** Return unit's attack range. */
   public getAllWeaponsRange() {
-    const { inventory } = this.state;
-
     let min = Infinity;
     let max = 0;
 
-    inventory
+    this.inventory
       .getWeapons()
       .map((weapon) => {
         // Diff range formats: '0', '1-3'
@@ -234,8 +228,7 @@ export class Unit {
 
   public getWeaponRange(config: weaponRangeConfig) {
     const { weapon: weaponConfig, weaponIndex } = config;
-    const { inventory } = this.state;
-    const weapons = inventory.getWeapons();
+    const weapons = this.inventory.getWeapons();
 
     if (weapons.length === 0) {
       return { min: 0, max: 0 };
@@ -278,10 +271,6 @@ export class Unit {
     return { min, max };
   }
 
-  /**
-   * Increment a unit's statistic with the passed value.
-   * @param {Object} stats Contains statistic name and value to add.
-   */
   public getWeaponRankBonus(): WeaponRankBonus {
     let bonus = {
       hit       : 0,
@@ -289,8 +278,8 @@ export class Unit {
       recovery  : 0,
     };
 
-    if (!this.state.weapon) { return bonus; }
-    const { rank, type } = this.state.weapon;
+    if (!this.inventory.getWeapon(0)) { return bonus; }
+    const { rank, type } = this.inventory.getWeapon(0);
 
     switch (type) {
       case WeaponTypes.axe:
