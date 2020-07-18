@@ -1,7 +1,12 @@
 import {
   eventName as mapEvent,
-  MapActions ,
+  MapActions,
 } from '../actions/map';
+
+import {
+  eventName as targetTargetSelector,
+  TargetSelectorActions,
+} from '../actions/targetSelector';
 
 import {
   eventName as unitEvent,
@@ -150,6 +155,27 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     events.once(`${unitEvent}${UnitActions.wait}`, this.onUnitActionWait, this);
 
     return this;
+  }
+
+  private addTargetSelectorListeners() {
+    const { events } = this.scene;
+
+    events.once(`${targetTargetSelector}${TargetSelectorActions.cancel}`, this.onTargetSelectorCancel, this);
+    events.once(`${targetTargetSelector}${TargetSelectorActions.select}`, this.onTargetSelectorSelect, this);
+
+    return this;
+  }
+
+  private onTargetSelectorCancel(tile: Phaser.Tilemaps.Tile) {
+    this.removeTargetSelectorListeners();
+
+    this.addUnitActionsListeners();
+    this.scene.events.emit('openUnitActions', this.cursor, tile);
+  }
+
+  private onTargetSelectorSelect() {
+    console.log('selected');
+    this.removeTargetSelectorListeners();
   }
 
   private addWeaponSelectorListeners() {
@@ -643,6 +669,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const targets = tileUnit.getWeaponTargets(weapon);
 
     this.scene.events.emit('openTargetSelector', { markers, targets, attackerTile, weapon });
+
+    this.addTargetSelectorListeners();
   }
 
   private removeMapActionsListeners() {
@@ -651,6 +679,15 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     events.off(`${mapEvent}${MapActions.cancel}`, this.onMapActionCancel, this);
     events.off(`${mapEvent}${MapActions.endTurn}`, this.onMapActionEndTurn, this);
     events.off(`${mapEvent}${MapActions.suspend}`, this.onMapActionSuspend, this);
+
+    return this;
+  }
+
+  private removeTargetSelectorListeners() {
+    const { events } = this.scene;
+
+    events.off(`${targetTargetSelector}${TargetSelectorActions.cancel}`, this.onTargetSelectorCancel, this);
+    events.off(`${targetTargetSelector}${TargetSelectorActions.select}`, this.onTargetSelectorSelect, this);
 
     return this;
   }

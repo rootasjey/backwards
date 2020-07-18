@@ -1,15 +1,34 @@
-import { colors, fonts } from '../const/config';
-import TileUnit from './TileUnit';
+import {
+  eventName as targetSelectorEvent,
+  TargetSelectorActions,
+} from '../actions/targetSelector';
+
+import { colors, fonts }  from '../const/config';
+import TileUnit           from './TileUnit';
 
 export default class TargetSelector extends Phaser.GameObjects.GameObject {
+  private attackerTile?: Phaser.Tilemaps.Tile;
   private currentTileTargetMarker?: Phaser.Tilemaps.Tile;
 
   private currentTileTargetMarkerIndex = 0;
 
   private linesTiles = {
-    top: [2674, 2675, 2675, 2675, 2675, 2676],
-    middle: [2704, 2705, 2705, 2705, 2705, 2706],
-    bottom: [2734, 2735, 2735, 2735, 2735, 2736],
+    top: [2668, 2669, 2669, 2669, 2669, 2670],
+    middle: [2698, 2699, 2699, 2699, 2699, 2700],
+    bottom: [2728, 2729, 2729, 2729, 2729, 2730],
+  };
+
+  private linesTiles2 = {
+    me: {
+      top: [2668, 2669, 2669, 2669, 2669, 2670],
+      middle: [2698, 2699, 2699, 2699, 2699, 2700],
+      bottom: [2728, 2729, 2729, 2729, 2729, 2730],
+    },
+    opponent: {
+      top: [2674, 2675, 2675, 2675, 2675, 2676],
+      middle: [2704, 2705, 2705, 2705, 2705, 2706],
+      bottom: [2734, 2735, 2735, 2735, 2735, 2736],
+    },
   };
 
   private panelLayer: Phaser.Tilemaps.DynamicTilemapLayer;
@@ -24,7 +43,7 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   private visualTargetMarker: Phaser.GameObjects.Container;
 
   // @ts-ignore : This prop is initialized in createTextsBattleInfo.
-  private textsFightInfo: TextsFightInfo;
+  private textsFightStats: TextsFightStats;
 
   constructor(config: TargetSelectorConfig) {
     super(config.scene, 'TargetSelector');
@@ -40,17 +59,26 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
     this
       .createFightInfoContainer()
-      .hide();
+      .firstHide();
   }
 
   // ~~~~~~~~~~~~~~~~~
   // PUBLIC FUNCTIONS
   // ~~~~~~~~~~~~~~~~~
 
+  public firstHide() {
+    this.panelLayer.setVisible(false);
+    this.targetsLayer.setVisible(false);
+    this.textsFightStats.container.setVisible(false);
+    this.stopTargetAnimation();
+
+    return this;
+  }
+
   public hide() {
     this.panelLayer.setVisible(false);
     this.targetsLayer.setVisible(false);
-    this.textsFightInfo.container.setVisible(false);
+    this.textsFightStats.container.setVisible(false);
 
     this
       .stopTargetAnimation()
@@ -64,9 +92,11 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   public show(config: OpenTargetSelectorEventConfig) {
     const { markers, targets, attackerTile, weapon } = config;
 
+    this.attackerTile = attackerTile;
+
     this.panelLayer.setVisible(true);
     this.targetsLayer.setVisible(true);
-    this.textsFightInfo.container.setVisible(true);
+    this.textsFightStats.container.setVisible(true);
 
     this.markTargets(markers);
 
@@ -76,6 +106,7 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
       .startTargetMarkerAnimation()
       .initTilesTargets(targets)
       .updateTextsFightInfo(attackerTile, weapon)
+      .disableMapEvents()
       .enableEvents();
 
     return this;
@@ -143,7 +174,8 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     textX += 20;
     textY += 20;
 
-    this.createFightInfoTexts(textX, textY);
+    // this.createUnitFightStatsTexts(textX, textY);
+    this.createTextsFightStats(textX, textY);
 
     return this;
   }
@@ -168,33 +200,43 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private createFightInfoTexts(x: number, y: number) {
+  private createTextsFightStats(x: number, y: number) {
+    const me = this.createUnitFightStatsTexts();
+    const opponent = this.createUnitFightStatsTexts({ x: 300, y: 0 });
+    const container = this.scene.add.container(x, y, [me.container, opponent.container]);
+
+    this.textsFightStats = { container, me, opponent };
+  }
+
+  private createUnitFightStatsTexts(config?: CreateUnitFightStatsTextsConfig) {
+    const defaultConfig = { x: 0, y: 0};
+
+    const { x, y } = config ? config : defaultConfig;
+
     const { add } = this.scene;
     const style = { ...fonts.styles.normal, ...{ color: 'black' }};
 
-    const attackerName  = add.text(0, 0, '',  { ...style, ...{ fontSize: 40 } });
-    const attackerHP    = add.text(0, 40, '', style);
-    const attackerMt    = add.text(0, 60, '', style);
-    const attackerHit   = add.text(0, 80, '', style);
+    const name  = add.text(0, 0, '',  { ...style, ...{ fontSize: 40 } });
+    const hp    = add.text(0, 40, '', style);
+    const mt    = add.text(0, 60, '', style);
+    const hit   = add.text(0, 80, '', style);
 
     const container = add.container(x, y,
       [
-        attackerName,
-        attackerHP,
-        attackerMt,
-        attackerHit,
+        name,
+        hp,
+        mt,
+        hit,
       ],
     ).setScrollFactor(0, 0);
 
-    this.textsFightInfo = {
-      attackerName,
-      attackerHP,
-      attackerHit,
-      attackerMt,
+    return {
       container,
+      hit,
+      hp,
+      mt,
+      name,
     };
-
-    return this;
   }
 
   private createTopLine(x: number, y: number) {
@@ -217,7 +259,11 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   }
 
   private disableMapEvents() {
-    this.scene.events.emit('unsubscribeMapEvents');
+    // NOTE: Must fire after re-enabling map events from (weapons) ActionsMenu.
+    setTimeout(() => {
+      this.scene.events.emit('unsubscribeMapEvents');
+    }, 40);
+
     return this;
   }
 
@@ -255,7 +301,17 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   }
 
   private onPointerUpOutside() {
-    this.hide();
+    this
+      .hide()
+      .sendAction(TargetSelectorActions.cancel);
+  }
+
+  private sendAction(action: string) {
+    const { attackerTile: unit } = this;
+
+    this.scene.events.emit(`${targetSelectorEvent}${action}`, unit);
+
+    return this;
   }
 
   private startTargetMarkerAnimation() {
@@ -329,17 +385,17 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
     const attackerTileUnit = unit.properties.tileUnit as TileUnit;
 
-    const attackerNameValue = attackerTileUnit.getUnit().name;
-    const attackerHPValue = attackerTileUnit.getUnit().hp;
-    const attackerMightValue = attackerTileUnit.getUnit().getAtk(opponentUnit);
-    const attackerHitValue = attackerTileUnit.getUnit().getAccuracy(opponentUnit);
+    const attackerNameValue   = attackerTileUnit.getUnit().name;
+    const attackerHPValue     = attackerTileUnit.getUnit().hp;
+    const attackerMightValue  = attackerTileUnit.getUnit().getAtk(opponentUnit);
+    const attackerHitValue    = attackerTileUnit.getUnit().getAccuracy(opponentUnit);
 
-    const { attackerName, attackerHP, attackerMt, attackerHit } = this.textsFightInfo;
+    const { name, hp, mt, hit } = this.textsFightStats.me;
 
-    attackerName.setText(attackerNameValue);
-    attackerHP.setText(`HP    ${attackerHPValue}`);
-    attackerMt.setText(`Mt    ${attackerMightValue}`);
-    attackerHit.setText(`HIT  ${attackerHitValue}`);
+    name.setText(attackerNameValue);
+    hp.setText(`HP    ${attackerHPValue}`);
+    mt.setText(`Mt    ${attackerMightValue}`);
+    hit.setText(`HIT  ${attackerHitValue}`);
 
     return this;
   }

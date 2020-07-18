@@ -49,6 +49,12 @@ interface CreateContainerParam {
   coord: Coord;
 }
 
+interface CreateUnitFightStatsTextsConfig {
+  x: number;
+  y: number;
+  // textsStats: TextsUnitFightStats;
+}
+
 interface CreateWeaponButtonConfig {
   coord?: Coord;
   weapon: Weapon;
@@ -239,12 +245,18 @@ interface TargetSelectorConfig {
   targetsLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 }
 
-interface TextsFightInfo {
+interface TextsFightStats {
+  container: Phaser.GameObjects.Container;
+  me: TextsUnitFightStats;
+  opponent: TextsUnitFightStats;
+}
+
+interface TextsUnitFightStats {
   /** Unit starting the fight. */
-  attackerName: Phaser.GameObjects.Text;
-  attackerHP: Phaser.GameObjects.Text;
-  attackerMt: Phaser.GameObjects.Text;
-  attackerHit: Phaser.GameObjects.Text;
+  name: Phaser.GameObjects.Text;
+  hp: Phaser.GameObjects.Text;
+  mt: Phaser.GameObjects.Text;
+  hit: Phaser.GameObjects.Text;
   container: Phaser.GameObjects.Container;
 }
 
