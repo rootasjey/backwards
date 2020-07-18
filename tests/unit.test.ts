@@ -1,9 +1,9 @@
 import test from 'ava';
 
-import * as consumables from '../assets/data/consumables.json';
-import * as heroes      from '../assets/data/heroes.json';
-import * as units       from '../assets/data/unitsClasses.json';
-import * as weapons     from '../assets/data/weapons.json';
+import * as consumables from '../public/assets/data/consumables.json';
+import * as heroes      from '../public/assets/data/heroes.json';
+import * as units       from '../public/assets/data/unitsClasses.json';
+import * as weapons     from '../public/assets/data/weapons.json';
 
 import { unitsFactory } from '../src/logic/unitsFactory';
 
@@ -18,5 +18,5 @@ test("A unit's battle stats are numbers", async (assert) => {
   const emilie = createUnit('emilie');
 
   Object.entries(emilie.getBattleStats())
-    .map(([, value]) => { assert.true(Number.isInteger(value)); });
+    .map(([, value]) => { assert.true(typeof value === 'number'); });
 });

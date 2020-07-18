@@ -1,36 +1,32 @@
 {
-  "name": "cycles",
-  "version": "0.8.0",
+  "name": "backwards",
+  "version": "0.10.0",
   "author": "Jeremie CORPINOT",
   "description": "A turn based game system built with Phaser",
   "license": "MIT",
   "scripts": {
-    "build:dev": "webpack --env dev",
-    "build:prd": "webpack --env prd",
-    "download-phaser-typedef": "download --out typings https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
-    "start": "webpack-dev-server -d --env dev",
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "format": "prettier --write 'src/**/*.js'",
+    "lint": "prettier --check 'src/**/*.js'",
     "test": "ava",
-    "watch": "webpack --env dev --watch"
+    "test:watch": "ava --watch"
+  },
+  "prettier": {
+    "printWidth": 140
   },
   "dependencies": {
-    "copy-webpack-plugin": "6.0.3",
     "pathfinding": "0.4.18",
-    "phaser": "3.24.1",
-    "typescript": "3.9.7",
-    "webpack": "4.43.0",
-    "webpack-cli": "3.3.12",
-    "webpack-dev-server": "3.11.0"
+    "phaser": "3.24.1"
   },
   "devDependencies": {
-    "@types/node": "14.0.23",
     "@types/pathfinding": "0.0.4",
-    "@types/webpack": "4.41.21",
     "ava": "3.10.1",
-    "download-cli": "1.1.1",
-    "raw-loader": "4.0.1",
-    "ts-loader": "8.0.1",
+    "prettier": "2.0.5",
+    "snowpack": "2.0.0",
     "ts-node": "8.10.2",
-    "tslint": "6.1.2"
+    "tslint": "6.1.2",
+    "typescript": "3.9.7"
   },
   "ava": {
     "extensions": [

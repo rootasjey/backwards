@@ -150,13 +150,13 @@ export class Unit {
 
     if (!this.inventory.getWeapon(0)) { return 0; }
 
-    const { ctr, rank } = this.inventory.getWeapon(0);
+    const { crt, rank } = this.inventory.getWeapon(0);
 
     let sRankBonus = 0;
 
     if (rank === WeaponRanks.S) { sRankBonus = 5; }
 
-    return ((skl / 2) + sRankBonus + ctr) - ennemyLuck;
+    return ((skl / 2) + sRankBonus + crt) - ennemyLuck;
   }
 
   /**

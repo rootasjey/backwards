@@ -1,4 +1,4 @@
-import * as PF    from 'pathfinding';
+import pathfinding from 'pathfinding';
 import { colors } from '../const/config';
 import { Unit }   from '../logic/Unit';
 import { Game }   from './Game';
@@ -391,8 +391,8 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private getUnitPath({ startX = 0, startY = 0 }, { endX = 0, endY = 0 }) {
     const { mapMatrix } = Game.gameMap;
 
-    const grid = new PF.Grid(mapMatrix);
-    const finder = new PF.BestFirstFinder();
+    const grid = new pathfinding.Grid(mapMatrix);
+    const finder = new pathfinding.BestFirstFinder();
 
     return finder.findPath(startX, startY, endX, endY, grid);
   }

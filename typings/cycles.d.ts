@@ -363,7 +363,7 @@ interface Weapon {
   /**
    * Critical rate.
    */
-  ctr: number;
+  crt: number;
   damageType: string;
   desc: string;
   hit: number;
