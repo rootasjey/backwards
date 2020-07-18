@@ -50,18 +50,32 @@ module.exports = {
             'typeof CANVAS_RENDERER': JSON.stringify(true),
             'typeof WEBGL_RENDERER': JSON.stringify(true)
         }),
-        new CopyWebpackPlugin(
-        [
-            {
-                from: 'assets',
-                to: 'assets',
-                force: true
-            },
-            {
-                from: 'index-dev.html',
-                to: 'index.html',
-                force: true
-            }
-        ])
+        // new CopyWebpackPlugin(
+        // [
+        //     {
+        //         from: 'assets',
+        //         to: 'assets',
+        //         force: true,
+        //     },
+        //     {
+        //         from: 'index-dev.html',
+        //         to: 'index.html',
+        //         force: true
+        //     }
+        // ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'assets',
+                    to: 'assets',
+                    force: true,
+                },
+                {
+                    from: 'index-dev.html',
+                    to: 'index.html',
+                    force: true
+                }
+            ]
+        })
     ]
 };

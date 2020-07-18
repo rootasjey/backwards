@@ -62,7 +62,7 @@ Game.instance = new Phaser.Game({
     //     y: 180
     //   }
     // }
-    default: false,
+    // default: false,
   },
   scene: [
     BootScene,
