@@ -5,12 +5,12 @@ import {
 } from '../const/weapons';
 
 export class Unit {
-  private privateInventory: InventoryShape;
+  private readonly privateInventory: InventoryShape;
 
-  private data: UnitData;
+  private readonly data: UnitData;
 
   /** Shortcur on data.stats.base. */
-  private stats: UnitStats;
+  private readonly stats: UnitStats;
 
   get fullHP() {
     return this.stats.fullHP;
@@ -38,7 +38,7 @@ export class Unit {
     this.data = config.unitData;
     this.stats = config.unitData.stats.base;
 
-    const rawItems = config.unitData.inventory as InventoryRawItem[];
+    const rawItems = config.unitData.inventory;
     this.privateInventory = config.createInventory(rawItems);
   }
 
@@ -95,14 +95,14 @@ export class Unit {
     if (weapon.damageType === WeaponDamageType.physical) {
       totalAtk = weaponAtk + str;
 
-      opponentDamageReduction = opponent ?
-        opponent.stats.def : 0;
+      opponentDamageReduction = opponent
+        ? opponent.stats.def : 0;
 
     } else {
       totalAtk = weaponAtk + mag;
 
-      opponentDamageReduction = opponent ?
-        opponent.stats.res : 0;
+      opponentDamageReduction = opponent
+        ? opponent.stats.res : 0;
     }
 
     // Opponent => damage reduction
@@ -201,9 +201,9 @@ export class Unit {
         // Supposing the format is well formed: 'min-max'
         let minR = parseInt(rangeValues[0], 10);
 
-        let maxR = rangeValues[1] ?
-          parseInt(rangeValues[1], 10) :
-          parseInt(rangeValues[0], 10);
+        let maxR = rangeValues[1]
+          ? parseInt(rangeValues[1], 10)
+          : parseInt(rangeValues[0], 10);
 
         // In case the range has been specified backwards: '10-0'
         rangeValues.map((strRange) => {
@@ -246,8 +246,8 @@ export class Unit {
         .some((weaponInventory, i) => {
           if (weaponInventory.name === weaponConfig.name &&
               weaponInventory.usage === weaponConfig.usage) {
-                index = i;
-                return true;
+            index = i;
+            return true;
           }
 
           return false;
@@ -264,9 +264,9 @@ export class Unit {
     const rangeValues = weapon.range.split('-');
 
     const min = parseInt(rangeValues[0], 10);
-    const max = rangeValues[1] ?
-      parseInt(rangeValues[1], 10) :
-      parseInt(rangeValues[0], 10);
+    const max = rangeValues[1]
+      ? parseInt(rangeValues[1], 10)
+      : parseInt(rangeValues[0], 10);
 
     return { min, max };
   }
@@ -291,8 +291,8 @@ export class Unit {
 
       case WeaponTypes.bow:
         if (WeaponRanks.C === rank) { bonus.atk = 1; }
-        if (WeaponRanks.B === rank) { bonus = { atk: 1, hit: 5 , recovery: 0 }; }
-        if (WeaponRanks.A === rank) { bonus = { atk: 2, hit: 5 , recovery: 0 }; }
+        if (WeaponRanks.B === rank) { bonus = { atk: 1, hit: 5, recovery: 0 }; }
+        if (WeaponRanks.A === rank) { bonus = { atk: 2, hit: 5, recovery: 0 }; }
 
         break;
 
@@ -336,7 +336,7 @@ export class Unit {
    * @param weapon2 Defending Weapon.
    * https://fireemblem.fandom.com/wiki/Weapon_Triangle
    */
-  public getWeaponTriangleEffect(weapon1?: Weapon, weapon2?: Weapon): WeaponTriangleBonus  {
+  public getWeaponTriangleEffect(weapon1?: Weapon, weapon2?: Weapon): WeaponTriangleBonus {
     const neutral = {
       atk: 0,
       hit: 0,
