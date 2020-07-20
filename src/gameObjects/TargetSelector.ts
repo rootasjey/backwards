@@ -9,6 +9,9 @@ import { Unit }           from '../logic/Unit';
 
 export default class TargetSelector extends Phaser.GameObjects.GameObject {
   private attackerTile?: Phaser.Tilemaps.Tile;
+
+  private attackerWeapon?: Weapon;
+
   private currentTileTargetMarker?: Phaser.Tilemaps.Tile;
 
   private currentTileTargetMarkerIndex = 0;
@@ -85,7 +88,8 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
       .stopTargetAnimation()
       .cleanUpMarkers()
       .cleanUpTilesTargets()
-      .disableEvents();
+      .disableEvents()
+      .enableMapEvents();
 
     return this;
   }
@@ -94,6 +98,7 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     const { markers, targets, attackerTile, weapon } = config;
 
     this.attackerTile = attackerTile;
+    this.attackerWeapon = weapon;
 
     this.panelLayer.setVisible(true);
     this.targetsLayer.setVisible(true);
@@ -106,7 +111,7 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     this
       .startTargetMarkerAnimation()
       .initTilesTargets(targets)
-      .updateTextsFightInfo(attackerTile, weapon)
+      .updateTextsFightInfo({ unit: attackerTile, weapon })
       .disableMapEvents()
       .enableEvents();
 
@@ -170,7 +175,6 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     textX += 20;
     textY += 20;
 
-    // this.createUnitFightStatsTexts(textX, textY);
     this.createTextsFightStats(textX, textY);
 
     return this;
@@ -249,7 +253,8 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   private disableEvents() {
     const { input } = this.scene;
 
-    input.off('pointerup', this.onPointerUpOutside, this);
+    input.off('pointerup', this.onPointerUp, this, false);
+    input.off('pointermove', this.onPointerMove, this, false);
 
     return this;
   }
@@ -268,7 +273,8 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
     // NOTE: Fired too early if not deffered.
     setTimeout(() => {
-      input.on('pointerup', this.onPointerUpOutside, this);
+      input.on('pointerup', this.onPointerUp, this);
+      input.on('pointermove', this.onPointerMove, this);
     }, 100);
 
     return this;
@@ -296,16 +302,46 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private onPointerUpOutside() {
+  private onPointerUp() {
     this
       .hide()
-      .sendAction(TargetSelectorActions.cancel);
+      .sendAction(TargetSelectorActions.select);
+  }
+
+  private onPointerMove(pointer: Phaser.Input.Pointer) {
+    const x = pointer.x + this.scene.cameras.main.scrollX;
+    const y = pointer.y + this.scene.cameras.main.scrollY;
+
+    // Out of boundaries
+    if (x >= this.targetsLayer.displayWidth ||
+      y >= this.targetsLayer.displayHeight) {
+      return;
+    }
+
+    const { x: tileX, y: tileY } = this.targetsLayer.worldToTileXY(x, y);
+
+    if (this.targetsLayer.hasTileAt(tileX, tileY)) {
+      if (this.currentTileTargetMarker === this.targetsLayer.getTileAt(tileX, tileY)) {
+        return;
+      }
+
+      this.stopTargetAnimation();
+      this.currentTileTargetMarker = this.targetsLayer.getTileAt(tileX, tileY);
+
+      this
+        .startTargetMarkerAnimation()
+        .updateTextsFightInfo({
+          unit: this.attackerTile,
+          weapon: this.attackerWeapon,
+        });
+    }
   }
 
   private sendAction(action: string) {
-    const { attackerTile: unit } = this;
+    const { attackerTile: attacker } = this;
+    const target = this.currentTileTargetMarker;
 
-    this.scene.events.emit(`${targetSelectorEvent}${action}`, unit);
+    this.scene.events.emit(`${targetSelectorEvent}${action}`, { attacker, target });
 
     return this;
   }
@@ -367,9 +403,10 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     // update circle
   }
 
-  private updateTextsFightInfo(unit: Phaser.Tilemaps.Tile, weapon: Weapon) {
-    if (!this.currentTileTargetMarker) {
-      throw new Error('Ghost opponent is not allowed.');
+  private updateTextsFightInfo({ unit, weapon }: { unit?: Phaser.Tilemaps.Tile, weapon?: Weapon}) {
+    if (!this.currentTileTargetMarker || !unit) {
+      console.warn('Ghost opponent is not allowed.');
+      return this;
     }
 
     const { x, y } = this.currentTileTargetMarker;

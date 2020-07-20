@@ -42,6 +42,14 @@ export class Unit {
     this.privateInventory = config.createInventory(rawItems);
   }
 
+  public attackTarget(target: Unit) {
+    this.useCurrentWeapon();
+    const atk = this.getAtk(target);
+
+    target.receiveDamage(atk);
+    return this;
+  }
+
   /** Return true if the weapon can be equipped. False otherwise. */
   public canEquip(weapon: Weapon): boolean {
     const { wrank } = this.data;
@@ -365,5 +373,20 @@ export class Unit {
     }
 
     return neutral;
+  }
+
+  public receiveDamage(damage = 0) {
+    const reducedDamage = damage - this.stats.def;
+    this.stats.hp -= reducedDamage;
+
+    return this;
+  }
+
+  public useCurrentWeapon(times = 1) {
+    const weapon = this.inventory.getWeapon();
+    if (!weapon) { return this; }
+
+    weapon.usage -= times;
+    return this;
   }
 }

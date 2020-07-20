@@ -126,7 +126,7 @@ interface GameMapObjectLayers {
 interface InventoryShape {
   count: () => number
   getItems: () => Array<Consumable|Weapon>
-  getWeapon: (index: number) => Weapon
+  getWeapon: (index?: number) => Weapon
   getWeapons: () => Weapon[]
   maxItems: number
   moveWeaponToTop: (weapon: Weapon) => InventoryShape
@@ -193,7 +193,7 @@ interface MapUIPanel {
   textsContainer?: Phaser.GameObjects.Container
 }
 
-interface moveTilesGroupParam {
+interface MoveTilesGroupParam {
   /** The grouped tiles bounds. */
   bounds?: Bounds
 
@@ -202,6 +202,11 @@ interface moveTilesGroupParam {
 
   /** Layer on which to move the tiles. */
   layer: Phaser.Tilemaps.DynamicTilemapLayer
+}
+
+interface OnTargetSelectorSelectConfig {
+  attacker: Phaser.Tilemaps.Tile
+  target: Phaser.Tilemaps.Tile
 }
 
 interface OpenTargetSelectorEventConfig {

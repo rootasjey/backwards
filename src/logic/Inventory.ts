@@ -1,8 +1,8 @@
 import { ItemTypes } from '../const/items';
 
 export class Inventory {
-  private _MAXITEMS = 5;
-  private items: Array<Weapon | Consumable>;
+  private readonly _MAXITEMS = 5;
+  private readonly items: Array<Weapon | Consumable>;
 
   constructor(data: any) {
     this.items = data.items as Array<Weapon | Consumable>;
@@ -28,11 +28,12 @@ export class Inventory {
     return this.items;
   }
 
-  public getWeapon(index: number) {
+  public getWeapon(index: number = 1) {
     const weapons = this.getWeapons();
 
     if (index < 0 || index > weapons.length) {
-      throw new Error('The index specified it out of boundaries.');
+      index = 1;
+      console.warn('The index specified it out of boundaries. Returning the first weapon found starting 0 index.');
     }
 
     return weapons[index];

@@ -169,18 +169,6 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     return this;
   }
 
-  private onTargetSelectorCancel(tile: Phaser.Tilemaps.Tile) {
-    this.removeTargetSelectorListeners();
-
-    this.addUnitActionsListeners();
-    this.scene.events.emit('openUnitActions', this.cursor, tile);
-  }
-
-  private onTargetSelectorSelect() {
-    console.log('selected');
-    this.removeTargetSelectorListeners();
-  }
-
   private addWeaponSelectorListeners() {
     const { events } = this.scene;
 
@@ -598,6 +586,32 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     this.dragCamera(pointer);
+  }
+
+  private onTargetSelectorCancel(tile: Phaser.Tilemaps.Tile) {
+    this.removeTargetSelectorListeners();
+
+    this.addUnitActionsListeners();
+    this.scene.events.emit('openUnitActions', this.cursor, tile);
+  }
+
+  private onTargetSelectorSelect(config: OnTargetSelectorSelectConfig) {
+    const { attacker, target } = config;
+    console.log('selected');
+    this.removeTargetSelectorListeners();
+    this.scene.events.emit('showPanelsInfo');
+
+    const tileTarget = this.layers.units.getTileAt(target.x, target.y);
+
+    const attackerTU: TileUnit = attacker.properties.tileUnit;
+    const targetTU: TileUnit = tileTarget.properties.tileUnit;
+
+    // 1. Set the attacker to has played/wait
+    attackerTU.markAsPlayed();
+
+    // 2. Decrease weapon usability  &
+    //    remove HP to the target.
+    attackerTU.getUnit().attackTarget(targetTU.getUnit());
   }
 
   private onUnitActionAtk(unit: Phaser.Tilemaps.Tile) {
