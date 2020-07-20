@@ -17,8 +17,18 @@ module.exports = {
     '@typescript-eslint/space-before-function-paren': [0],
     '@typescript-eslint/strict-boolean-expressions': [0],
     '@typescript-eslint/quotes': [1],
+    '@typescript-eslint/explicit-function-return-type': [0],
     'comma-dangle': [1, 'always-multiline'],
-    'padded-blocks': [0]
+    'no-multi-spaces': [1, {
+      exceptions: {
+        'AssignmentExpression': true,
+        'ConditionalExpression': true,
+        'ImportDeclaration': true,
+        'Property': true,
+        'VariableDeclarator': true,
+      }
+    }],
+    'padded-blocks': [0],
   },
   extends: 'standard-with-typescript',
 }

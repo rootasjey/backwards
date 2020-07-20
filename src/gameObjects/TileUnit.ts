@@ -1,7 +1,7 @@
-import pathfinding from 'pathfinding';
-import { colors } from '../const/config';
-import { Unit }   from '../logic/Unit';
-import { Game }   from './Game';
+import pathfinding  from 'pathfinding';
+import { colors }   from '../const/config';
+import { Unit }     from '../logic/Unit';
+import { Game }     from './Game';
 
 export default class TileUnit extends Phaser.GameObjects.GameObject {
   // ~~~~~~~~~~~~~~~~~
@@ -29,13 +29,13 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   /** Can this unit perform actions during the current turn. */
   private played: boolean = false;
 
-  private PLAYER: Player;
+  private readonly PLAYER: Player;
 
   /** Tile's sprite. */
-  private sprite: Phaser.GameObjects.Sprite;
+  private readonly sprite: Phaser.GameObjects.Sprite;
 
   /** Unit's tile (where the unit is localized on the map). */
-  private tile: Phaser.Tilemaps.Tile;
+  private readonly tile: Phaser.Tilemaps.Tile;
 
   /** Tiles showing this unit's attack range. */
   private tilesAtkRange: Phaser.Tilemaps.Tile[] = [];
@@ -47,7 +47,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private tilesPath: Phaser.Tilemaps.Tile[] = [];
 
   /** The unit associated. */
-  private unit: Unit;
+  private readonly unit: Unit;
 
   /**
    * A combination of unit & tile.
@@ -219,7 +219,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   public markAsPlayed() {
     this.sendToBack();
     this.played = true;
-    this.tile.setAlpha(.5);
+    this.tile.setAlpha(0.5);
 
     return this;
   }
@@ -233,17 +233,19 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   }
 
   /** Move the unit to the coordinates (in tiles). */
-  public moveTo(endX: number, endY: number):
-    Promise<{moved: boolean, tileUnit: TileUnit}> {
-    return new Promise((resolve) => {
+  public async moveTo(endX: number, endY: number):
+  Promise<{moved: boolean, tileUnit: TileUnit}> {
+    return await new Promise((resolve) => {
       const { layers } = Game.gameMap;
 
       if (!layers.movement.hasTileAt(endX, endY)) {
         return resolve({ tileUnit: this, moved: false });
       }
 
-      const { layer: { tilemapLayer },
-        x: startX, y: startY } = this.tile;
+      const {
+        layer: { tilemapLayer },
+        x: startX, y: startY,
+      } = this.tile;
 
       const path = this.getUnitPath({ startX, startY }, { endX, endY });
 
@@ -307,7 +309,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     this.fadeInTiles({
       tiles: this.tilesAtkRange,
-      options: { alpha: .3 },
+      options: { alpha: 0.3 },
     });
 
     return this;
@@ -343,7 +345,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     const { x, y } = this.tile;
     const { layers } = Game.gameMap;
 
-    const layerMovement = layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
+    const layerMovement = layers.movement;
 
     if (!layerMovement.hasTileAt(x, y)) {
       const tileMovement = layerMovement.putTileAt(2569, x, y);
@@ -401,16 +403,16 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private fadeInTiles(params: fadeInTilesParams) {
     const { options, tiles } = params;
 
-    let alpha = .5;
-    let delay = 0;
+    let alpha     = 0.5;
+    let delay     = 0;
     let delayStep = 10;
-    let duration = 250;
+    let duration  = 250;
 
     if (options) {
-      alpha     = options.alpha ? options.alpha : alpha;
-      delay     = options.delay ? options.delay : delay;
+      alpha     = options.alpha     ? options.alpha     : alpha;
+      delay     = options.delay     ? options.delay     : delay;
       delayStep = options.delayStep ? options.delayStep : delayStep;
-      duration  = options.duration ? options.duration : duration;
+      duration  = options.duration  ? options.duration  : duration;
     }
 
     tiles.map((tile) => {
@@ -439,9 +441,9 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     } else {
       const { weapon, weaponIndex } = config;
 
-      range = typeof weaponIndex === 'number' ?
-        this.unit.getWeaponRange({ weaponIndex }) :
-        this.unit.getWeaponRange({ weapon });
+      range = typeof weaponIndex === 'number'
+        ? this.unit.getWeaponRange({ weaponIndex })
+        : this.unit.getWeaponRange({ weapon });
     }
 
     const { move } = this.unit;
@@ -494,7 +496,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
   private focusAtkRange() {
     this.fadeInTiles({
       tiles: this.tilesAtkRange,
-      options: { alpha: .7 },
+      options: { alpha: 0.7 },
     });
 
     return this;
@@ -580,7 +582,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
   /** Fired when this current unit is selected and pointer has moved. */
   private onCursorMoved(cursor: Phaser.Input.Pointer) {
-    const movement = Game.gameMap.layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
+    const movement = Game.gameMap.layers.movement;
     const { selectedUnit } = Game.gameMap;
 
     if (!selectedUnit ||
@@ -723,7 +725,7 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
 
     const { layers } = Game.gameMap;
 
-    const layerMovement = layers.movement as Phaser.Tilemaps.DynamicTilemapLayer;
+    const layerMovement = layers.movement;
 
     // 1.Bounds check
     if (x >= layerMovement.tilemap.width ||
