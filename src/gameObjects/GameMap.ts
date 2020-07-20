@@ -48,10 +48,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     weaponSelectionPanel: Phaser.Tilemaps.DynamicTilemapLayer.prototype,
   };
 
-  // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
+  // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   public map: Phaser.Tilemaps.Tilemap;
 
-  // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
+  // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   public mapMatrix: number[][];
 
   public selectedUnit?: Phaser.Tilemaps.Tile;
@@ -62,10 +62,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private canDrag: boolean = false;
 
-  // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
+  // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   private createUnit: () => Unit;
 
-  // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
+  // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   private cursor: Phaser.Tilemaps.Tile;
 
   /** Last cursor coordinates on pointerdown. TODO: Use velocity w/ Phaser 3.16. */
@@ -79,11 +79,11 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
   private previousUnitCoord?: Coord;
 
-  // @ts-ignore : This prop is initialized in the `init()` method in the constructor.
+  // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   private tileset: {
-    map: Phaser.Tilemaps.Tileset,
-    ui: Phaser.Tilemaps.Tileset,
-    units: Phaser.Tilemaps.Tileset,
+    map: Phaser.Tilemaps.Tileset
+    ui: Phaser.Tilemaps.Tileset
+    units: Phaser.Tilemaps.Tileset
   };
 
   /**
@@ -196,7 +196,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
 
       tweens: [
         {
-          alpha: .8,
+          alpha: 0.8,
         },
         {
           alpha: 0,
@@ -429,7 +429,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const { x, y } = this.cursor;
 
     if (this.selectedUnit) {
-      this.updateUnitPosition({ coord: {x, y} });
+      this.updateUnitPosition({ coord: { x, y } });
       this.cursor.tint = colors.tileMovementPassive;
       return;
     }
@@ -440,7 +440,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     }
 
     this.selectedUnit = this.layers
-    .units.getTileAt(x, y);
+      .units.getTileAt(x, y);
 
     const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
     tileUnit.select();
@@ -476,8 +476,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   private moveCamera(x: number, y: number) {
     const { x: worldX, y: worldY } = this.map.tileToWorldXY(x, y);
 
-    if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60
-      || worldX < 60 || worldY < 60) {
+    if (window.innerWidth - worldX < 60 || window.innerHeight - worldY < 60 ||
+        worldX < 60 || worldY < 60) {
 
       this.scene.cameras.main.pan(worldX, worldY, 500);
     }
@@ -753,10 +753,10 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
    *  When the silent options is true, no actions menu will open after the unit moves.
    */
   private updateUnitPosition(param: UpdateUnitPositionParam) {
-    const { coord: { x, y }, dontShowMenu } = param;
+    const { coord: { x, y } } = param;
 
     const { createUnit, scene } = this;
-    const unitsLayer = this.layers.units as Phaser.Tilemaps.DynamicTilemapLayer;
+    const unitsLayer = this.layers.units;
 
     if (!this.selectedUnit) {
       return this;
@@ -765,7 +765,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const tileUnit = this.selectedUnit.properties.tileUnit as TileUnit;
     const { x: unitX, y: unitY } = this.selectedUnit;
 
-    if (!tileUnit.canMoveTo({x, y})) {
+    if (!tileUnit.canMoveTo({ x, y })) {
       tileUnit.unselect();
 
       this.selectedUnit = undefined;
@@ -777,7 +777,7 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     tileUnit
       .moveTo(x, y)
       .then((result) => {
-        const unit = result.tileUnit as TileUnit;
+        const unit = result.tileUnit;
         unit.unselect();
         return result;
       })
@@ -789,8 +789,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
         this.previousUnitCoord = { x: this.selectedUnit.x, y: this.selectedUnit.y };
 
         const tile = unitsLayer
-        .putTileAt(this.selectedUnit, x, y)
-        .setAlpha(1);
+          .putTileAt(this.selectedUnit, x, y)
+          .setAlpha(1);
 
         tileUnit.destroy();
         this.selectedUnit.destroy();
