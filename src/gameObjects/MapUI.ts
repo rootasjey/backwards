@@ -7,31 +7,31 @@ import TargetSelector     from './TargetSelector';
 
 export default class MapUI extends Phaser.GameObjects.GameObject {
   private corners: MapUICorners = {
-    topLeft: '',
-    topRight: '',
-    bottomRight: '',
-    bottomLeft: '',
+    topLeft     : '',
+    topRight    : '',
+    bottomRight : '',
+    bottomLeft  : '',
   };
 
-  private cornersXY: MapUICornersXY = {
-    topLeft: { x: 1, y: 1 },
-    topRight: { x: 21, y: 1 },
-    bottomRight: { x: 21, y: 21 },
-    bottomLeft: { x: 1, y: 21 },
+  private readonly cornersXY: MapUICornersXY = {
+    topLeft     : { x: 1, y: 1 },
+    topRight    : { x: 21, y: 1 },
+    bottomRight : { x: 21, y: 21 },
+    bottomLeft  : { x: 1, y: 21 },
   };
 
   private isUnitSelected: boolean = false;
 
-  private mapActionsMenu: MapActionsMenu;
+  private readonly mapActionsMenu: MapActionsMenu;
 
-  // @ts-ignore : This prop is initialized in init() function.
+  // @ts-expect-error : This prop is initialized in init() function.
   private panels: MapUIPanels = {};
 
-  private targetSelector: TargetSelector;
+  private readonly targetSelector: TargetSelector;
 
-  private unitActionsMenu: UnitActionsMenu;
+  private readonly unitActionsMenu: UnitActionsMenu;
 
-  private weaponSelectorMenu: WeaponSelectorMenu;
+  private readonly weaponSelectorMenu: WeaponSelectorMenu;
 
   /** Manage UI overlay on in-game maps. */
   constructor(scene: Phaser.Scene) {
@@ -45,7 +45,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const { targetSelectorPanel: panelLayer, targetSelector: targetsLayer } = layers;
 
     this.mapActionsMenu     = new MapActionsMenu(scene, layers.unitActionsPanel);
-    this.targetSelector     = new TargetSelector({scene, panelLayer, targetsLayer });
+    this.targetSelector     = new TargetSelector({ scene, panelLayer, targetsLayer });
     this.unitActionsMenu    = new UnitActionsMenu(scene, layers.unitActionsPanel);
     this.weaponSelectorMenu = new WeaponSelectorMenu(scene, layers.weaponSelectionPanel);
   }
@@ -129,7 +129,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     x += 20;
     y += 10;
 
-    texts.name = add.text(0, 0, ' - ', { ...normal, ...{ fontSize: 40 }});
+    texts.name = add.text(0, 0, ' - ', { ...normal, ...{ fontSize: 40 } });
     texts.def   = add.text(0, 50, 'DEF. ', normal);
     texts.avo   = add.text(0, 70, 'AVO. ', normal);
 
@@ -191,9 +191,9 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   private getPanelBounds(name: string) {
     const bounds = {
       bottom: 0,
-      left:   0,
-      right:  0,
-      top:    0,
+      left  : 0,
+      right : 0,
+      top   : 0,
     };
 
     const layer = Game.gameMap.layers[name] as Phaser.Tilemaps.DynamicTilemapLayer;
@@ -228,7 +228,7 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
     const layerCharacters = Game.gameMap.layers.units;
 
     const defaultValues: UnitInfoPanelStats = {
-      hp: 0,
+      hp  : 0,
       name: '',
     };
 
@@ -236,11 +236,11 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     const tile = layerCharacters.getTileAt(x, y);
 
-    if (tile && tile.properties && tile.properties.tileUnit) {
+    if (tile?.properties && tile.properties.tileUnit) {
       const { unit } = tile.properties.tileUnit;
 
       values = Object.assign({}, values, {
-        hp: `HP ${ unit.hp } / ${ unit.fullHP }`,
+        hp  : `HP ${unit.hp} / ${unit.fullHP}`,
         name: tile.properties.unitName,
       });
     }
@@ -282,8 +282,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
 
     const defaultValues = {
       name: ' - ',
-      avo: 0,
-      def: 0,
+      avo : 0,
+      def : 0,
     };
 
     let values = Object.assign({}, defaultValues);

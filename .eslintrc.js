@@ -19,9 +19,11 @@ module.exports = {
     '@typescript-eslint/quotes': [1],
     '@typescript-eslint/explicit-function-return-type': [0],
     'comma-dangle': [1, 'always-multiline'],
+    'key-spacing': [0, { 'align': 'colon', 'mode': 'minimum' }],
     'no-multi-spaces': [1, {
       exceptions: {
         'AssignmentExpression': true,
+        'CallExpression': true,
         'ConditionalExpression': true,
         'ImportDeclaration': true,
         'Property': true,
@@ -29,6 +31,7 @@ module.exports = {
       }
     }],
     'padded-blocks': [0],
+    'space-in-parens': [0],
   },
   extends: 'standard-with-typescript',
 }

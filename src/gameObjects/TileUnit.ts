@@ -85,22 +85,22 @@ export default class TileUnit extends Phaser.GameObjects.GameObject {
     this.sprite.setAlpha(1);
 
     this.scene.tweens.timeline({
-      targets: this.sprite,
-      loop: -1,
-      yoyo: true,
+      targets : this.sprite,
+      loop    : -1,
+      yoyo    : true,
 
       tweens: [
         {
-          scaleX: 1.4,
-          scaleY: 1.4,
+          scaleX  : 1.4,
+          scaleY  : 1.4,
           duration: 500,
-          ease: 'Power1',
+          ease    : 'Power1',
         },
         {
-          scaleX: 1.7,
-          scaleY: 1.7,
+          scaleX  : 1.7,
+          scaleY  : 1.7,
           duration: 500,
-          ease: 'Power1',
+          ease    : 'Power1',
         }],
     });
 
