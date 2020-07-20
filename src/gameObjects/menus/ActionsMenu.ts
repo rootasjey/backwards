@@ -26,16 +26,16 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
   /** Number of buttons currently displayed in the actions menu. */
   private buttonsCount = 0;
 
-  private textOffset = { x: 18, y: 10 };
+  private readonly textOffset = { x: 18, y: 10 };
 
   /** Keyboard cursor (for navigating buttons with keyboard arrows) */
   private cursorIndex = 0;
 
   /** Layer where to create menu. */
-  private layer: Phaser.Tilemaps.DynamicTilemapLayer;
+  private readonly layer: Phaser.Tilemaps.DynamicTilemapLayer;
 
   /** Always displayed buttons. */
-  private permanentButtons: Phaser.GameObjects.Container;
+  private readonly permanentButtons: Phaser.GameObjects.Container;
 
   /**
    * Create an actions menu to perform unit's actions.
@@ -218,7 +218,7 @@ export default abstract class ActionsMenu extends Phaser.GameObjects.GameObject 
       tile.destroy();
 
     }, undefined, undefined, undefined,
-      undefined, undefined, { isNotEmpty: true });
+    undefined, undefined, { isNotEmpty: true });
 
     return this;
   }
