@@ -5,6 +5,7 @@ import {
 
 import { colors, fonts }  from '../const/config';
 import TileUnit           from './TileUnit';
+import { Unit }           from '../logic/Unit';
 
 export default class TargetSelector extends Phaser.GameObjects.GameObject {
   private attackerTile?: Phaser.Tilemaps.Tile;
@@ -12,13 +13,13 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
   private currentTileTargetMarkerIndex = 0;
 
-  private linesTiles = {
+  private readonly linesTiles = {
     top: [2668, 2669, 2669, 2669, 2669, 2670],
     middle: [2698, 2699, 2699, 2699, 2699, 2700],
     bottom: [2728, 2729, 2729, 2729, 2729, 2730],
   };
 
-  private linesTiles2 = {
+  private readonly linesTiles2 = {
     me: {
       top: [2668, 2669, 2669, 2669, 2669, 2670],
       middle: [2698, 2699, 2699, 2699, 2699, 2700],
@@ -31,18 +32,18 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
     },
   };
 
-  private panelLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  private readonly panelLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
-  private targetsLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  private readonly targetsLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
   private tilesMarkers: Phaser.Tilemaps.Tile[] = [];
 
-  private tilesTargets: TileTargets = {};
+  private readonly tilesTargets = new Map<string, Phaser.Tilemaps.Tile>();
 
-  // @ts-ignore : This prop is initialized in createTargetMarker.
+  // @ts-expect-error : This prop is initialized in createTargetMarker.
   private visualTargetMarker: Phaser.GameObjects.Container;
 
-  // @ts-ignore : This prop is initialized in createTextsBattleInfo.
+  // @ts-expect-error : This prop is initialized in createTextsBattleInfo.
   private textsFightStats: TextsFightStats;
 
   constructor(config: TargetSelectorConfig) {
@@ -114,19 +115,14 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
   private initTilesTargets(targets: Phaser.Tilemaps.Tile[]) {
     targets.map((target) => {
-      this.tilesTargets[`${target.x},${target.y}`] = target;
+      this.tilesTargets.set(`${target.x},${target.y}`, target);
     });
 
     return this;
   }
 
   private cleanUpTilesTargets() {
-    for (const [key] of Object.entries(this.tilesTargets)) {
-      delete this.tilesTargets[key];
-    }
-
-    this.tilesTargets = {};
-
+    this.tilesTargets.clear();
     return this;
   }
 
@@ -209,12 +205,12 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
   }
 
   private createUnitFightStatsTexts(config?: CreateUnitFightStatsTextsConfig) {
-    const defaultConfig = { x: 0, y: 0};
+    const defaultConfig = { x: 0, y: 0 };
 
-    const { x, y } = config ? config : defaultConfig;
+    const { x, y } = config ?? defaultConfig;
 
     const { add } = this.scene;
-    const style = { ...fonts.styles.normal, ...{ color: 'black' }};
+    const style = { ...fonts.styles.normal, ...{ color: 'black' } };
 
     const name  = add.text(0, 0, '',  { ...style, ...{ fontSize: 40 } });
     const hp    = add.text(0, 40, '', style);
@@ -292,7 +288,7 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
       .map((tile) => {
         const marker = this.targetsLayer.putTileAt(2569, tile.x, tile.y);
         marker.tint = colors.tileAttack;
-        marker.setAlpha(.5);
+        marker.setAlpha(0.5);
 
         this.tilesMarkers.push(marker);
       });
@@ -333,15 +329,15 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
     this.scene.tweens.add({
       targets: circle,
-      scaleX: .7,
-      scaleY: .7,
+      scaleX: 0.7,
+      scaleY: 0.7,
       duration: 500,
     });
 
     this.scene.tweens.add({
       targets: circle,
-      scaleX: .8,
-      scaleY: .8,
+      scaleX: 0.8,
+      scaleY: 0.8,
       duration: 1000,
       delay: 600,
       yoyo: true,
@@ -378,10 +374,14 @@ export default class TargetSelector extends Phaser.GameObjects.GameObject {
 
     const { x, y } = this.currentTileTargetMarker;
 
-    const opponentTile = this.tilesTargets[`${x},${y}`];
+    const opponentTile = this.tilesTargets.get(`${x},${y}`);
 
-    const opponentTileUnit = opponentTile.properties.tileUnit as TileUnit;
-    const opponentUnit = opponentTileUnit.getUnit();
+    let opponentUnit: Unit | undefined;
+
+    if (opponentTile) {
+      const opponentTileUnit = opponentTile.properties.tileUnit as TileUnit;
+      opponentUnit = opponentTileUnit.getUnit();
+    }
 
     const attackerTileUnit = unit.properties.tileUnit as TileUnit;
 
