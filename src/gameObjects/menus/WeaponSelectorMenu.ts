@@ -14,11 +14,7 @@ export default class WeaponSelectorMenu extends ActionsMenu {
     bottom  : [2734, 2735, 2735, 2735, 2735, 2735, 2735, 2736],
   };
 
-  private buttonWidth: number = 200;
-
-  constructor(scene: Phaser.Scene, layer: Phaser.Tilemaps.DynamicTilemapLayer) {
-    super(scene, layer);
-  }
+  private readonly buttonWidth: number = 200;
 
   protected createAdditionalButtons() {
     const container = this.scene.add.container(0, 0);
