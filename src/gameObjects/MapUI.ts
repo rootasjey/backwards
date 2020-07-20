@@ -59,6 +59,8 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
    * with a min tile distance allowed between cursor & panel.
    */
   public checkPanelPosition(tile: Phaser.Tilemaps.Tile, panelName: string) {
+    if (!tile) { return this; }
+
     const { x, y } = tile;
     const distance = 3;
     const { bounds } = this.panels[panelName];
@@ -224,13 +226,15 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
    * Return the current pointed characters information.
    */
   private getUnitInfoPanelValues(tileCursor: Phaser.Tilemaps.Tile): UnitInfoPanelStats {
-    const { x, y } = tileCursor;
-    const layerCharacters = Game.gameMap.layers.units;
-
     const defaultValues: UnitInfoPanelStats = {
       hp  : 0,
       name: '',
     };
+
+    if (!tileCursor) { return defaultValues; }
+
+    const { x, y } = tileCursor;
+    const layerCharacters = Game.gameMap.layers.units;
 
     let values = Object.assign({}, defaultValues);
 
@@ -276,15 +280,23 @@ export default class MapUI extends Phaser.GameObjects.GameObject {
   }
 
   /** Return the current highlighted tile information. */
-  private getTileInfoPanelValues(tileCursor: Phaser.Tilemaps.Tile) {
-    const { layers } = Game.gameMap;
-    const { x, y } = tileCursor;
-
+  private getTileInfoPanelValues(tileCursor: Phaser.Tilemaps.Tile): TileInfoPanelValues {
     const defaultValues = {
       name: ' - ',
       avo : 0,
       def : 0,
     };
+
+    const { layers } = Game.gameMap;
+
+    if (!tileCursor) {
+      return Object.assign(defaultValues, {
+        avo: `AVO.    ${defaultValues.avo}`,
+        def: `DEF.    ${defaultValues.def}`,
+      });
+    }
+
+    const { x, y } = tileCursor;
 
     let values = Object.assign({}, defaultValues);
 

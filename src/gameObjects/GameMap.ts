@@ -68,6 +68,9 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   // @ts-expect-error : This prop is initialized in the `init()` method in the constructor.
   private cursor: Phaser.Tilemaps.Tile;
 
+  /* Cursor tile id. */
+  private readonly cursorTileId = 1658;
+
   /** Last cursor coordinates on pointerdown. TODO: Use velocity w/ Phaser 3.16. */
   private cursorDownCoord?: Coord;
 
@@ -188,6 +191,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
   }
 
   private animateCursor() {
+    if (!this.cursor) { return this; }
+
     this.scene.tweens.timeline({
       targets: this.cursor,
       duration: 1000,
@@ -489,9 +494,8 @@ export default class GameMap extends Phaser.GameObjects.GameObject {
     const cursorLayer = this.layers.cursor;
 
     this.killCursorAnimation();
-
-    cursorLayer.removeTileAt(this.cursor.x, this.cursor.y);
-    this.cursor = cursorLayer.putTileAt(this.cursor, x, y);
+    cursorLayer.removeTileAt(this.cursor?.x, this.cursor?.y);
+    this.cursor = cursorLayer.putTileAt(this.cursor ?? this.cursorTileId, x, y);
 
     this
       .animateCursor()
