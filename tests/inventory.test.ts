@@ -1,11 +1,16 @@
 import test from 'ava';
+import { unitsFactory } from '../src/logic/unitsFactory.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-import * as consumables from '../public/assets/data/consumables.json';
-import * as heroes      from '../public/assets/data/heroes.json';
-import * as units       from '../public/assets/data/unitsClasses.json';
-import * as weapons     from '../public/assets/data/weapons.json';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-import { unitsFactory } from '../src/logic/unitsFactory';
+const consumables = JSON.parse(readFileSync(join(__dirname, '../public/assets/data/consumables.json'), 'utf8'));
+const heroes = JSON.parse(readFileSync(join(__dirname, '../public/assets/data/heroes.json'), 'utf8'));
+const units = JSON.parse(readFileSync(join(__dirname, '../public/assets/data/unitsClasses.json'), 'utf8'));
+const weapons = JSON.parse(readFileSync(join(__dirname, '../public/assets/data/weapons.json'), 'utf8'));
 
 test('Moving a weapon to top should match index 0', async(assert) => {
   const createUnit = unitsFactory({

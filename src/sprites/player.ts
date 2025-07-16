@@ -69,9 +69,9 @@ export class Player extends Base {
       this.jumping = false;
     }
 
-    if (cursors.left.isDown || cursors.right.isDown) {
-      this.setFlipX(cursors.left.isDown);
-      this.setVelocityX(VELOCITY * (cursors.left.isDown ? -1 : 1));
+    if (cursors.left?.isDown || cursors.right?.isDown) {
+      this.setFlipX(cursors.left?.isDown || false);
+      this.setVelocityX(VELOCITY * (cursors.left?.isDown ? -1 : 1));
 
       if (this.body.blocked.down) {
         this.anims.play("run", true);
@@ -97,9 +97,9 @@ export class Player extends Base {
       this.setGravityY(0);
     }
 
-    if (cursors.up.isUp) {
+    if (cursors.up?.isUp) {
       this.jumping = false;
-    } else if (cursors.up.isDown && this.jumps > 0 && !this.jumping) {
+    } else if (cursors.up?.isDown && this.jumps > 0 && !this.jumping) {
       this.jumps -= 1;
       this.jumping = true;
       this.setVelocityY(-VELOCITY);
